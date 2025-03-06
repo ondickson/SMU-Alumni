@@ -20,7 +20,7 @@ function App() {
 
         <Route path="/AlumniInformation" element={<AlumniInformation />} />
         <Route path="/AdminDashboard" element={<AdminDashboard />} />
-        <Route path="/Events" element={<Events />} />
+        <Route path="/EventPage" element={<Events />} />
         <Route path="/JobPost" element={<JobPost />} />
         <Route path="/Messages" element={<Messages />} />
 

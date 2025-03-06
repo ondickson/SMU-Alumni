@@ -1,17 +1,25 @@
 import React from "react";
-import { AppBar, Toolbar, Typography, Button, Grid, Card, CardContent } from "@mui/material";
-import SidebarMenu from "../Sidebar"; 
+import { AppBar, Toolbar, Typography, TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from "@mui/material";
+import { Search, List } from "@mui/icons-material";
+import SidebarMenu from "../Sidebar";
+import "./AlumniInformation.css";
 
-const sidebarWidth = 250; 
+
+const sidebarWidth = 250;
+
+const alumniData = [
+  { id: "50747473", name: "CRUZ, LOURDES APULI", email: "lourdesc@mail.com", program: "MLIS", year: "2024 - 2025" },
+  { id: "56215333", name: "SEVILLA, HAVEN DIZON", email: "havensevilleja@mail.com", program: "MLIS", year: "2024 - 2025" },
+  { id: "64931760", name: "CRUZ, LINA ROBLES", email: "linacruz@mail.com", program: "MLIS", year: "2024 - 2025" },
+  { id: "90068366", name: "ARCHETA, AMBER PEREZ", email: "amberarcheta@mail.com", program: "MLIS", year: "2024 - 2025" },
+];
+
 function AlumniInformation() {
   return (
     <div style={{ display: "flex", height: "100vh" }}>
-
-      {/* Sidebar */}
       <SidebarMenu />
-
-      <div style={{  flex: 1,  background: "#f8f9fa", padding: "20px",marginLeft: `${sidebarWidth}px`, 
-      }}>
+      <div style={{ flex: 1, background: "#f8f9fa", padding: "20px", marginLeft: `${sidebarWidth}px` }}>
+        
         <AppBar position="static" style={{ background: "#272974" }}>
           <Toolbar>
             <Typography variant="h6" style={{ flexGrow: 1 }}>
@@ -20,30 +28,45 @@ function AlumniInformation() {
           </Toolbar>
         </AppBar>
 
-        <Typography variant="h5" style={{ margin: "20px 0" }}>Dashboard</Typography>
-
-        <Grid container spacing={3}>
-          {[
-            { title: "Total Events", value: 5 },
-            { title: "Total Courses", value: 11 },
-            { title: "New Job Post Requests", value: 3 },
-            { title: "Approved Job Posts", value: 2 },
-            { title: "Rejected Job Posts", value: 0 },
-            { title: "Total Alumni Registered", value: 5 },
-          ].map((stat, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <Card>
-                <CardContent style={{ textAlign: "center" }}>
-                  <Typography variant="h4">{stat.value}</Typography>
-                  <Typography>{stat.title}</Typography>
-                  <Button variant="contained" style={{ marginTop: "10px" }}>
-                    View Details
-                  </Button>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "20px 0" }}>
+          <TextField variant="outlined" size="small" placeholder="Search ID Number" fullWidth />
+          <Button variant="contained" startIcon={<Search />}>Search</Button>
+        </div>
+        
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell><strong>ID No.</strong></TableCell>
+                <TableCell><strong>Name and Email</strong></TableCell>
+                <TableCell><strong>Program</strong></TableCell>
+                <TableCell><strong>Year Graduated</strong></TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {alumniData.map((alumni) => (
+                <TableRow key={alumni.id}>
+                  <TableCell>
+                    <Button variant="contained" style={{ fontWeight: "bold" }}>{alumni.id}</Button>
+                  </TableCell>
+                  <TableCell>
+                    <Typography style={{ fontWeight: "bold" }}>{alumni.name}</Typography>
+                    <Typography variant="body2" color="textSecondary">{alumni.email}</Typography>
+                  </TableCell>
+                  <TableCell>{alumni.program}</TableCell>
+                  <TableCell>{alumni.year}</TableCell>
+                  <TableCell>
+                    <IconButton color="primary">
+                      <List />
+                    </IconButton>
+                    <Button variant="outlined">View Profile</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
     </div>
   );
