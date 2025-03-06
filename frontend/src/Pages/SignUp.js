@@ -1,19 +1,24 @@
 import React from "react";
-import "./SignUp.css"; // Make sure your styles.css is linked
+import { Link } from "react-router-dom"; // For navigation
+import "./SignUp.css"; 
+import logo from "../Assets/smulogo.png"; // Ensure you have this logo in the correct path
 
 const SignUp = () => {
   return (
     <div className="signup-container">
-      <h2>Sign Up</h2>
-      <form>
-        <input type="text" name="username" placeholder="Username" required />
-        <input type="email" name="email" placeholder="Email" required />
-        <input type="password" name="password" placeholder="Password" required />
-        <button type="submit">Register</button>
-      </form>
-      <p className="login-link">
-        Already have an account? <a href="#">Login</a>
-      </p>
+      <div className="signup-box">
+        <img src={logo} alt="SMU Logo" className="logo" />
+        <h2 className="title">SMU Alumni Tracer</h2>
+        <form>
+          <input type="text" name="username" placeholder="Username" className="input-field" required />
+          <input type="email" name="email" placeholder="Email" className="input-field" required />
+          <input type="password" name="password" placeholder="Password" className="input-field" required />
+          <button type="submit" className="signup-button">Register</button>
+        </form>
+        <p className="login-text">
+          Already have an account? <Link to="/">Login</Link>
+        </p>
+      </div>
     </div>
   );
 };
