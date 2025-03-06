@@ -69,5 +69,4 @@ function JobPost() {
     </div>
   );
 }
-
 export default JobPost;
