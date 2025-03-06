@@ -20,7 +20,7 @@ function AdminDashboard() {
           </Toolbar>
         </AppBar>
 
-        <Typography variant="h5" style={{ margin: "20px 0" }}>Dashboard</Typography>
+        <Typography variant="h5" style={{ margin: "20px 0" }}></Typography>
         <h1>INSERT GRAPH</h1>
         <Grid container spacing={3}>
           {[
