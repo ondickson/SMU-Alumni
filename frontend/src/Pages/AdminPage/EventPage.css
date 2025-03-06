@@ -1,66 +1,77 @@
-/* EventPage.css */
-
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #f8f9fa;
-    min-height: 100vh;
-    padding: 20px;
-  }
-  
-  .appbar {
-    background-color: #272974;
-    width: 100%;
-  }
-  
-  .title {
-    flex-grow: 1;
-  }
-  
-  .event-list {
-    margin-top: 20px;
-    width: 100%;
-  }
-  
-  .event-card {
-    padding: 15px;
-    text-align: center;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .event-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-  
-  .event-date {
-    font-size: 1rem;
-    color: gray;
-    margin: 5px 0;
-  }
-  
-  .event-description {
-    font-size: 0.9rem;
-  }
-  
-  .dialog-title {
-    font-weight: bold;
-  }
-  
-  .dialog-content {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .input-field {
-    margin-bottom: 10px;
-  }
-  
-  .dialog-actions {
-    display: flex;
-    justify-content: space-between;
-  }
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+/* Sidebar styling */
+.sidebar {
+  width: 250px; /* Adjust to match your SidebarMenu */
+  position: fixed;
+  height: 100vh;
+  background: #000000;
+}
+
+/* Main content area */
+.main-content {
+  flex-grow: 1;
+  margin-left: 250px; /* Same as sidebar width */
+  padding: 20px;
+  width: calc(100% - 250px);
+}
+
+.appbar {
+  background-color: #272974;
+  width: 100%;
+}
+
+.title {
+  flex-grow: 1;
+}
+
+.event-list {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.event-card {
+  padding: 15px;
+  text-align: center;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.event-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.event-date {
+  font-size: 1rem;
+  color: rgb(0, 0, 0);
+  margin: 5px 0;
+}
+
+.event-description {
+  font-size: 0.9rem;
+}
+
+.dialog-title {
+  font-weight: bold;
+}
+
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input-field {
+  margin-bottom: 10px;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: space-between;
+}

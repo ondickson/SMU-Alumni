@@ -1,9 +1,12 @@
 import React from "react";
-import { AppBar, Toolbar, Typography, TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from "@mui/material";
+import { 
+  AppBar, Toolbar, Typography, TextField, Button, 
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
+  Paper, IconButton 
+} from "@mui/material";
 import { Search, List } from "@mui/icons-material";
 import SidebarMenu from "../Sidebar";
 import "./AlumniInformation.css";
-
 
 const sidebarWidth = 250;
 
@@ -41,6 +44,7 @@ function AlumniInformation() {
                 <TableCell><strong>Name and Email</strong></TableCell>
                 <TableCell><strong>Program</strong></TableCell>
                 <TableCell><strong>Year Graduated</strong></TableCell>
+                <TableCell><strong>Actions</strong></TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
@@ -57,10 +61,7 @@ function AlumniInformation() {
                   <TableCell>{alumni.program}</TableCell>
                   <TableCell>{alumni.year}</TableCell>
                   <TableCell>
-                    <IconButton color="primary">
-                      <List />
-                    </IconButton>
-                    <Button variant="outlined">View Profile</Button>
+                    <Button variant="outlined" startIcon={<List />}>View Profile</Button>
                   </TableCell>
                 </TableRow>
               ))}
