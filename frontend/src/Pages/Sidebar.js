@@ -16,7 +16,7 @@ const CustomSidebar = () => {
         <MenuItem icon={<Work />} component={<Link to="/StudentInformation" />}>Student Information</MenuItem>
         <MenuItem icon={<Event />} component={<Link to="/AlumniInformation" />}>Alumni Information</MenuItem>
         <MenuItem icon={<Security />} component={<Link to="/" />}>Account Settings</MenuItem>
-        <MenuItem icon={<Settings />} component={<Link to="/" />}>Logout</MenuItem>
+        <MenuItem icon={<Settings />} component={<Link to="/login" />}>Logout</MenuItem>
       </Menu>
     </ProSidebar>
   );
