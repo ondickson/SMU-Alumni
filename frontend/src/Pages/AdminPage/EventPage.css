@@ -3,19 +3,17 @@
   min-height: 100vh;
   background-color: #f8f9fa;
 }
-
-/* Sidebar styling */
+  
 .sidebar {
-  width: 250px; /* Adjust to match your SidebarMenu */
+  width: 250px; 
   position: fixed;
   height: 100vh;
   background: #000000;
 }
 
-/* Main content area */
 .main-content {
   flex-grow: 1;
-  margin-left: 250px; /* Same as sidebar width */
+  margin-left: 250px; 
   padding: 20px;
   width: calc(100% - 250px);
 }
@@ -27,7 +25,9 @@
 
 .title {
   flex-grow: 1;
+  color: white;
 }
+
 
 .event-list {
   margin-top: 20px;
