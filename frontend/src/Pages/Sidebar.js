@@ -58,7 +58,7 @@ const SidebarMenu = ({ role }) => {
         width: "100%",
       }}>
         <Menu>
-          <MenuItem icon={<Logout />} style={{ color: "red" }} component={<Link to="/logout" />}>
+          <MenuItem icon={<Logout />} style={{ color: "red" }} component={<Link to="/login" />}>
             Log Out
           </MenuItem>
         </Menu>
