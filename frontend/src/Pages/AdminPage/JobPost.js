@@ -1,71 +1,136 @@
-import React, { useState } from 'react';
-import SidebarMenu from "../Sidebar"; 
+import React, { useState } from "react";
+import "./JobPost.css";
+import SidebarMenu from "../Sidebar";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  TextField,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
 
 function JobPost() {
-  const [jobTitle, setJobTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [salary, setSalary] = useState('');
-  const [location, setLocation] = useState('');
-  const [image, setImage] = useState(null);
+  const exampleJobs = [
+    {
+      title: "Software Engineer",
+      description: "Develop and maintain software applications.",
+      salary: "$80,000 - $120,000",
+      location: "New York, NY",
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      title: "Graphic Designer",
+      description: "Create visual concepts for marketing and branding.",
+      salary: "$50,000 - $70,000",
+      location: "Los Angeles, CA",
+      image: "https://via.placeholder.com/150",
+    },
+  ];
+
+  const [open, setOpen] = useState(false);
+  const [jobPosts, setJobPosts] = useState(exampleJobs);
+  const [newJob, setNewJob] = useState({ title: "", description: "", salary: "", location: "", image: null });
+
+  const handleChange = (e) => {
+    setNewJob({ ...newJob, [e.target.name]: e.target.value });
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(URL.createObjectURL(file));
+      setNewJob({ ...newJob, image: URL.createObjectURL(file) });
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const jobData = { jobTitle, description, salary, location, image };
-    console.log('Job Posted:', jobData);
+  const handleSubmit = () => {
+    setJobPosts([...jobPosts, newJob]);
+    setNewJob({ title: "", description: "", salary: "", location: "", image: null });
+    setOpen(false);
   };
 
   return (
-    <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
-         <SidebarMenu />
-      <h2 className="text-xl font-semibold mb-4">Post a Job</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Job Title"
-          value={jobTitle}
-          onChange={(e) => setJobTitle(e.target.value)}
-          className="w-full p-2 border rounded mb-3"
-          required
-        />
-        <textarea
-          placeholder="Job Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full p-2 border rounded mb-3"
-          required
-        />
-        <input
-          type="text"
-          placeholder="Salary"
-          value={salary}
-          onChange={(e) => setSalary(e.target.value)}
-          className="w-full p-2 border rounded mb-3"
-        />
-        <input
-          type="text"
-          placeholder="Location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          className="w-full p-2 border rounded mb-3"
-          required
-        />
-        <input
-          type="file"
-          onChange={handleImageChange}
-          className="w-full p-2 border rounded mb-3"
-        />
-        {image && <img src={image} alt="Job Preview" className="w-full h-40 object-cover rounded mb-3" />}
-        <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
-          Post Job
-        </button>
-      </form>
+    <div className="job-container">
+      <SidebarMenu className="sidebar" />
+      <div className="job-main-content">
+        <AppBar position="static" className="job-appbar">
+          <Toolbar>
+            <Typography variant="h6" className="job-title">Job Listings</Typography>
+            <Button color="inherit" onClick={() => setOpen(true)}>Post Job</Button>
+          </Toolbar>
+        </AppBar>
+
+        <Grid container spacing={3} className="job-list">
+          {jobPosts.map((job, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Card className="job-card">
+                <CardContent>
+                  {job.image && <img src={job.image} alt="Job" className="job-image" />}
+                  <Typography variant="h5" className="job-title">{job.title}</Typography>
+                  <Typography variant="body1" className="job-salary"><strong>Salary:</strong> {job.salary}</Typography>
+                  <Typography variant="body1" className="job-location"><strong>Location:</strong> {job.location}</Typography>
+                  <Typography variant="body2" className="job-description">{job.description}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </div>
+
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle className="dialog-title">Post a New Job</DialogTitle>
+        <DialogContent className="dialog-content">
+          <TextField
+            fullWidth
+            margin="dense"
+            label="Job Title"
+            name="title"
+            value={newJob.title}
+            onChange={handleChange}
+            className="input-field"
+          />
+          <TextField
+            fullWidth
+            margin="dense"
+            label="Job Description"
+            name="description"
+            multiline
+            rows={3}
+            value={newJob.description}
+            onChange={handleChange}
+            className="input-field"
+          />
+          <TextField
+            fullWidth
+            margin="dense"
+            label="Salary"
+            name="salary"
+            value={newJob.salary}
+            onChange={handleChange}
+            className="input-field"
+          />
+          <TextField
+            fullWidth
+            margin="dense"
+            label="Location"
+            name="location"
+            value={newJob.location}
+            onChange={handleChange}
+            className="input-field"
+          />
+          <input type="file" onChange={handleImageChange} className="file-input" />
+        </DialogContent>
+        <DialogActions className="dialog-actions">
+          <Button onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={handleSubmit} variant="contained" color="primary">Post Job</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
