@@ -1,11 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
 import Login from './Pages/login';
-import AlumniInformation from './Pages/AlumniPage/AlumniInformation';
-import AlumniDashboard from './Pages/AlumniPage/AlumniDashboard';
-import StudentInformation from './Pages/AlumniPage/StudentInformation';
 import SignUp from './Pages/SignUp';
+
 import AdminDashboard from './Pages/AdminPage/AdminDashboard';
+import AlumniInformation from './Pages/AdminPage/AlumniInformation';
+import Events from './Pages/AdminPage/EventPage';
+import JobPost from './Pages/AdminPage/JobPost';
+import Messages from './Pages/AdminPage/Messages';
 
 function App() {
   return (
@@ -14,10 +17,16 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/SignUp" element={<SignUp />} />
+
         <Route path="/AlumniInformation" element={<AlumniInformation />} />
-        <Route path="/StudentInformation" element={<StudentInformation />} />
         <Route path="/AdminDashboard" element={<AdminDashboard />} />
-        <Route path="/AlumniDashboard" element={<AlumniDashboard />} />
+        <Route path="/Events" element={<Events />} />
+        <Route path="/JobPost" element={<JobPost />} />
+        <Route path="/Messages" element={<Messages />} />
+
+
+
+
       </Routes>
     </Router>
   );

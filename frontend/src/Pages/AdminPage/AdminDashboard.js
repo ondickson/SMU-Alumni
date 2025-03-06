@@ -2,31 +2,25 @@ import React from "react";
 import { AppBar, Toolbar, Typography, Button, Grid, Card, CardContent } from "@mui/material";
 import SidebarMenu from "../Sidebar"; 
 
-const sidebarWidth = 250; // Sidebar width
+const sidebarWidth = 250; 
 
 function AdminDashboard() {
   return (
     <div style={{ display: "flex", height: "100vh" }}>
 
-      {/* Sidebar */}
       <SidebarMenu />
 
-      {/* Main Content - Shifted Right to Avoid Overlay */}
-      <div style={{ 
-        flex: 1, 
-        background: "#f8f9fa", 
-        padding: "10px",
-        marginLeft: `${sidebarWidth}px`, // Push content to the right
+      <div style={{  flex: 1,  background: "#f8f9fa",  padding: "20px",  marginLeft: `${sidebarWidth}px`, 
       }}>
         <AppBar position="static" style={{ background: "#272974" }}>
           <Toolbar>
             <Typography variant="h6" style={{ flexGrow: 1 }}>
-              SMU ALUMNI SYSTEM
+              Admin Dashboard
             </Typography>
           </Toolbar>
         </AppBar>
 
-        <Typography variant="h5" style={{ margin: "20px 0" }}></Typography>
+        <Typography variant="h5" style={{ margin: "20px 0" }}>Dashboard</Typography>
 
         <Grid container spacing={3}>
           {[
