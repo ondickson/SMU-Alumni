@@ -2,14 +2,16 @@ import React from "react";
 import { AppBar, Toolbar, Typography, Button, Grid, Card, CardContent } from "@mui/material";
 import SidebarMenu from "../Sidebar"; 
 
-
+const sidebarWidth = 250; 
 function AlumniInformation() {
   return (
     <div style={{ display: "flex", height: "100vh" }}>
 
+      {/* Sidebar */}
       <SidebarMenu />
 
-      <div style={{ flex: 1, background: "#f8f9fa", padding: "20px" }}>
+      <div style={{  flex: 1,  background: "#f8f9fa", padding: "20px",marginLeft: `${sidebarWidth}px`, 
+      }}>
         <AppBar position="static" style={{ background: "#272974" }}>
           <Toolbar>
             <Typography variant="h6" style={{ flexGrow: 1 }}>

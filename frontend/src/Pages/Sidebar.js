@@ -5,7 +5,7 @@ import { Typography } from "@mui/material";
 import { Group, Work, Event, Report, Security, Settings, Logout } from "@mui/icons-material";
 import "./Sidebar.css"; 
 
-const sidebarWidth = 250; // Ensure consistency
+const sidebarWidth = 250; 
 
 const SidebarMenu = ({ role }) => {
   return (
