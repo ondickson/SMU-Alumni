@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./EventPage.css";
 import SidebarMenu from "../Sidebar"; 
-
 import {
   AppBar,
   Toolbar,
@@ -37,35 +36,31 @@ function EventPage() {
 
   return (
     <div className="container">
-          <SidebarMenu />
-      <AppBar position="static" className="appbar">
-        <Toolbar>
-          <Typography variant="h6" className="title">
-            Events Management
-          </Typography>
-          <Button color="inherit" onClick={() => setOpen(true)}>
-            Add Event
-          </Button>
-        </Toolbar>
-      </AppBar>
+      <SidebarMenu className="sidebar" />
+      <div className="main-content">
+        <AppBar position="static" className="appbar">
+          <Toolbar>
+            <Typography variant="h6" className="title">Events Management</Typography>
+            <Button color="inherit" onClick={() => setOpen(true)}>Add Event</Button>
+          </Toolbar>
+        </AppBar>
 
-      <Grid container spacing={3} className="event-list">
-        {events.map((event, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card className="event-card">
-              <CardContent>
-                <Typography variant="h5" className="event-title">{event.title}</Typography>
-                <Typography variant="body1" className="event-date">
-                  {event.date} - {event.location}
-                </Typography>
-                <Typography variant="body2" className="event-description">
-                  {event.description}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+        <Typography variant="h5" style={{ margin: "20px 0" }}></Typography>
+
+        <Grid container spacing={3} className="event-list">
+          {events.map((event, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Card className="event-card">
+                <CardContent>
+                  <Typography variant="h5" className="event-title">{event.title}</Typography>
+                  <Typography variant="body1" className="event-date">{event.date} - {event.location}</Typography>
+                  <Typography variant="body2" className="event-description">{event.description}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </div>
 
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle className="dialog-title">Add New Event</DialogTitle>
@@ -113,9 +108,7 @@ function EventPage() {
         </DialogContent>
         <DialogActions className="dialog-actions">
           <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained" color="primary">
-            Add Event
-          </Button>
+          <Button onClick={handleSubmit} variant="contained" color="primary">Add Event</Button>
         </DialogActions>
       </Dialog>
     </div>
