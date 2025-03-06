@@ -1,32 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Job Container */
 .job-container {
-  display: flex;
+    display: flex;
 }
 
 .sidebar {
-  width: 250px; /* Fixed width for sidebar */
-  flex-shrink: 0; /* Prevents sidebar from shrinking */
+    width: 250px;
+    flex-shrink: 0;
 }
 
 .job-main-content {
-  flex: 1; /* Takes remaining space */
-  padding: 20px;
-  margin-left: 250px; /* Leaves space for sidebar */
+    flex: 1;
+    padding: 20px;
+    margin-left: 250px;
 }
 
-.job-appbar {
-  background-color: #1976d2;
+/* Job Listings Title */
+.job-header {
+        font-weight: 500; /* Slightly lighter weight */
+        margin-bottom: 15px;
+        padding: 16px;
+        color: white;
+        background-color: #272974; /* Background color */
+        text-align: left;
+        font-size: 50px;
+        padding-left: 23px;
+}
+
+/* Search Bar & Post Job Button */
+.job-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-top: 15px; /* Added padding */
+}
+
+.search-input {
+    width: 300px;
+}
+
+.search-btn,
+.post-job-btn {
+    border: 2px solid #272974; /* Blue outline */
+    color: #272974; /* Text color */
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    background-color: transparent; /* Transparent background */
+    transition: all 0.3s ease-in-out;
+}
+
+.search-btn:hover,
+.post-job-btn:hover {
+    background-color: #272974; /* Solid blue background on hover */
+    color: white; /* White text on hover */
+}
+
+/* Job List */
+.job-list {
+    margin-top: 20px;
+}
+
+/* Job Card Styling */
+.job-card {
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+    background-color: #ffffff;
+}
+
+.job-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
 }
 
 .job-title {
-  font-weight: bold;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
 }
 
-.job-list {
-  margin-top: 20px;
+.job-salary,
+.job-location,
+.job-description {
+    font-size: 14px;
+    margin-bottom: 5px;
 }
 
-.job-card {
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+/* Dialog Styles */
+.dialog-title {
+    font-weight: bold;
+}
+
+.dialog-content {
+    padding-top: 10px;
+}
+
+.input-field {
+    margin-bottom: 10px;
+}
+
+.file-input {
+    margin-top: 10px;
+}
+
+.dialog-actions {
+    padding: 15px;
 }
