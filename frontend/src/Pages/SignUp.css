@@ -40,7 +40,7 @@
   
   /* Input Fields & Button */
   .input-field,
-  .login-button {
+  .signup-button {
     width: 100%;
     padding: 12px;
     margin: 8px 0;
@@ -52,7 +52,7 @@
   }
   
   /* Login Button */
-  .login-button {
+  .signup-button {
     background-color: #272974;
     color: white;
     font-size: 16px;
@@ -62,7 +62,7 @@
     font-weight: 600;
   }
   
-  .login-button:hover {
+  .signup-button:hover {
     background-color: #272974;
   }
   

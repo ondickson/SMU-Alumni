@@ -8,7 +8,7 @@ const SignUp = () => {
     <div className="signup-container">
       <div className="signup-box">
         <img src={logo} alt="SMU Logo" className="logo" />
-        <h2 className="title">SMU Alumni Tracer</h2>
+        <h2 className="title">Sign Up</h2>
         <form>
           <input type="text" name="username" placeholder="Username" className="input-field" required />
           <input type="email" name="email" placeholder="Email" className="input-field" required />

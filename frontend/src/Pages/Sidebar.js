@@ -42,7 +42,7 @@ const SidebarMenu = ({ role }) => {
             </>
           ) : (
             <>
-              <MenuItem icon={<Group />} component={<Link to="/" />}>Home</MenuItem>
+              <MenuItem icon={<Group />} component={<Link to="/AlumniDashboard" />}>Home</MenuItem>
               <MenuItem icon={<Work />} component={<Link to="/StudentInformation" />}>Student Information</MenuItem>
               <MenuItem icon={<Event />} component={<Link to="/AlumniInformation" />}>Alumni Information</MenuItem>
               <MenuItem icon={<Security />} component={<Link to="/AccountSettings" />}>Account Settings</MenuItem>

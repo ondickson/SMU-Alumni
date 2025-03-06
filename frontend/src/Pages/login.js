@@ -7,7 +7,7 @@ const Login = () => {
     <div className="login-container">
       <div className="login-box">
         <img src={logo} alt="SMU Logo" className="logo" />
-        <h2 className="title">SMU Alumni Tracer</h2>
+        <h2 className="title">LogIn</h2>
         <form>
           <input type="text" placeholder="Username" className="input-field" />
           <input type="password" placeholder="Password" className="input-field" />
