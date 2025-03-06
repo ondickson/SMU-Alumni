@@ -2,7 +2,7 @@ import React from "react";
 import { Sidebar as ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Link } from "react-router-dom";
 import { Typography } from "@mui/material";
-import { Group, Work, Event, Report, Security, Settings, Logout } from "@mui/icons-material";
+import { Group, Home, WorkOutline, Event, Report, Security, Settings, Logout, MailOutline } from "@mui/icons-material";
 import "./Sidebar.css"; 
 
 const sidebarWidth = 250; 
@@ -34,7 +34,7 @@ const SidebarMenu = ({ role }) => {
           {role === "admin" ? (
             <>
               <MenuItem icon={<Group />}>Alumni Management</MenuItem>
-              <MenuItem icon={<Work />}>Job Listings</MenuItem>
+              <MenuItem icon={<WorkOutline />}>Job Listings</MenuItem>
               <MenuItem icon={<Event />}>Events & News</MenuItem>
               <MenuItem icon={<Report />}>Analytics & Reports</MenuItem>
               <MenuItem icon={<Security />}>Security</MenuItem>
@@ -42,11 +42,11 @@ const SidebarMenu = ({ role }) => {
             </>
           ) : (
             <>
-              <MenuItem icon={<Group />} component={<Link to="/AdminDashboard" />}>Home</MenuItem>
-              <MenuItem icon={<Event />} component={<Link to="/AlumniInformation" />}>Alumni Information</MenuItem>
+              <MenuItem icon={<Home />} component={<Link to="/AdminDashboard" />}>Home</MenuItem>
+              <MenuItem icon={<Group />} component={<Link to="/AlumniInformation" />}>Alumni Information</MenuItem>
               <MenuItem icon={<Event />} component={<Link to="/EventPage" />}>Events</MenuItem>
-              <MenuItem icon={<Event />} component={<Link to="/JobPost" />}>Job Post</MenuItem>
-              <MenuItem icon={<Security />} component={<Link to="/Messages" />}>Messages</MenuItem>
+              <MenuItem icon={<WorkOutline />} component={<Link to="/JobPost" />}>Job Post</MenuItem>
+              <MenuItem icon={<MailOutline />} component={<Link to="/Messages" />}>Messages</MenuItem>
               <MenuItem icon={<Security />} component={<Link to="/AccountSettings" />}>Account Settings</MenuItem>
             </>
           )}
