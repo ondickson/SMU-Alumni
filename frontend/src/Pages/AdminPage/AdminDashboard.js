@@ -2,19 +2,21 @@ import React from "react";
 import { AppBar, Toolbar, Typography, Button, Grid, Card, CardContent } from "@mui/material";
 import SidebarMenu from "../Sidebar"; 
 
-const sidebarWidth = 250; 
+const sidebarWidth = 250; // Sidebar width
 
 function AdminDashboard() {
   return (
     <div style={{ display: "flex", height: "100vh" }}>
 
+      {/* Sidebar */}
       <SidebarMenu />
 
+      {/* Main Content - Shifted Right to Avoid Overlay */}
       <div style={{ 
         flex: 1, 
         background: "#f8f9fa", 
-        padding: "20px", 
-        marginLeft: `${sidebarWidth}px`
+        padding: "10px",
+        marginLeft: `${sidebarWidth}px`, // Push content to the right
       }}>
         <AppBar position="static" style={{ background: "#272974" }}>
           <Toolbar>
