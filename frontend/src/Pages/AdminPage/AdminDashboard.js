@@ -1,5 +1,5 @@
 import React from "react";
-import { AppBar, Toolbar, Typography, Grid, Card, CardContent, Avatar } from "@mui/material";
+import { AppBar, Toolbar, Typography, Grid, Card, CardContent, Avatar, Button } from "@mui/material";
 import SidebarMenu from "../Sidebar";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
@@ -42,9 +42,10 @@ function AdminDashboard() {
             { title: "Active Now", value: "2" } 
           ].map((stat, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
-              <Card style={{ padding: "20px", textAlign: "center" }}>
+              <Card style={{ padding: "20px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <Typography variant="h5" style={{ fontWeight: "bold" }}>{stat.value}</Typography>
                 <Typography variant="body2" color="textSecondary">{stat.title}</Typography>
+                <Button variant="contained" color="primary" size="small" style={{ marginTop: "10px" }}>View Details</Button>
               </Card>
             </Grid>
           ))}
@@ -52,7 +53,7 @@ function AdminDashboard() {
 
         <Grid container spacing={3} style={{ marginTop: "20px" }}>
           <Grid item xs={12} md={8}>
-            <Card style={{ padding: "20px" }}>
+            <Card style={{ padding: "20px", display: "flex", flexDirection: "column" }}>
               <CardContent>
                 <Typography variant="h6" style={{ marginBottom: "10px" }}>Overview</Typography>
                 <ResponsiveContainer width="100%" height={300}>
@@ -65,10 +66,11 @@ function AdminDashboard() {
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
+              <Button variant="contained" color="primary" size="small" style={{ alignSelf: "center", marginBottom: "10px" }}>More Insights</Button>
             </Card>
           </Grid>
           <Grid item xs={12} md={4}>
-            <Card>
+            <Card style={{ display: "flex", flexDirection: "column", height: "100%" }}>
               <CardContent>
                 <Typography variant="h6" style={{ marginBottom: "10px" }}>Messages</Typography>
                 {messages.map((message) => (
@@ -82,6 +84,7 @@ function AdminDashboard() {
                   </div>
                 ))}
               </CardContent>
+              <Button variant="contained" color="primary" size="small" style={{ alignSelf: "center", marginBottom: "10px" }}>View All Messages</Button>
             </Card>
           </Grid>
         </Grid>

@@ -51,8 +51,7 @@ function AlumniInformation() {
             <TableBody>
               {alumniData.map((alumni) => (
                 <TableRow key={alumni.id}>
-                  <TableCell>
-                    <Button variant="contained" style={{ fontWeight: "bold" }}>{alumni.id}</Button>
+                  <TableCell>{alumni.id}
                   </TableCell>
                   <TableCell>
                     <Typography style={{ fontWeight: "bold" }}>{alumni.name}</Typography>

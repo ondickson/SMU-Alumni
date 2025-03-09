@@ -38,6 +38,8 @@ function EventPage() {
     <div className="container">
       <SidebarMenu className="sidebar" />
       <div className="main-content">
+
+        
         <AppBar position="static" className="appbar">
           <Toolbar>
             <Typography variant="h6" className="title">Events Management</Typography>

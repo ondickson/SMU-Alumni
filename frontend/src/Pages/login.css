@@ -29,14 +29,18 @@
     margin-bottom: 10px;
   }
   
-  /* Title */
   .title {
     font-size: 22px;
     font-weight: 600;
-    color: #333;
+    color: black;
     margin-bottom: 20px;
     margin-top: 0;
-  }
+}
+
+.title {
+  color: black !important;
+}
+
   
   /* Input Fields & Button */
   .input-field,
