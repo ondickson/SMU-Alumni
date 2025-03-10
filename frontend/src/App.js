@@ -25,10 +25,6 @@ function App() {
         <Route path="/JobPost" element={<JobPost />} />
         <Route path="/Messages" element={<Messages />} />
         <Route path="/AccountSetting" element={<AccountSetting />} />
-
-
-
-
       </Routes>
     </Router>
   );

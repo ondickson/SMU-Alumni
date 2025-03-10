@@ -1,47 +1,28 @@
-const express = require("express");
-const cors = require("cors");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const dotenv = require('dotenv');
 
 dotenv.config();
+
 const app = express();
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-const PORT = process.env.PORT || 5001;
+
+// Middleware
+app.use(express.json());
 app.use(cors());
 
-// ✅ Configure CORS properly
-app.use(cors({
-  origin: "http://localhost:3000", // React frontend URL
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
+// MongoDB Connection
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/alumniDB';
+mongoose.connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+}).then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
-app.use(
-  cors({
-    origin: 'http://localhost:3000', // Change this if your frontend runs on a different port
-    methods: 'GET,POST,PUT,DELETE',
-    credentials: true,
-  })
-);
+// Import Routes
+const authRoutes = require('./routes/authRoutes');
+app.use('/api/auth', authRoutes);
 
-// ✅ Ensure Express can parse JSON requests
-app.use(express.json());
-
-// ✅ Connect to MongoDB
-mongoose.connect("mongodb://127.0.0.1:27017/alumniTracer", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-  .then(() => console.log("✅ MongoDB Connected"))
-  .catch(err => console.error("❌ MongoDB Error:", err));
-
-// ✅ Import Routes
-const authRoutes = require("./routes/authRoutes");
-app.use("/api/auth", authRoutes);
-
-// ✅ Start Server
-app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
-
+// Start Server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
