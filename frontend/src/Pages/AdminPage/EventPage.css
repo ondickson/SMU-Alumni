@@ -28,6 +28,10 @@
   color: white;
 }
 
+.title {
+  color: white !important;
+}
+
 
 .event-list {
   margin-top: 20px;

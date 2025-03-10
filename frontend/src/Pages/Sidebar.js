@@ -47,7 +47,7 @@ const SidebarMenu = ({ role }) => {
               <MenuItem icon={<Event />} component={<Link to="/EventPage" />}>Events</MenuItem>
               <MenuItem icon={<WorkOutline />} component={<Link to="/JobPost" />}>Job Post</MenuItem>
               <MenuItem icon={<MailOutline />} component={<Link to="/Messages" />}>Messages</MenuItem>
-              <MenuItem icon={<Security />} component={<Link to="/AccountSettings" />}>Account Settings</MenuItem>
+              <MenuItem icon={<Security />} component={<Link to="/AccountSetting" />}>Account Settings</MenuItem>
             </>
           )}
         </Menu>
