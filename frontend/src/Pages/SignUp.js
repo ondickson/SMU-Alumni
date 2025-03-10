@@ -33,7 +33,7 @@ const SignUp = () => {
     <div className="signup-container">
       <div className="signup-box">
         <img src={logo} alt="SMU Logo" className="logo" />
-        <h2 className="title">Sign Up</h2>
+        <h2 className="SignUp-title">Sign Up</h2>
         <form onSubmit={handleSubmit}>
           <input
             type="text"
