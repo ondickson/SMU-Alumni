@@ -21,7 +21,7 @@ const Login = () => {
       if (res.data.role === 'admin') {
         navigate('/AdminDashboard');
       } else {
-        navigate('/AlumniInformation');
+        navigate('/AlumniDashboard');
       }
     } catch (error) {
       alert('Invalid Credentials');
