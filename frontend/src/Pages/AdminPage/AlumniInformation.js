@@ -103,14 +103,15 @@ function AlumniInformation() {
     onChange={(e) => setSearchTerm(e.target.value)}
   />
   <Button 
-    variant="contained" 
+    variant="outlined" 
+    color="primary"
     startIcon={<Search />} 
     sx={{ height: "40px", minWidth: "150px" }} // Set height and width
   >
     Search
   </Button>
   <Button 
-    variant="contained" 
+    variant="outlined"
     color="primary" 
     startIcon={<Add />} 
     onClick={handleOpenAddDialog}
