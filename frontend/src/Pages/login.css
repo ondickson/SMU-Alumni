@@ -28,20 +28,16 @@
     width: 140px;
     margin-bottom: 10px;
   }
-  
-  .title {
+
+  .login-title {
     font-size: 22px;
-    font-weight: 600;
-    color: black;
+    font-weight: 700; /* Make it bolder */
+    color: #272974 !important; /* Ensure it's black */
     margin-bottom: 20px;
     margin-top: 0;
-}
+    text-transform: uppercase; /* Optional: Make it all uppercase */
+  }
 
-.title {
-  color: black !important;
-}
-
-  
   /* Input Fields & Button */
   .input-field,
   .login-button {

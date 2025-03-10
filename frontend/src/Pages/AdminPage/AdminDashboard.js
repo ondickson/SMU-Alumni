@@ -23,7 +23,7 @@ const messages = [
 
 function AdminDashboard() {
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
+    <div style={{ display: "flex", heighAt: "100vh" }}>
       <SidebarMenu />
       <div style={{ flex: 1, background: "#f8f9fa", padding: "20px", marginLeft: `${sidebarWidth}px` }}>
         <AppBar position="static" style={{ background: "#272974" }}>
