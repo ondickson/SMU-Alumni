@@ -75,3 +75,36 @@
   display: flex;
   justify-content: space-between;
 }
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.search-field {
+  width: 300px; /* Set fixed width */
+}
+
+.search-button,
+.add-event-button {
+  height: 40px;
+  border: 2px solid #272974; /* Blue border */
+  color: #272974; /* Blue text */
+  background: transparent; /* No background */
+  transition: 0.3s;
+}
+
+.search-button:hover,
+.add-event-button:hover {
+  background: #272974;
+  color: white;
+}
+
+.search-add-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 20px 0; /* Padding to separate from title */
+}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./EventPage.css";
-import SidebarMenu from "../Sidebar"; 
+import SidebarMenu from "../Sidebar";
 import {
   AppBar,
   Toolbar,
@@ -18,6 +18,7 @@ import {
 
 function EventPage() {
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const [events, setEvents] = useState([
     { title: "Alumni Meetup", date: "2025-04-15", location: "City Hall", description: "A gathering of alumni to reconnect." },
     { title: "Career Fair", date: "2025-06-10", location: "University Gym", description: "Opportunities for alumni and students." },
@@ -38,16 +39,25 @@ function EventPage() {
     <div className="container">
       <SidebarMenu className="sidebar" />
       <div className="main-content">
-
-        
         <AppBar position="static" className="appbar">
           <Toolbar>
             <Typography variant="h6" className="title">Events Management</Typography>
-            <Button color="inherit" onClick={() => setOpen(true)}>Add Event</Button>
           </Toolbar>
         </AppBar>
 
-        <Typography variant="h5" style={{ margin: "20px 0" }}></Typography>
+        {/* Search and Add Event Section */}
+        <div className="search-add-container">
+          <TextField
+            variant="outlined"
+            placeholder="Search events..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="search-field"
+            size="small"
+          />
+          <Button variant="outlined" color="primary" className="search-button">Search</Button>
+          <Button variant="outlined" color="primary" className="add-event-button" onClick={() => setOpen(true)}>Add Event</Button>
+        </div>
 
         <Grid container spacing={3} className="event-list">
           {events.map((event, index) => (

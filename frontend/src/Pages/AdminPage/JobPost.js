@@ -71,10 +71,10 @@ function JobPost() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Button variant="contained" className="search-btn">
+          <Button variant="outlined" className="search-btn">
             Search
           </Button>
-          <Button variant="contained" className="post-job-btn" onClick={() => setOpen(true)}>
+          <Button variant="outlined" className="post-job-btn" onClick={() => setOpen(true)}>
             Post Job
           </Button>
         </div>
