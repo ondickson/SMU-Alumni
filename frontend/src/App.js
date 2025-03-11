@@ -9,7 +9,6 @@ import AlumniDashboard from './Pages/AlumniPage/AlumniDashboard';
 import AlumniInformation from './Pages/AdminPage/AlumniInformation';
 import Events from './Pages/AdminPage/EventPage';
 import JobPost from './Pages/AdminPage/JobPost';
-import Messages from './Pages/AdminPage/Messages';
 import AccountSetting from './Pages/AccounSetting';
 
 function App() {
@@ -25,7 +24,6 @@ function App() {
         <Route path="/AdminDashboard" element={<AdminDashboard />} />
         <Route path="/EventPage" element={<Events />} />
         <Route path="/JobPost" element={<JobPost />} />
-        <Route path="/Messages" element={<Messages />} />
         <Route path="/AccountSetting" element={<AccountSetting />} />
 
         {/* ALUMNI  */}

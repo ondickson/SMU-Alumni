@@ -24,7 +24,7 @@ const SidebarMenu = ({ role }) => {
       {/* Sidebar Header */}
       <div style={{ padding: "20px", textAlign: "center" }}>
         <Typography variant="h6" style={{ color: "black" }}>
-          <b>{role === "admin" ? "ADMIN" : "ALUMNI"}</b>
+          <h1>Admin</h1>
         </Typography>
       </div>
 
@@ -46,7 +46,6 @@ const SidebarMenu = ({ role }) => {
               <MenuItem icon={<Group />} component={<Link to="/AlumniInformation" />}>Alumni Information</MenuItem>
               <MenuItem icon={<Event />} component={<Link to="/EventPage" />}>Events</MenuItem>
               <MenuItem icon={<WorkOutline />} component={<Link to="/JobPost" />}>Job Post</MenuItem>
-              <MenuItem icon={<MailOutline />} component={<Link to="/Messages" />}>Messages</MenuItem>
               <MenuItem icon={<Security />} component={<Link to="/AccountSetting" />}>Account Settings</MenuItem>
             </>
           )}
