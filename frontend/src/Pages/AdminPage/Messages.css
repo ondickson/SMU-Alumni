@@ -1,0 +1,115 @@
+/* Container to position Sidebar, Messages, and Chats */
+.messages-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 250px;
+  }
+  
+  /* Messages Section */
+  .messages-content {
+    flex: 2;
+    padding: 20px;
+    margin-left: 260px; /* Ensures it's beside the sidebar */
+  }
+  
+  /* Title Container */
+  .title-container {
+    background: #ffffff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .title-text {
+    font-weight: bold;
+  }
+  
+  /* Messages Box */
+  .messages-box {
+    background: #f4f4f4;
+    padding: 15px;
+    border-radius: 10px;
+    height: 400px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+  }
+  
+  /* Individual Messages */
+  .message {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 8px;
+    max-width: 60%;
+  }
+  
+  .message.me {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-end;
+    text-align: right;
+    margin-left: auto;
+  }
+  
+  .message.other {
+    background-color: #e0e0e0;
+    color: black;
+    align-self: flex-start;
+    text-align: left;
+    margin-right: auto;
+  }
+  
+  /* Input Box */
+  .message-input-box {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .message-input {
+    flex: 1;
+  }
+  
+  .send-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+  }
+  
+  /* Right Side: Chats (People List) */
+  .chat-people {
+    width: 250px;
+    background: #ffffff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin-left: 20px;
+  }
+  
+  .chat-title-container {
+    background: #ffffff;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .chat-title-text {
+    font-weight: bold;
+  }
+  
+  .people-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .person-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .person-item:hover {
+    background: #f0f0f0;
+  }
+  
