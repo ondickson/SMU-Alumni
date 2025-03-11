@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "./JobPost.css";
 import SidebarMenu from "../Sidebar";
 import {
+  AppBar,
+  Toolbar,
   Typography,
   TextField,
   Button,
@@ -13,6 +15,7 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+
 
 function JobPost() {
   const exampleJobs = [
@@ -58,8 +61,12 @@ function JobPost() {
     <div className="job-container">
       <SidebarMenu className="sidebar" />
       <div className="job-main-content">
-        {/* Job Listings Title */}
-        <Typography variant="h6" className="job-header">Job Listings</Typography>
+      
+        <AppBar position="static" className="appbar">
+          <Toolbar>
+            <Typography variant="h6" className="title">Job Posting</Typography>
+          </Toolbar>
+        </AppBar>
 
         {/* Search Field & Post Job Button */}
         <div className="job-actions">

@@ -47,8 +47,6 @@
 
 .search-btn,
 .post-job-btn {
-    border: 2px solid #272974; /* Blue outline */
-    color: #272974; /* Text color */
     font-weight: bold;
     text-transform: uppercase;
     padding: 6px 16px;
