@@ -49,15 +49,17 @@ function EventPage() {
         <div className="search-add-container">
           <TextField
             variant="outlined"
-            placeholder="Search events..."
+            placeholder="Search Events"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="search-field"
             size="small"
+            fullWidth // Added fullWidth prop to TextField
           />
           <Button variant="outlined" color="primary" className="search-button">Search</Button>
           <Button variant="outlined" color="primary" className="add-event-button" onClick={() => setOpen(true)}>Add Event</Button>
         </div>
+
 
         <Grid container spacing={3} className="event-list">
           {events.map((event, index) => (
