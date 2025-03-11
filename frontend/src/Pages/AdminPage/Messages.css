@@ -79,13 +79,19 @@
   }
   
   /* Right Side: Chats (People List) */
-  .chat-people {
+/* Chats (People List) Section */
+.chat-people {
     width: 250px;
     background: #ffffff;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 10px;
+    padding: 20px; /* Added padding on all sides */
     margin-left: 20px;
+    margin-top: 10px; /* Added space from the top */
+    margin-bottom: 10px; /* Added space at the bottom */
+    margin-right: 10px; /* Added space on the right */
+    border-radius: 8px; /* Added rounded corners for a smoother look */
   }
+  
   
   .chat-title-container {
     background: #ffffff;
