@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./EventPage.css";
 import SidebarMenu from "../Sidebar";
 import {
@@ -19,20 +20,30 @@ import {
 function EventPage() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [events, setEvents] = useState([
-    { title: "Alumni Meetup", date: "2025-04-15", location: "City Hall", description: "A gathering of alumni to reconnect." },
-    { title: "Career Fair", date: "2025-06-10", location: "University Gym", description: "Opportunities for alumni and students." },
-  ]);
+  const [events, setEvents] = useState([]);
   const [newEvent, setNewEvent] = useState({ title: "", date: "", location: "", description: "" });
 
+  // Fetch events from the database
+  useEffect(() => {
+    axios.get("http://localhost:5001/api/events")
+      .then(response => setEvents(response.data))
+      .catch(error => console.error("Error fetching events:", error));
+  }, []);
+
+  // Handle input change
   const handleChange = (e) => {
     setNewEvent({ ...newEvent, [e.target.name]: e.target.value });
   };
 
+  // Add new event to database
   const handleSubmit = () => {
-    setEvents([...events, newEvent]);
-    setNewEvent({ title: "", date: "", location: "", description: "" });
-    setOpen(false);
+    axios.post("http://localhost:5001/api/events", newEvent)
+      .then(response => {
+        setEvents([...events, response.data]);
+        setNewEvent({ title: "", date: "", location: "", description: "" });
+        setOpen(false);
+      })
+      .catch(error => console.error("Error adding event:", error));
   };
 
   return (
@@ -55,7 +66,6 @@ function EventPage() {
             className="search-field"
             size="small"
           />
-          <Button variant="outlined" color="primary" className="search-button">Search</Button>
           <Button variant="outlined" color="primary" className="add-event-button" onClick={() => setOpen(true)}>Add Event</Button>
         </div>
 
@@ -77,48 +87,12 @@ function EventPage() {
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle className="dialog-title">Add New Event</DialogTitle>
         <DialogContent className="dialog-content">
-          <TextField
-            fullWidth
-            margin="dense"
-            label="Event Title"
-            name="title"
-            value={newEvent.title}
-            onChange={handleChange}
-            className="input-field"
-          />
-          <TextField
-            fullWidth
-            margin="dense"
-            label="Date"
-            type="date"
-            name="date"
-            InputLabelProps={{ shrink: true }}
-            value={newEvent.date}
-            onChange={handleChange}
-            className="input-field"
-          />
-          <TextField
-            fullWidth
-            margin="dense"
-            label="Location"
-            name="location"
-            value={newEvent.location}
-            onChange={handleChange}
-            className="input-field"
-          />
-          <TextField
-            fullWidth
-            margin="dense"
-            label="Description"
-            name="description"
-            multiline
-            rows={3}
-            value={newEvent.description}
-            onChange={handleChange}
-            className="input-field"
-          />
+          <TextField fullWidth margin="dense" label="Event Title" name="title" value={newEvent.title} onChange={handleChange} />
+          <TextField fullWidth margin="dense" label="Date" type="date" name="date" InputLabelProps={{ shrink: true }} value={newEvent.date} onChange={handleChange} />
+          <TextField fullWidth margin="dense" label="Location" name="location" value={newEvent.location} onChange={handleChange} />
+          <TextField fullWidth margin="dense" label="Description" name="description" multiline rows={3} value={newEvent.description} onChange={handleChange} />
         </DialogContent>
-        <DialogActions className="dialog-actions">
+        <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
           <Button onClick={handleSubmit} variant="contained" color="primary">Add Event</Button>
         </DialogActions>

@@ -6,6 +6,8 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import alumniRoutes from './routes/alumniRoutes.js';
+import eventRoutes from "./routes/eventRoutes.js";
+import jobRoutes from "./routes/jobRoutes.js";
 
 dotenv.config();
 
@@ -27,6 +29,8 @@ mongoose.connect(MONGO_URI, {
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use("/api/alumni", alumniRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/jobs", jobRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5001;

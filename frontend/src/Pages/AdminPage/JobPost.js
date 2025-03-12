@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./JobPost.css";
 import SidebarMenu from "../Sidebar";
 import {
@@ -16,45 +17,38 @@ import {
   DialogActions,
 } from "@mui/material";
 
-
 function JobPost() {
-  const exampleJobs = [
-    {
-      title: "Software Engineer",
-      description: "Develop and maintain software applications.",
-      salary: "$80,000 - $120,000",
-      location: "New York, NY",
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      title: "Graphic Designer",
-      description: "Create visual concepts for marketing and branding.",
-      salary: "$50,000 - $70,000",
-      location: "Los Angeles, CA",
-      image: "https://via.placeholder.com/150",
-    },
-  ];
-
   const [open, setOpen] = useState(false);
-  const [jobPosts, setJobPosts] = useState(exampleJobs);
-  const [newJob, setNewJob] = useState({ title: "", description: "", salary: "", location: "", image: null });
+  const [jobPosts, setJobPosts] = useState([]);
+  const [newJob, setNewJob] = useState({ title: "", description: "", salary: "", location: "", image: "" });
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    axios.get("http://localhost:5001/api/jobs") 
+      .then(response => setJobPosts(response.data))
+      .catch(error => console.error("Error fetching jobs:", error));
+  }, []);
+  
+  useEffect(() => {
+    axios.get(`http://localhost:5001/api/jobs?search=${searchTerm}`)
+      .then(response => setJobPosts(response.data))
+      .catch(error => console.error("Error fetching jobs:", error));
+  }, [searchTerm]);
+  
+  
 
   const handleChange = (e) => {
     setNewJob({ ...newJob, [e.target.name]: e.target.value });
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setNewJob({ ...newJob, image: URL.createObjectURL(file) });
-    }
-  };
-
   const handleSubmit = () => {
-    setJobPosts([...jobPosts, newJob]);
-    setNewJob({ title: "", description: "", salary: "", location: "", image: null });
-    setOpen(false);
+    axios.post("http://localhost:5001/api/jobs", newJob) 
+      .then(response => {
+        setJobPosts([...jobPosts, response.data]);
+        setNewJob({ title: "", description: "", salary: "", location: "", image: "" });
+        setOpen(false);
+      })
+      .catch(error => console.error("Error posting job:", error));
   };
 
   return (
@@ -112,7 +106,7 @@ function JobPost() {
           <TextField fullWidth margin="dense" label="Job Description" name="description" multiline rows={3} value={newJob.description} onChange={handleChange} className="input-field" />
           <TextField fullWidth margin="dense" label="Salary" name="salary" value={newJob.salary} onChange={handleChange} className="input-field" />
           <TextField fullWidth margin="dense" label="Location" name="location" value={newJob.location} onChange={handleChange} className="input-field" />
-          <input type="file" onChange={handleImageChange} className="file-input" />
+          <TextField fullWidth margin="dense" label="Image URL" name="image" value={newJob.image} onChange={handleChange} className="input-field" />
         </DialogContent>
         <DialogActions className="dialog-actions">
           <Button onClick={() => setOpen(false)}>Cancel</Button>
