@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './login.css';
 import logo from '../Assets/smulogo.png';
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,6 +28,7 @@ const Login = () => {
       alert('Invalid Credentials');
     }
   };
+
   return (
     <div className="login-container">
       <div className="login-box">
@@ -54,7 +56,14 @@ const Login = () => {
           </button>
         </form>
         <p className="signup-text">
-          Don't have an account? <a href="/SignUp">Sign Up</a>
+          Don't have an account?{' '}
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSf0b-itu7sXlfqfPPLimyrJ7S-P2SwuEqA9AowFbbb4V-I4-g/formResponse"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Register
+          </a>
         </p>
       </div>
     </div>
