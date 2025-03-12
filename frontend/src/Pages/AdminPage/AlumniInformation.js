@@ -51,14 +51,6 @@ function AlumniInformation() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          
-<Button 
-            variant="outlined" 
-            color="primary"
-            startIcon={<Search />} 
-          >
-            Search
-          </Button>
 
           <Select
             value={selectedYear}
