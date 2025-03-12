@@ -14,7 +14,7 @@
   
   /* App Bar */
   .admin-dashboard-appbar {
-    background: #272974;
+    background: #272974 !important;
   }
   
   .admin-dashboard-toolbar {
