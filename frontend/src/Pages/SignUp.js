@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Link } from 'react-router-dom'; // For navigation
+import { Link } from 'react-router-dom';
 import './SignUp.css';
-import logo from '../Assets/smulogo.png'; // Ensure you have this logo in the correct path
+import logo from '../Assets/smulogo.png';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
+    idNo: '',
     name: '',
     email: '',
     password: '',
+    program: '',
+    yearGraduated: '',
     role: 'alumni',
   });
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -37,8 +41,16 @@ const SignUp = () => {
         <form onSubmit={handleSubmit}>
           <input
             type="text"
-            name="username"
-            placeholder="Username"
+            name="idNo"
+            placeholder="ID Number"
+            className="input-field"
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
             className="input-field"
             onChange={handleChange}
             required
@@ -59,10 +71,22 @@ const SignUp = () => {
             onChange={handleChange}
             required
           />
-          <select name="role" className="input-field" onChange={handleChange}>
-            <option value="alumni">Alumni</option>
-            <option value="admin">Admin</option>
-          </select>
+          <input
+            type="text"
+            name="program"
+            placeholder="Program"
+            className="input-field"
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="yearGraduated"
+            placeholder="Year Graduated"
+            className="input-field"
+            onChange={handleChange}
+            required
+          />
           <button type="submit" className="signup-button">
             Register
           </button>

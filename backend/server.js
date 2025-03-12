@@ -1,7 +1,11 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const dotenv = require('dotenv');
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import dotenv from 'dotenv';
+
+import authRoutes from './routes/authRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import alumniRoutes from './routes/alumniRoutes.js';
 
 dotenv.config();
 
@@ -19,9 +23,10 @@ mongoose.connect(MONGO_URI, {
 }).then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Import Routes
-const authRoutes = require('./routes/authRoutes');
+// Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
+app.use("/api/alumni", alumniRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5001;

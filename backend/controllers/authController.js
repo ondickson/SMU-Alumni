@@ -1,34 +1,46 @@
-const Alumni = require('../models/Alumni');
-const Admin = require('../models/Admin');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+import Alumni from '../models/Alumni.js';
+import Admin from '../models/Admin.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 // Signup
-exports.signup = async (req, res) => {
-    const { name, email, password, role } = req.body;
+export const signup = async (req, res) => {
+    const { idNo, name, email, password, program, yearGraduated } = req.body;
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        let user;
-        
-        if (role === "admin") {
-            user = new Admin({ name, email, password: hashedPassword, role });
-        } else {
-            user = new Alumni({ name, email, password: hashedPassword, role: "alumni" });
+        // Check if the email or ID number already exists
+        const existingUser = await Alumni.findOne({ $or: [{ email }, { idNo }] });
+        if (existingUser) {
+            return res.status(400).json({ error: "Email or ID number already exists" });
         }
-        
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create a new Alumni user
+        const user = new Alumni({
+            idNo,
+            name,
+            email,
+            password: hashedPassword,
+            program,
+            yearGraduated,
+            role: "alumni"
+        });
+
+        // Save user to database
         await user.save();
         res.status(201).json({ message: "User registered successfully!" });
     } catch (error) {
-        res.status(400).json({ error: "Email already exists or invalid data" });
+        res.status(400).json({ error: "Server error" });
     }
 };
 
 // Login
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
     const { email, password } = req.body;
     try {
+        // Find user in Alumni table
         let user = await Alumni.findOne({ email }) || await Admin.findOne({ email });
         
         if (!user) {

@@ -2,7 +2,7 @@ import React from "react";
 import { Sidebar as ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Link } from "react-router-dom";
 import { Typography } from "@mui/material";
-import { Group, Home, WorkOutline, Event, Report, Security, Settings, Logout, MailOutline } from "@mui/icons-material";
+import { Group, Home, WorkOutline, Event, Report, Security, Settings, Logout } from "@mui/icons-material";
 import "./Sidebar.css"; 
 
 const sidebarWidth = 250; 
@@ -24,7 +24,7 @@ const SidebarMenu = ({ role }) => {
       {/* Sidebar Header */}
       <div style={{ padding: "20px", textAlign: "center" }}>
         <Typography variant="h6" style={{ color: "black" }}>
-          <h1>Admin</h1>
+          Admin
         </Typography>
       </div>
 

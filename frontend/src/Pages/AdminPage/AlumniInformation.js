@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { 
   AppBar, Toolbar, Typography, TextField, Button, 
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
@@ -10,25 +11,46 @@ import "./AlumniInformation.css";
 
 const sidebarWidth = 250;
 
-const initialAlumniData = [
-  { id: "50747473", name: "CRUZ, LOURDES APULI", email: "lourdesc@mail.com", program: "MLIS", year: "2024 - 2025" },
-  { id: "56215333", name: "SEVILLA, HAVEN DIZON", email: "havensevilleja@mail.com", program: "MLIS", year: "2024 - 2025" },
-  { id: "64931760", name: "CRUZ, LINA ROBLES", email: "linacruz@mail.com", program: "MLIS", year: "2024 - 2025" },
-  { id: "90068366", name: "ARCHETA, AMBER PEREZ", email: "amberarcheta@mail.com", program: "MLIS", year: "2024 - 2025" },
-];
-
 function AlumniInformation() {
-  const [alumniData, setAlumniData] = useState(initialAlumniData);
-  const [selectedAlumni, setSelectedAlumni] = useState(null);
+  const [alumniData, setAlumniData] = useState([]);
+  // const [selectedAlumni, setSelectedAlumni] = useState(null);
+  const [selectedAlumni, setSelectedAlumni] = useState({
+    idNo: "",
+    name: "",
+    email: "",
+    program: "",
+    yearGraduated: ""
+  });
+  
   const [open, setOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [newAlumni, setNewAlumni] = useState({ id: "", name: "", email: "", program: "", year: "" });
+  // const [newAlumni, setNewAlumni] = useState({ idNo: "", name: "", email: "", program: "", yearGraduated: "" });
+  const [newAlumni, setNewAlumni] = useState({
+    idNo: "",
+    name: "",
+    email: "",
+    password: "",
+    program: "",
+    yearGraduated: ""
+  });
+  
+
+   // Fetch alumni data on component mount
+   useEffect(() => {
+    axios.get("http://localhost:5001/api/admin/alumni")
+      .then(response => {
+        // console.log(response.data);
+        setAlumniData(response.data);
+      })
+      .catch(error => console.error("Error fetching alumni data:", error));
+  }, []);
 
   const handleOpenDialog = (alumni) => {
     setSelectedAlumni({ ...alumni });
     setOpen(true);
+    setSearchTerm("");
   };
 
   const handleOpenViewDialog = (alumni) => {
@@ -45,8 +67,13 @@ function AlumniInformation() {
     setViewOpen(false);
   };
 
-  const handleDelete = (id) => {
-    setAlumniData(alumniData.filter(alumni => alumni.id !== id));
+  const handleDelete = (idNo) => {
+    axios.delete(`http://localhost:5001/api/admin/alumni/${idNo}`)
+      .then(() => {
+        setAlumniData(alumniData.filter(alumni => alumni.idNo !== idNo));
+        console.log("Alumni deleted successfully");
+      })
+      .catch(error => console.error("Error deleting alumni:", error));
   };
 
   const handleEditChange = (e) => {
@@ -55,10 +82,14 @@ function AlumniInformation() {
   };
 
   const handleSaveEdit = () => {
-    setAlumniData(prevData => prevData.map(alumni => 
-      alumni.id === selectedAlumni.id ? selectedAlumni : alumni
-    ));
-    handleCloseDialog();
+    axios.put(`http://localhost:5001/api/admin/alumni/${selectedAlumni.idNo}`, selectedAlumni)
+      .then(response => {
+        setAlumniData(prevData => prevData.map(alumni => 
+          alumni.idNo === response.data.idNo ? response.data : alumni
+        ));
+        handleCloseDialog();
+      })
+      .catch(error => console.error("Error updating alumni:", error));
   };
 
   // Open and Close Add Alumni Dialog
@@ -68,7 +99,7 @@ function AlumniInformation() {
 
   const handleCloseAddDialog = () => {
     setAddOpen(false);
-    setNewAlumni({ id: "", name: "", email: "", program: "", year: "" });
+    setNewAlumni({ idNo: "", name: "", email: "", program: "", yearGraduated: "" });
   };
 
   const handleAddChange = (e) => {
@@ -77,8 +108,14 @@ function AlumniInformation() {
   };
 
   const handleAddAlumni = () => {
-    setAlumniData([...alumniData, newAlumni]);
-    handleCloseAddDialog();
+    axios.post("http://localhost:5001/api/admin/alumni", newAlumni)
+      .then(response => {
+        // console.log(response.data);
+        setAlumniData([...alumniData, response.data]);
+        handleCloseAddDialog();
+      })
+      .catch(error => console.error("Error adding alumni:", error));
+      // console.log(newAlumni);
   };
 
   return (
@@ -106,7 +143,7 @@ function AlumniInformation() {
     variant="outlined" 
     color="primary"
     startIcon={<Search />} 
-    sx={{ height: "40px", minWidth: "150px" }} // Set height and width
+    sx={{ height: "40px", minWidth: "150px" }} 
   >
     Search
   </Button>
@@ -115,7 +152,7 @@ function AlumniInformation() {
     color="primary" 
     startIcon={<Add />} 
     onClick={handleOpenAddDialog}
-    sx={{ height: "40px", minWidth: "150px" }} // Same height and width
+    sx={{ height: "40px", minWidth: "150px" }} 
   >
     Add Alumni
   </Button>
@@ -133,19 +170,21 @@ function AlumniInformation() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {alumniData.filter(alumni => alumni.id.includes(searchTerm)).map((alumni) => (
-                <TableRow key={alumni.id}>
-                  <TableCell>{alumni.id}</TableCell>
+            {alumniData
+  .filter(alumni => alumni.idNo && alumni.idNo.toString().includes(searchTerm))
+  .map((alumni) => (
+                <TableRow key={alumni.idNo}>
+                  <TableCell>{alumni.idNo}</TableCell>
                   <TableCell>
                     <Typography style={{ fontWeight: "bold" }}>{alumni.name}</Typography>
                     <Typography variant="body2" color="textSecondary">{alumni.email}</Typography>
                   </TableCell>
                   <TableCell>{alumni.program}</TableCell>
-                  <TableCell>{alumni.year}</TableCell>
+                  <TableCell>{alumni.yearGraduated}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleOpenViewDialog(alumni)}><Visibility /></IconButton>
                     <IconButton onClick={() => handleOpenDialog(alumni)}><Edit /></IconButton>
-                    <IconButton onClick={() => handleDelete(alumni.id)}><Delete /></IconButton>
+                    <IconButton onClick={() => handleDelete(alumni.idNo)}><Delete /></IconButton>
                   </TableCell>
                 </TableRow>
               ))}
@@ -153,7 +192,6 @@ function AlumniInformation() {
           </Table>
         </TableContainer>
 
-        {/* View Alumni Modal */}
         {/* View Alumni Modal */}
 <Dialog open={viewOpen} onClose={handleCloseViewDialog} maxWidth="sm" fullWidth>
   <DialogTitle style={{ textAlign: "center", fontWeight: "bold" }}>
@@ -191,7 +229,7 @@ function AlumniInformation() {
         <strong>Program:</strong> {selectedAlumni?.program}
       </Typography>
       <Typography variant="body1">
-        <strong>  Year Graduated:</strong> {selectedAlumni?.year}
+        <strong>  Year Graduated:</strong> {selectedAlumni?.yearGraduated}
       </Typography>
     </div>
 
@@ -211,7 +249,7 @@ function AlumniInformation() {
             <TextField label="Name" name="name" fullWidth margin="dense" value={selectedAlumni?.name || ""} onChange={handleEditChange} />
             <TextField label="Email" name="email" fullWidth margin="dense" value={selectedAlumni?.email || ""} onChange={handleEditChange} />
             <TextField label="Program" name="program" fullWidth margin="dense" value={selectedAlumni?.program || ""} onChange={handleEditChange} />
-            <TextField label="Year Graduated" name="year" fullWidth margin="dense" value={selectedAlumni?.year || ""} onChange={handleEditChange} />
+            <TextField label="Year Graduated" name="yearGraduated" fullWidth margin="dense" value={selectedAlumni?.yearGraduated || ""} onChange={handleEditChange} />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog}>Cancel</Button>
@@ -223,11 +261,12 @@ function AlumniInformation() {
         <Dialog open={addOpen} onClose={handleCloseAddDialog}>
           <DialogTitle>Add Alumni</DialogTitle>
           <DialogContent>
-            <TextField label="ID" name="id" fullWidth margin="dense" value={newAlumni.id} onChange={handleAddChange} />
+            <TextField label="ID" name="idNo" fullWidth margin="dense" value={newAlumni.idNo} onChange={handleAddChange} />
             <TextField label="Name" name="name" fullWidth margin="dense" value={newAlumni.name} onChange={handleAddChange} />
             <TextField label="Email" name="email" fullWidth margin="dense" value={newAlumni.email} onChange={handleAddChange} />
+            <TextField label="Password" name="password" type="password" fullWidth margin="dense" value={newAlumni.password} onChange={handleAddChange} />
             <TextField label="Program" name="program" fullWidth margin="dense" value={newAlumni.program} onChange={handleAddChange} />
-            <TextField label="Year Graduated" name="year" fullWidth margin="dense" value={newAlumni.year} onChange={handleAddChange} />
+            <TextField label="Year Graduated" name="yearGraduated" fullWidth margin="dense" value={newAlumni.yearGraduated} onChange={handleAddChange} />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseAddDialog}>Cancel</Button>
