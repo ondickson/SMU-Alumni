@@ -1,7 +1,10 @@
-import React from "react";
-import { AppBar, Toolbar, Typography, Grid, Card, CardContent, Avatar, Button } from "@mui/material";
+import React, { useState } from "react";
+import { AppBar, Toolbar, Typography, Grid, Card, CardContent, Button } from "@mui/material";
 import SidebarMenu from "../Sidebar";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const sidebarWidth = 250;
 
@@ -14,18 +17,34 @@ const barChartData = [
   { month: "Jun", events: 7100 },
 ];
 
-const messages = [
-  { id: 1, sender: "Olivia Martin", email: "olivia.martin@email.com", content: "Meeting at 10 AM?" },
-  { id: 2, sender: "Jackson Lee", email: "jackson.lee@email.com", content: "Please check the report." },
-  { id: 3, sender: "Isabella Nguyen", email: "isabella.nguyen@email.com", content: "Looking forward to our discussion." },
-  { id: 4, sender: "William Kim", email: "will@email.com", content: "Let's catch up later." }
-];
+const localizer = momentLocalizer(moment);
 
 function AdminDashboard() {
+  const [events, setEvents] = useState([
+    {
+      title: "Alumni Meetup",
+      start: new Date(2025, 3, 15),
+      end: new Date(2025, 3, 15),
+    },
+    {
+      title: "Career Fair",
+      start: new Date(2025, 5, 10),
+      end: new Date(2025, 5, 10),
+    },
+  ]);
+
+  const handleSelectSlot = ({ start, end }) => {
+    const title = prompt("Enter Event Title");
+    if (title) {
+      const newEvent = { title, start, end };
+      setEvents([...events, newEvent]);
+    }
+  };
+
   return (
-    <div style={{ display: "flex", heighAt: "100vh" }}>
+    <div style={{ display: "flex", height: "100vh" }}>
       <SidebarMenu />
-      <div style={{ flex: 1, background: "#f8f9fa", padding: "20px", marginLeft: `${sidebarWidth}px` }}>
+      <div style={{ flex: 1, background: "#f8f9fa", padding: "20px", marginLeft: `${sidebarWidth}px`, overflowX: "hidden" }}>
         <AppBar position="static" style={{ background: "#272974" }}>
           <Toolbar>
             <Typography variant="h6" style={{ flexGrow: 1 }}>
@@ -70,21 +89,19 @@ function AdminDashboard() {
             </Card>
           </Grid>
           <Grid item xs={12} md={4}>
-            <Card style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+            <Card style={{ height: "100%" }}>
               <CardContent>
-                <Typography variant="h6" style={{ marginBottom: "10px" }}>Messages</Typography>
-                {messages.map((message) => (
-                  <div key={message.id} style={{ display: "flex", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #ddd" }}>
-                    <Avatar style={{ marginRight: "10px" }}>{message.sender.charAt(0)}</Avatar>
-                    <div>
-                      <Typography variant="body1" style={{ fontWeight: "bold" }}>{message.sender}</Typography>
-                      <Typography variant="body2" color="textSecondary">{message.email}</Typography>
-                      <Typography variant="body2">{message.content}</Typography>
-                    </div>
-                  </div>
-                ))}
+                <Typography variant="h6" style={{ marginBottom: "10px" }}>Calendar</Typography>
+                <Calendar
+                  localizer={localizer}
+                  events={events}
+                  startAccessor="start"
+                  endAccessor="end"
+                  style={{ height: 300 }}
+                  selectable
+                  onSelectSlot={handleSelectSlot}
+                />
               </CardContent>
-              <Button variant="contained" color="primary" size="small" style={{ alignSelf: "center", marginBottom: "10px" }}>View All Messages</Button>
             </Card>
           </Grid>
         </Grid>
