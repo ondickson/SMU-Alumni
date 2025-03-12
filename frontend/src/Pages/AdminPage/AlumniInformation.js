@@ -26,7 +26,6 @@ function AlumniInformation() {
   const [viewOpen, setViewOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  // const [newAlumni, setNewAlumni] = useState({ idNo: "", name: "", email: "", program: "", yearGraduated: "" });
   const [newAlumni, setNewAlumni] = useState({
     idNo: "",
     name: "",
