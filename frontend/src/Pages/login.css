@@ -32,7 +32,7 @@
   .login-title {
     font-size: 22px;
     font-weight: 700; /* Make it bolder */
-    color: #272974 !important; /* Ensure it's black */
+    color: #292974 !important; /* Ensure it's black */
     margin-bottom: 20px;
     margin-top: 0;
     text-transform: uppercase; /* Optional: Make it all uppercase */
@@ -53,7 +53,7 @@
   
   /* Login Button */
   .login-button {
-    background-color: #272974;
+    background-color: #292974;
     color: white;
     font-size: 16px;
     border: none;
@@ -63,7 +63,7 @@
   }
   
   .login-button:hover {
-    background-color: #272974;
+    background-color: #292974;
   }
   
   /* Signup Text */
@@ -75,7 +75,7 @@
   }
   
   .signup-text a {
-    color: #272974;
+    color: #292974;
     text-decoration: none;
     font-weight: 600;
   }

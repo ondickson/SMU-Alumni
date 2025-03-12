@@ -76,7 +76,6 @@ function AlumniInformation() {
             <MenuItem value="BSCS">BSCS</MenuItem>
           </Select>
 
-        
         </div>
 
         <TableContainer component={Paper}>
@@ -87,6 +86,7 @@ function AlumniInformation() {
                 <TableCell><strong>Name and Email</strong></TableCell>
                 <TableCell><strong>Program</strong></TableCell>
                 <TableCell><strong>Year Graduated</strong></TableCell>
+                <TableCell><strong>Action</strong></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -99,6 +99,14 @@ function AlumniInformation() {
                   </TableCell>
                   <TableCell>{alumni.program}</TableCell>
                   <TableCell>{alumni.year}</TableCell>
+                  <TableCell>
+                    <IconButton color="primary">
+                      <Visibility />
+                    </IconButton>
+                    <IconButton color="secondary">
+                      <Edit />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
