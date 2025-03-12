@@ -12,7 +12,6 @@ export const getAllAlumni = async (req, res) => {
 export const addAlumni = async (req, res) => {
     try {
         // console.log("Incoming request body:", req.body);
-
         const { idNo, name, email, password, program, yearGraduated } = req.body;
         if (!idNo || !name || !email || !password || !program || !yearGraduated) {
             return res.status(400).json({ error: "All fields are required" });
