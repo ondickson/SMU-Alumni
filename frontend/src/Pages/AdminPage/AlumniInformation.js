@@ -4,7 +4,9 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
   Paper, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Select, MenuItem
 } from "@mui/material";
-import { Search, Add, Delete, Edit, Visibility } from "@mui/icons-material";
+import { Search, Add, Delete } from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import SidebarMenu from "../Sidebar";
 import "./AlumniInformation.css";
 
@@ -86,7 +88,8 @@ function AlumniInformation() {
                 <TableCell><strong>Name and Email</strong></TableCell>
                 <TableCell><strong>Program</strong></TableCell>
                 <TableCell><strong>Year Graduated</strong></TableCell>
-                <TableCell><strong>Action</strong></TableCell>
+                <TableCell style={{ paddingLeft: "30px" }}><strong>Action</strong></TableCell>
+
               </TableRow>
             </TableHead>
             <TableBody>
@@ -100,11 +103,11 @@ function AlumniInformation() {
                   <TableCell>{alumni.program}</TableCell>
                   <TableCell>{alumni.year}</TableCell>
                   <TableCell>
-                    <IconButton color="primary">
-                      <Visibility />
+                    <IconButton style={{ color: "#272974" }}>
+                      <VisibilityIcon />
                     </IconButton>
-                    <IconButton color="secondary">
-                      <Edit />
+                    <IconButton style={{ color: "#272974" }}>
+                      <EditIcon />
                     </IconButton>
                   </TableCell>
                 </TableRow>

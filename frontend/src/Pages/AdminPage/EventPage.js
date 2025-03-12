@@ -83,15 +83,14 @@ function EventPage() {
 
         {/* Search and Add Event Section */}
         <div className="search-add-container">
-          <TextField
-            variant="outlined"
-            placeholder="Search Events"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="search-field"
-            size="small"
-            fullWidth
-          />
+        <TextField
+          variant="outlined"
+          placeholder="Search Events"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="search-field"
+          size="small"
+        />
           <Button
             variant="outlined"
             color="primary"
