@@ -2,12 +2,14 @@ import React from "react";
 import { Sidebar as ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Link } from "react-router-dom";
 import { Typography } from "@mui/material";
-import { Group, Home, WorkOutline, Event, Report, Security, Settings, Logout } from "@mui/icons-material";
+import { Home, AccountCircle, Group, WorkOutline, Event, Report, Security, Settings, Logout } from "@mui/icons-material";
 import "./Sidebar.css"; 
 
 const sidebarWidth = 250; 
 
-const SidebarMenu = ({ role }) => {
+const SidebarMenu = () => {
+  const role = localStorage.getItem("role"); // Get role from localStorage
+
   return (
     <ProSidebar 
       className="custom-sidebar"
@@ -24,7 +26,7 @@ const SidebarMenu = ({ role }) => {
       {/* Sidebar Header */}
       <div style={{ padding: "20px", textAlign: "center" }}>
         <Typography variant="h6" style={{ color: "black" }}>
-          Admin
+          {role === "admin" ? "Admin" : "Alumni"}
         </Typography>
       </div>
 
@@ -33,20 +35,16 @@ const SidebarMenu = ({ role }) => {
         <Menu>
           {role === "admin" ? (
             <>
-              <MenuItem icon={<Group />}>Alumni Management</MenuItem>
-              <MenuItem icon={<WorkOutline />}>Job Listings</MenuItem>
-              <MenuItem icon={<Event />}>Events & News</MenuItem>
-              <MenuItem icon={<Report />}>Analytics & Reports</MenuItem>
-              <MenuItem icon={<Security />}>Security</MenuItem>
-              <MenuItem icon={<Settings />}>Settings</MenuItem>
+              <MenuItem icon={<Group />} component={<Link to="/AdminDashboard" />}>Home</MenuItem>
+              <MenuItem icon={<WorkOutline />} component={<Link to="/AlumniInformation" />}>Alumni Information</MenuItem>
+              <MenuItem icon={<Event />} component={<Link to="/EventPage" />}>Events</MenuItem>
+              <MenuItem icon={<Security />} component={<Link to="/JobPost" />}>JobPost</MenuItem>
+              <MenuItem icon={<Settings />} component={<Link to="/AccountSetting" />}>Account Settings</MenuItem>
             </>
           ) : (
             <>
-              <MenuItem icon={<Home />} component={<Link to="/AdminDashboard" />}>Home</MenuItem>
-              <MenuItem icon={<Group />} component={<Link to="/AlumniInformation" />}>Alumni Information</MenuItem>
-              <MenuItem icon={<Event />} component={<Link to="/EventPage" />}>Events</MenuItem>
-              <MenuItem icon={<WorkOutline />} component={<Link to="/JobPost" />}>Job Post</MenuItem>
-              <MenuItem icon={<Security />} component={<Link to="/AccountSetting" />}>Account Settings</MenuItem>
+              <MenuItem icon={<Home />} component={<Link to="/AlumniDashboard" />}>Home</MenuItem>
+              <MenuItem icon={<AccountCircle />} component={<Link to="/Profile" />}>Profile</MenuItem>
             </>
           )}
         </Menu>
@@ -59,7 +57,12 @@ const SidebarMenu = ({ role }) => {
         width: "100%",
       }}>
         <Menu>
-          <MenuItem icon={<Logout />} style={{ color: "red" }} component={<Link to="/login" />}>
+          <MenuItem 
+            icon={<Logout />} 
+            style={{ color: "red" }} 
+            component={<Link to="/login" />}
+            onClick={() => localStorage.clear()} // Clear storage on logout
+          >
             Log Out
           </MenuItem>
         </Menu>
