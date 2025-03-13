@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './login.css';
-import logo from '../Assets/smulogo.png';
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -30,7 +30,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-box">
-        <img src={logo} alt="SMU Logo" className="logo" />
+      <img src="/smulogo.png" alt="SMU Logo" width="100" />
         <h2 className="login-title">Login</h2>
         <form onSubmit={handleLogin}>
           <input

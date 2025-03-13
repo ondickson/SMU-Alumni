@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './SignUp.css';
-import logo from '../Assets/smulogo.png';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -36,7 +35,8 @@ const SignUp = () => {
   return (
     <div className="signup-container">
       <div className="signup-box">
-        <img src={logo} alt="SMU Logo" className="logo" />
+
+      <img src="/smulogo.png" alt="SMU Logo" width="100" />
         <h2 className="SignUp-title">Sign Up</h2>
         <form onSubmit={handleSubmit}>
           <input
