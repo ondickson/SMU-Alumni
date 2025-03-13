@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import Login from './Pages/login';
 import SignUp from './Pages/SignUp';
+import Feedback from './Pages/AlumniPage/Feedback';
 
 import AdminDashboard from './Pages/AdminPage/AdminDashboard';
 import AlumniInformation from './Pages/AdminPage/AlumniInformation';
@@ -12,6 +13,7 @@ import AccountSetting from './Pages/AdminPage/AccounSetting';
 
 import AlumniDashboard from './Pages/AlumniPage/AlumniDashboard';
 import Profile from './Pages/AlumniPage/Profile';
+import { Feed } from '@mui/icons-material';
 
 function App() {
   return (
@@ -31,6 +33,7 @@ function App() {
         {/* ALUMNI  */}
         <Route path="/AlumniDashboard" element={<AlumniDashboard />} />
         <Route path="/Profile" element={<Profile />} />
+        <Route path="/Feedback" element={<Feedback />} />
       </Routes>
     </Router>
   );

@@ -1,0 +1,212 @@
+/* General container styling */
+.alumni-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+  }
+  
+  /* Paper/Card Background with Glassmorphism */
+  .alumni-header {
+    padding: 24px;
+    text-align: center;
+    background: rgba(30, 30, 47, 0.8);
+    color: #ffffff;
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    max-width: 900px;
+    width: 100%;
+  }
+  
+  /* Dashboard Title */
+  .alumni-header h4 {
+    font-weight: bold;
+    font-size: 28px;
+  }
+  
+  /* Subtext */
+  .alumni-header p {
+    opacity: 0.9;
+    font-size: 16px;
+  }
+  
+  /* Logout Button */
+  .logout-btn {
+    margin-top: 12px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #ff3366, #cc2952);
+    color: white;
+    font-weight: bold;
+    text-transform: none;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .logout-btn:hover {
+    background: linear-gradient(135deg, #cc2952, #aa1f44);
+    transform: scale(1.05);
+  }
+  
+  /* QR Code Grid */
+  .qr-container {
+    margin-top: 32px;
+    max-width: 900px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  
+  /* QR Code Card */
+  .qr-card {
+    padding: 24px;
+    text-align: center;
+    background: rgba(42, 42, 58, 0.9);
+    color: #ffffff;
+    border-radius: 12px;
+    backdrop-filter: blur(15px);
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .qr-card:hover {
+    transform: scale(1.05);
+  }
+  
+  /* QR Code Box */
+  .qr-box {
+    width: 100%;
+    height: 160px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .qr-box p {
+    color: black;
+  }
+
+  /* General container styling */
+.alumni-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+}
+
+/* Header */
+.alumni-header {
+  padding: 24px;
+  text-align: center;
+  background: rgba(30, 30, 47, 0.8);
+  color: #ffffff;
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  max-width: 900px;
+  width: 100%;
+}
+
+.logout-btn {
+  margin-top: 12px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #ff3366, #cc2952);
+  color: white;
+  font-weight: bold;
+  text-transform: none;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+.logout-btn:hover {
+  background: linear-gradient(135deg, #cc2952, #aa1f44);
+  transform: scale(1.05);
+}
+
+/* View Events & Job Listings */
+.alumni-info-section {
+  margin-top: 32px;
+  max-width: 900px;
+}
+
+.alumni-dashboard-card {
+  padding: 16px;
+  background: rgba(42, 42, 58, 0.9);
+  color: #ffffff;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease-in-out;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.alumni-dashboard-card:hover {
+  transform: scale(1.03);
+}
+
+.alumni-dashboard-card-title {
+  font-weight: bold;
+}
+
+.alumni-dashboard-card-button {
+  margin-top: 10px;
+  background-color: #ff3366;
+  color: white;
+}
+
+.alumni-dashboard-list {
+  padding-left: 18px;
+  font-size: 14px;
+}
+
+/* Calendar */
+.alumni-dashboard-calendar-card {
+  margin-top: 20px;
+  background: rgba(30, 30, 50, 0.9);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.alumni-dashboard-calendar-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.alumni-dashboard-calendar-container {
+  height: 350px;
+}
+
+/* QR Code Section */
+.qr-container {
+  margin-top: 32px;
+  max-width: 900px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.qr-card {
+  padding: 24px;
+  text-align: center;
+  background: rgba(42, 42, 58, 0.9);
+  color: #ffffff;
+  border-radius: 12px;
+  backdrop-filter: blur(15px);
+}
+
+.qr-box {
+  width: 100%;
+  height: 160px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+  
