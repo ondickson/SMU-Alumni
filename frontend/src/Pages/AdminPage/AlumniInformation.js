@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { Select, MenuItem } from "@mui/material";
 
-import { Search, Upload, Delete, Edit, Visibility } from "@mui/icons-material";
+import { Search, Upload, Download, Delete, Edit, Visibility } from "@mui/icons-material";
 import SidebarMenu from "../Sidebar";
 import "./AlumniInformation.css";
 
@@ -186,6 +186,53 @@ const [selectedProgram, setSelectedProgram] = useState("");
       })
       .catch(error => console.error("Error updating alumni:", error));
   };
+  
+const handleDownloadAll = async () => {
+  try {
+    // API request with optional filtering
+    const response = await axios.get("http://localhost:5001/api/admin/alumni", {
+      params: {
+        yearGraduated: selectedYear || undefined, // Send only if selected
+        program: selectedProgram || undefined,   // Send only if selected
+      }
+    });
+
+    const data = response.data;
+
+    if (!data.length) {
+      alert("No records found for the selected filters.");
+      return;
+    }
+
+    // Convert data to CSV format
+    const csvContent = convertToCSV(data);
+
+    // Create a Blob for download
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+
+    // Create an anchor element and trigger download
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `alumni_data_${selectedYear || "all"}_${selectedProgram || "all"}.csv`;
+    document.body.appendChild(a);
+    a.click();
+
+    // Clean up
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading data:", error);
+    alert("Failed to download alumni data.");
+  }
+};
+
+// Convert JSON to CSV helper function
+const convertToCSV = (data) => {
+  const headers = Object.keys(data[0]).join(",") + "\n";
+  const rows = data.map(row => Object.values(row).join(",")).join("\n");
+  return headers + rows;
+};
 
   // Open and Close Import CSV Dialog
   const handleOpenImportDialog = () => {
@@ -271,50 +318,68 @@ const [selectedProgram, setSelectedProgram] = useState("");
             </Typography>
           </Toolbar>
         </AppBar>
+        <div style={{ marginBottom: "10px" }}></div>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
+  {/* Search Bar - 50% Width */}
+  <TextField
+    variant="outlined"
+    size="small"
+    placeholder="Search ID Number"
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    style={{ width: "50%" }} // Ensures half-width for balance
+  />
 
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "20px 0" }}>
-          <TextField 
-            variant="outlined" 
-            size="small" 
-            placeholder="Search ID Number" 
-            fullWidth 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <Select
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(e.target.value)}
-            displayEmpty
-            size="small"
-          >
-            <MenuItem value="">All Years</MenuItem>
-            <MenuItem value="2024 - 2025">2024 - 2025</MenuItem>
-            <MenuItem value="2023 - 2024">2023 - 2024</MenuItem>
-            <MenuItem value="2022 - 2023">2022 - 2023</MenuItem>
-          </Select>
+  {/* Year Filter */}
+  <Select
+    value={selectedYear}
+    onChange={(e) => setSelectedYear(e.target.value)}
+    displayEmpty
+    size="small"
+  >
+    <MenuItem value="">All Years</MenuItem>
+    <MenuItem value="2024 - 2025">2024 - 2025</MenuItem>
+    <MenuItem value="2023 - 2024">2023 - 2024</MenuItem>
+    <MenuItem value="2022 - 2023">2022 - 2023</MenuItem>
+  </Select>
 
-          <Select
-            value={selectedProgram}
-            onChange={(e) => setSelectedProgram(e.target.value)}
-            displayEmpty
-            size="small"
-          >
-            <MenuItem value="">All Programs</MenuItem>
-            <MenuItem value="MLIS">MLIS</MenuItem>
-            <MenuItem value="BSIT">BSIT</MenuItem>
-            <MenuItem value="BSCS">BSCS</MenuItem>
-          </Select>
+  {/* Program Filter */}
+  <Select
+    value={selectedProgram}
+    onChange={(e) => setSelectedProgram(e.target.value)}
+    displayEmpty
+    size="small"
+  >
+    <MenuItem value="">All Programs</MenuItem>
+    <MenuItem value="MLIS">MLIS</MenuItem>
+    <MenuItem value="BSIT">BSIT</MenuItem>
+    <MenuItem value="BSCS">BSCS</MenuItem>
+  </Select>
 
-          <Button 
-            variant="outlined"
-            color="primary" 
-            startIcon={<Upload />} 
-            onClick={handleOpenImportDialog}
-            sx={{ height: "40px", minWidth: "150px" }} 
-          >
-            Import CSV
-          </Button>
-        </div>
+  {/* Import Button */}
+  <Button 
+    variant="outlined"
+    color="primary" 
+    startIcon={<Upload />} 
+    onClick={handleOpenImportDialog}
+    sx={{ height: "40px", minWidth: "130px" }} 
+  >
+    Import CSV
+  </Button>
+
+  {/* Download Button */}
+  <Button 
+    variant="outlined"
+    color="primary" 
+    startIcon={<Download />} 
+    onClick={handleDownloadAll}
+    sx={{ height: "40px", minWidth: "130px" }} 
+  >
+    Download All
+  </Button>
+</div>
+
+
 
         <TableContainer component={Paper}>
           <Table>
@@ -514,7 +579,7 @@ const [selectedProgram, setSelectedProgram] = useState("");
             <TextField label="Address" name="address" fullWidth margin="dense" value={selectedAlumni?.address || ""} onChange={handleEditChange} />
             <TextField label="Facebook Account" name="facebookAccount" fullWidth margin="dense" value={selectedAlumni?.facebookAccount || ""} onChange={handleEditChange}   disabled />
             <TextField label="Contact Number" name="contactNumber" fullWidth margin="dense" value={selectedAlumni?.contactNumber || ""} onChange={handleEditChange} />
-           
+         
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog}>Cancel</Button>
