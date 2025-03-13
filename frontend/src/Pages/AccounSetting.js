@@ -5,7 +5,7 @@ import {
   TableHead, TableRow, Paper, Switch, IconButton, Dialog, DialogActions, 
   DialogContent, DialogTitle 
 } from '@mui/material';
-import { CheckCircle, Edit, Delete, Settings } from '@mui/icons-material';
+import { Edit, Delete, Settings } from '@mui/icons-material';
 import Sidebar from './Sidebar'; // Import Sidebar
 import './AccountSetting.css'; // Import CSS for styling
 
@@ -72,10 +72,15 @@ function AccountSetting() {
                         <TextField fullWidth label="Email" variant="outlined" />
                       </Grid>
                       <Grid item xs={3}>
-                        <Select fullWidth defaultValue="" variant="outlined">
-                          <MenuItem value="">Select Role</MenuItem>
+                        <Select 
+                          fullWidth 
+                          variant="outlined"
+                          displayEmpty
+                          defaultValue=""
+                        >
+                          <MenuItem value="" disabled>Select Role</MenuItem>
                           <MenuItem value="Admin">Admin</MenuItem>
-                          <MenuItem value="Department Head">Department Head</MenuItem>
+                          <MenuItem value="Alumni">Alumni</MenuItem>
                         </Select>
                       </Grid>
                       <Grid item xs={1.5} display="flex" alignItems="stretch">
@@ -155,7 +160,6 @@ function AccountSetting() {
               </Grid>
 
               {/* Backup Section */}
-              {/* Backup Section */}
               <Grid item xs={12} mt={3}>
                 <Card>
                   <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
@@ -192,17 +196,20 @@ function AccountSetting() {
             value={newUser.email} 
             onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
           />
+
           <Select 
             fullWidth 
-            value={newUser.role} 
+            value={newUser.role || ""} 
             onChange={(e) => setNewUser({ ...newUser, role: e.target.value })} 
             variant="outlined"
+            displayEmpty
             margin="dense"
           >
-            <MenuItem value="">Select Role</MenuItem>
+            <MenuItem value="" disabled>Select Role</MenuItem>
             <MenuItem value="Admin">Admin</MenuItem>
-            <MenuItem value="Department Head">Department Head</MenuItem>
+            <MenuItem value="Alumni">Alumni</MenuItem>
           </Select>
+         
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
