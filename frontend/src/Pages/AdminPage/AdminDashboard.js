@@ -1,10 +1,13 @@
-import React from "react";
-import { AppBar, Toolbar, Typography, Grid, Card, CardContent, Avatar, Button } from "@mui/material";
+import React, { useState } from "react";
+import { AppBar, Toolbar, Typography, Grid, Card, CardContent, Button, Tooltip } from "@mui/material";
 import SidebarMenu from "../Sidebar";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartTooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import "./AdminDashboard.css";
 
 const sidebarWidth = 250;
-
 const barChartData = [
   { month: "Jan", events: 5000 },
   { month: "Feb", events: 7000 },
@@ -14,38 +17,45 @@ const barChartData = [
   { month: "Jun", events: 7100 },
 ];
 
-const messages = [
-  { id: 1, sender: "Olivia Martin", email: "olivia.martin@email.com", content: "Meeting at 10 AM?" },
-  { id: 2, sender: "Jackson Lee", email: "jackson.lee@email.com", content: "Please check the report." },
-  { id: 3, sender: "Isabella Nguyen", email: "isabella.nguyen@email.com", content: "Looking forward to our discussion." },
-  { id: 4, sender: "William Kim", email: "will@email.com", content: "Let's catch up later." }
-];
+const localizer = momentLocalizer(moment);
 
 function AdminDashboard() {
+  const [events, setEvents] = useState([
+    { title: "Alumni Meetup", start: new Date(2025, 3, 15), end: new Date(2025, 3, 15) },
+    { title: "Career Fair", start: new Date(2025, 5, 10), end: new Date(2025, 5, 10) },
+  ]);
+
+  const handleSelectSlot = ({ start, end }) => {
+    const title = prompt("Enter Event Title");
+    if (title) {
+      setEvents([...events, { title, start, end }]);
+    }
+  };
+
+  const eventStyleGetter = () => ({ className: "admin-dashboard-event-style" });
+
   return (
-    <div style={{ display: "flex", heighAt: "100vh" }}>
+    <div className="admin-dashboard">
       <SidebarMenu />
-      <div style={{ flex: 1, background: "#f8f9fa", padding: "20px", marginLeft: `${sidebarWidth}px` }}>
-        <AppBar position="static" style={{ background: "#272974" }}>
-          <Toolbar>
-            <Typography variant="h6" style={{ flexGrow: 1 }}>
-              Admin Dashboard
-            </Typography>
+      <div className="admin-dashboard-content">
+        <AppBar position="static" className="admin-dashboard-appbar">
+          <Toolbar className="admin-dashboard-toolbar">
+            <Typography variant="h6">Admin Dashboard</Typography>
           </Toolbar>
         </AppBar>
 
         <Grid container spacing={3} style={{ marginTop: "20px" }}>
-          {[ 
-            { title: "Incoming Events", value: "11" }, 
-            { title: "Open Jobs", value: "20" }, 
-            { title: "Total Alumni Registered", value: "233" }, 
-            { title: "Active Now", value: "2" } 
+          {[
+            { title: "Incoming Events", value: "11" },
+            { title: "Open Jobs", value: "20" },
+            { title: "Total Alumni Registered", value: "233" },
+            { title: "FeedBacks", value: "2" },
           ].map((stat, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
-              <Card style={{ padding: "20px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <Typography variant="h5" style={{ fontWeight: "bold" }}>{stat.value}</Typography>
+              <Card className="admin-dashboard-card">
+                <Typography variant="h5" className="admin-dashboard-card-title">{stat.value}</Typography>
                 <Typography variant="body2" color="textSecondary">{stat.title}</Typography>
-                <Button variant="contained" color="primary" size="small" style={{ marginTop: "10px" }}>View Details</Button>
+                <Button variant="contained" color="primary" size="small" className="admin-dashboard-card-button">View Details</Button>
               </Card>
             </Grid>
           ))}
@@ -53,38 +63,54 @@ function AdminDashboard() {
 
         <Grid container spacing={3} style={{ marginTop: "20px" }}>
           <Grid item xs={12} md={8}>
-            <Card style={{ padding: "20px", display: "flex", flexDirection: "column" }}>
+            <Card className="admin-dashboard-overview">
               <CardContent>
-                <Typography variant="h6" style={{ marginBottom: "10px" }}>Overview</Typography>
+                <Typography variant="h6" className="admin-dashboard-overview-title">Overview</Typography>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={barChartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="month" />
                     <YAxis />
-                    <Tooltip />
+                    <RechartTooltip />
                     <Bar dataKey="events" fill="#272974" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
-              <Button variant="contained" color="primary" size="small" style={{ alignSelf: "center", marginBottom: "10px" }}>More Insights</Button>
+              <Button variant="contained" color="primary" size="small" className="admin-dashboard-overview-button">More Insights</Button>
             </Card>
           </Grid>
+
           <Grid item xs={12} md={4}>
-            <Card style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+            <Card className="admin-dashboard-calendar-card">
               <CardContent>
-                <Typography variant="h6" style={{ marginBottom: "10px" }}>Messages</Typography>
-                {messages.map((message) => (
-                  <div key={message.id} style={{ display: "flex", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #ddd" }}>
-                    <Avatar style={{ marginRight: "10px" }}>{message.sender.charAt(0)}</Avatar>
-                    <div>
-                      <Typography variant="body1" style={{ fontWeight: "bold" }}>{message.sender}</Typography>
-                      <Typography variant="body2" color="textSecondary">{message.email}</Typography>
-                      <Typography variant="body2">{message.content}</Typography>
-                    </div>
-                  </div>
-                ))}
+                <Typography variant="h6" className="admin-dashboard-calendar-title">Calendar</Typography>
+                <div className="admin-dashboard-calendar-container">
+                  <Calendar
+                    localizer={localizer}
+                    events={events}
+                    startAccessor="start"
+                    endAccessor="end"
+                    style={{ height: 300, borderRadius: "8px" }}
+                    selectable
+                    onSelectSlot={handleSelectSlot}
+                    eventPropGetter={eventStyleGetter}
+                    components={{
+                      toolbar: ({ label, onNavigate }) => (
+                        <div className="admin-dashboard-calendar-toolbar">
+                          <Button onClick={() => onNavigate("PREV")} className="admin-dashboard-calendar-button">{"<"}</Button>
+                          <Typography variant="h6">{label}</Typography>
+                          <Button onClick={() => onNavigate("NEXT")} className="admin-dashboard-calendar-button">{">"}</Button>
+                        </div>
+                      ),
+                      event: ({ event }) => (
+                        <Tooltip title={event.title} arrow>
+                          <div>{event.title}</div>
+                        </Tooltip>
+                      ),
+                    }}
+                  />
+                </div>
               </CardContent>
-              <Button variant="contained" color="primary" size="small" style={{ alignSelf: "center", marginBottom: "10px" }}>View All Messages</Button>
             </Card>
           </Grid>
         </Grid>
