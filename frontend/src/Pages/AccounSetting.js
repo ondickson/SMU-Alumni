@@ -109,32 +109,37 @@ function AccountSetting() {
                     <br />
                     <TableContainer component={Paper}>
                       <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell><b>Name</b></TableCell>
-                            <TableCell><b>Email</b></TableCell>
-                            <TableCell><b>Active</b></TableCell>
-                            <TableCell><b>Actions</b></TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {users.map((user, index) => (
-                            <TableRow key={index}>
-                              <TableCell>{user.name}</TableCell>
-                              <TableCell>{user.email}</TableCell>
-                              <TableCell>
-                                <Switch 
-                                  checked={user.active} 
-                                  onChange={() => handleToggleActive(index)} 
-                                  color="primary" 
-                                  sx={{
-                                    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                                      backgroundColor: '#272974', // ON color
-                                    }
-                                  }}
-                                />
-                              </TableCell>
-                              <TableCell>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell sx={{ width: '150px' }}><b>Name</b></TableCell>
+                          <TableCell sx={{ width: '250px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                            <b>Email</b>
+                          </TableCell>
+                          <TableCell align="center" sx={{ width: '100px' }}><b>Active</b></TableCell>
+                          <TableCell align="center" sx={{ width: '150px' }}><b>Actions</b></TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {users.map((user, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{user.name}</TableCell>
+                            <TableCell sx={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                              {user.email}
+                            </TableCell>
+                            <TableCell align="center">
+                              <Switch 
+                                checked={user.active} 
+                                onChange={() => handleToggleActive(index)} 
+                                color="primary"
+                                sx={{
+                                  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                                    backgroundColor: '#272974',
+                                  }
+                                }}
+                              />
+                            </TableCell>
+                            <TableCell align="center">
+                              <Box display="flex" justifyContent="center" gap={1}>
                                 <IconButton sx={{ color: '#272974' }}>
                                   <Edit />
                                 </IconButton>
@@ -144,10 +149,11 @@ function AccountSetting() {
                                 <IconButton color="error">
                                   <Delete />
                                 </IconButton>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
+                              </Box>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
                       </Table>
                     </TableContainer>
                   </CardContent>
