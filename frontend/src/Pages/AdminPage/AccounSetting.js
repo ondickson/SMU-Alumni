@@ -6,7 +6,7 @@ import {
   DialogContent, DialogTitle 
 } from '@mui/material';
 import { Edit, Delete, Settings } from '@mui/icons-material';
-import Sidebar from './Sidebar'; // Import Sidebar
+import Sidebar from '../Sidebar'; // Import Sidebar
 import './AccountSetting.css'; // Import CSS for styling
 
 function AccountSetting() {
