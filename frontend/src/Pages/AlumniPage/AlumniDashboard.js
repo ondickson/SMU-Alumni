@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Typography, Paper, Button } from '@mui/material';
+import SidebarMenu from "../Sidebar";
 
 function AlumniDashboard() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ function AlumniDashboard() {
 
   return (
     <Container maxWidth="md">
+      <SidebarMenu />
       <Paper elevation={3} sx={{ p: 3, mt: 4, textAlign: 'center' }}>
         <Typography variant="h4" gutterBottom>
           Alumni Dashboard

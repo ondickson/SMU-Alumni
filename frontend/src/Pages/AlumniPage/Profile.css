@@ -1,0 +1,81 @@
+/* Main container with padding */
+.main-container {
+    flex-grow: 1;
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+    background-color: #f9f9f9;
+}
+
+/* Styled title box similar to Events */
+.title-box {
+    background-color: #272974;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    text-align: left;
+    font-weight: bold;
+    margin-bottom: 20px;
+    width: fit-content;
+}
+
+.title-text {
+    font-size: 18px;
+}
+
+/* Ensure content wrapper aligns properly */
+.content-wrapper {
+    max-width: 100%;
+    margin: 0;
+}
+
+/* Ensure cards take full width */
+.MuiGrid-item {
+    width: 100%;
+}
+
+.MuiCard-root {
+    width: 100%;
+}
+
+/* Profile picture container */
+.profile-picture-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-picture {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #272974;
+}
+
+.upload-button {
+    margin-top: 10px;
+    background-color: #272974;
+    color: white;
+}
+
+.upload-button:hover {
+    background-color: #1f2068;
+}
+
+/* Form fields styling */
+.form-field {
+    margin-bottom: 15px;
+}
+
+/* Save button */
+.save-button {
+    background-color: #272974;
+    color: white;
+    margin-top: 10px;
+}
+
+.save-button:hover {
+    background-color: #1f2068;
+}

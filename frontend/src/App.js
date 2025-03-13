@@ -5,11 +5,13 @@ import Login from './Pages/login';
 import SignUp from './Pages/SignUp';
 
 import AdminDashboard from './Pages/AdminPage/AdminDashboard';
-import AlumniDashboard from './Pages/AlumniPage/AlumniDashboard';
 import AlumniInformation from './Pages/AdminPage/AlumniInformation';
 import Events from './Pages/AdminPage/EventPage';
 import JobPost from './Pages/AdminPage/JobPost';
 import AccountSetting from './Pages/AccounSetting';
+
+import AlumniDashboard from './Pages/AlumniPage/AlumniDashboard';
+import Profile from './Pages/AlumniPage/Profile';
 
 function App() {
   return (
@@ -28,6 +30,7 @@ function App() {
 
         {/* ALUMNI  */}
         <Route path="/AlumniDashboard" element={<AlumniDashboard />} />
+        <Route path="/Profile" element={<Profile />} />
       </Routes>
     </Router>
   );
