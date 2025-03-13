@@ -21,26 +21,36 @@ function EventPage() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [events, setEvents] = useState([]);
-  const [newEvent, setNewEvent] = useState({ title: "", date: "", location: "", description: "" });
+  const [newEvent, setNewEvent] = useState({ title: "", date: "", location: "", description: "", file: null });
 
-  // Fetch events from the database
   useEffect(() => {
     axios.get("http://localhost:5001/api/events")
       .then(response => setEvents(response.data))
       .catch(error => console.error("Error fetching events:", error));
   }, []);
 
-  // Handle input change
   const handleChange = (e) => {
     setNewEvent({ ...newEvent, [e.target.name]: e.target.value });
   };
 
-  // Add new event to database
+  const handleFileChange = (e) => {
+    setNewEvent({ ...newEvent, file: e.target.files[0] });
+  };
+
   const handleSubmit = () => {
-    axios.post("http://localhost:5001/api/events", newEvent)
+    const formData = new FormData();
+    formData.append("title", newEvent.title);
+    formData.append("date", newEvent.date);
+    formData.append("location", newEvent.location);
+    formData.append("description", newEvent.description);
+    if (newEvent.file) formData.append("file", newEvent.file);
+
+    axios.post("http://localhost:5001/api/events", formData, {
+      headers: { "Content-Type": "multipart/form-data" }
+    })
       .then(response => {
         setEvents([...events, response.data]);
-        setNewEvent({ title: "", date: "", location: "", description: "" });
+        setNewEvent({ title: "", date: "", location: "", description: "", file: null });
         setOpen(false);
       })
       .catch(error => console.error("Error adding event:", error));
@@ -56,7 +66,6 @@ function EventPage() {
           </Toolbar>
         </AppBar>
 
-        {/* Search and Add Event Section */}
         <div className="search-add-container">
           <TextField
             variant="outlined"
@@ -91,6 +100,7 @@ function EventPage() {
           <TextField fullWidth margin="dense" label="Date" type="date" name="date" InputLabelProps={{ shrink: true }} value={newEvent.date} onChange={handleChange} />
           <TextField fullWidth margin="dense" label="Location" name="location" value={newEvent.location} onChange={handleChange} />
           <TextField fullWidth margin="dense" label="Description" name="description" multiline rows={3} value={newEvent.description} onChange={handleChange} />
+          <input type="file" onChange={handleFileChange} className="file-input" />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>

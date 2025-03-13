@@ -20,32 +20,42 @@ import {
 function JobPost() {
   const [open, setOpen] = useState(false);
   const [jobPosts, setJobPosts] = useState([]);
-  const [newJob, setNewJob] = useState({ title: "", description: "", salary: "", location: "", image: "" });
+  const [newJob, setNewJob] = useState({ title: "", description: "", link: "", file: null });
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:5001/api/jobs") 
+    axios.get("http://localhost:5001/api/jobs")
       .then(response => setJobPosts(response.data))
       .catch(error => console.error("Error fetching jobs:", error));
   }, []);
-  
+
   useEffect(() => {
     axios.get(`http://localhost:5001/api/jobs?search=${searchTerm}`)
       .then(response => setJobPosts(response.data))
       .catch(error => console.error("Error fetching jobs:", error));
   }, [searchTerm]);
-  
-  
 
   const handleChange = (e) => {
     setNewJob({ ...newJob, [e.target.name]: e.target.value });
   };
 
+  const handleFileChange = (e) => {
+    setNewJob({ ...newJob, file: e.target.files[0] });
+  };
+
   const handleSubmit = () => {
-    axios.post("http://localhost:5001/api/jobs", newJob) 
+    const formData = new FormData();
+    formData.append("title", newJob.title);
+    formData.append("description", newJob.description);
+    formData.append("link", newJob.link);
+    if (newJob.file) formData.append("file", newJob.file);
+
+    axios.post("http://localhost:5001/api/jobs", formData, {
+      headers: { "Content-Type": "multipart/form-data" }
+    })
       .then(response => {
         setJobPosts([...jobPosts, response.data]);
-        setNewJob({ title: "", description: "", salary: "", location: "", image: "" });
+        setNewJob({ title: "", description: "", link: "", file: null });
         setOpen(false);
       })
       .catch(error => console.error("Error posting job:", error));
@@ -55,14 +65,12 @@ function JobPost() {
     <div className="job-container">
       <SidebarMenu className="sidebar" />
       <div className="job-main-content">
-      
         <AppBar position="static" className="appbar">
           <Toolbar>
             <Typography variant="h6" className="title">Job Posting</Typography>
           </Toolbar>
         </AppBar>
 
-        {/* Search Field & Post Job Button */}
         <div className="job-actions">
           <TextField
             className="search-input"
@@ -72,15 +80,9 @@ function JobPost() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Button variant="outlined" className="search-btn">
-            Search
-          </Button>
-          <Button variant="outlined" className="post-job-btn" onClick={() => setOpen(true)}>
-            Post Job
-          </Button>
+          <Button variant="outlined" className="post-job-btn" onClick={() => setOpen(true)}>Post Job</Button>
         </div>
 
-        {/* Job Listings */}
         <Grid container spacing={3} className="job-list">
           {jobPosts.map((job, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
@@ -88,8 +90,7 @@ function JobPost() {
                 <CardContent>
                   {job.image && <img src={job.image} alt="Job" className="job-image" />}
                   <Typography variant="h6" className="job-title">{job.title}</Typography>
-                  <Typography variant="body1" className="job-salary"><strong>Salary:</strong> {job.salary}</Typography>
-                  <Typography variant="body1" className="job-location"><strong>Location:</strong> {job.location}</Typography>
+                  <Typography variant="body1" className="job-link"><strong>Link:</strong> <a href={job.link} target="_blank" rel="noopener noreferrer">{job.link}</a></Typography>
                   <Typography variant="body2" className="job-description">{job.description}</Typography>
                 </CardContent>
               </Card>
@@ -98,15 +99,13 @@ function JobPost() {
         </Grid>
       </div>
 
-      {/* Post Job Dialog */}
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle className="dialog-title">Post a New Job</DialogTitle>
         <DialogContent className="dialog-content">
-          <TextField fullWidth margin="dense" label="Job Title" name="title" value={newJob.title} onChange={handleChange} className="input-field" />
-          <TextField fullWidth margin="dense" label="Job Description" name="description" multiline rows={3} value={newJob.description} onChange={handleChange} className="input-field" />
-          <TextField fullWidth margin="dense" label="Salary" name="salary" value={newJob.salary} onChange={handleChange} className="input-field" />
-          <TextField fullWidth margin="dense" label="Location" name="location" value={newJob.location} onChange={handleChange} className="input-field" />
-          <TextField fullWidth margin="dense" label="Image URL" name="image" value={newJob.image} onChange={handleChange} className="input-field" />
+          <TextField fullWidth margin="dense" label="Title" name="title" value={newJob.title} onChange={handleChange} className="input-field" />
+          <TextField fullWidth margin="dense" label="Description" name="description" multiline rows={3} value={newJob.description} onChange={handleChange} className="input-field" />
+          <TextField fullWidth margin="dense" label="Insert Link Here" name="link" value={newJob.link} onChange={handleChange} className="input-field" />
+          <input type="file" onChange={handleFileChange} className="file-input" />
         </DialogContent>
         <DialogActions className="dialog-actions">
           <Button onClick={() => setOpen(false)}>Cancel</Button>
