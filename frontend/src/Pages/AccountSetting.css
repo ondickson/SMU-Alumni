@@ -1,0 +1,39 @@
+/* Main container with padding */
+.main-container {
+    flex-grow: 1;
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+    background-color: #f9f9f9;
+  }
+  
+  /* Styled title box similar to Events */
+  .title-box {
+    background-color: #272974;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    text-align: left;
+    font-weight: bold;
+    margin-bottom: 20px;
+    width: fit-content;
+  }
+  
+  .title-text {
+    font-size: 18px;
+  }
+  
+  /* Ensure content wrapper aligns properly */
+  .content-wrapper {
+    max-width: 100%;
+    margin: 0;
+  }
+  
+  /* Ensure cards take full width */
+  .MuiGrid-item {
+    width: 100%;
+  }
+  
+  .MuiCard-root {
+    width: 100%;
+  }
