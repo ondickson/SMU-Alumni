@@ -13,8 +13,9 @@ export const getEvents = async (req, res) => {
 // Add a new event
 export const addEvent = async (req, res) => {
   try {
-    const { title, date, location, description } = req.body;
-    const newEvent = new Event({ title, date, location, description });
+    console.log(req.body);
+    const { title, date, location, description, image } = req.body; // Include image
+    const newEvent = new Event({ title, date, location, description, image });
     await newEvent.save();
     res.status(201).json(newEvent);
   } catch (error) {

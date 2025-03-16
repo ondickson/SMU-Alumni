@@ -11,10 +11,11 @@ import jobRoutes from "./routes/jobRoutes.js";
 
 dotenv.config();
 
-const app = express();
+const app = express(); // Define the Express app FIRST
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cors());
 
 // MongoDB Connection
