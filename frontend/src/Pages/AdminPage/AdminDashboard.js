@@ -299,51 +299,6 @@ function AdminDashboard() {
 
           <Grid item xs={12} md={4}>
             <Card className="admin-dashboard-calendar-card">
-              {/* <CardContent>
-                <Typography
-                  variant="h6"
-                  className="admin-dashboard-calendar-title"
-                >
-                  Calendar
-                </Typography>
-                <div className="admin-dashboard-calendar-container">
-                  <Calendar
-                    localizer={localizer}
-                    events={events}
-                    startAccessor="start"
-                    endAccessor="end"
-                    style={{ height: 300, borderRadius: '8px' }}
-                    selectable
-                    onSelectSlot={handleSelectSlot}
-                    eventPropGetter={eventStyleGetter}
-                    components={{
-                      toolbar: ({ label, onNavigate }) => (
-                        <div className="admin-dashboard-calendar-toolbar">
-                          <Button
-                            onClick={() => onNavigate('PREV')}
-                            className="admin-dashboard-calendar-button"
-                          >
-                            {'<'}
-                          </Button>
-                          <Typography variant="h6">{label}</Typography>
-                          <Button
-                            onClick={() => onNavigate('NEXT')}
-                            className="admin-dashboard-calendar-button"
-                          >
-                            {'>'}
-                          </Button>
-                        </div>
-                      ),
-                      event: ({ event }) => (
-                        <Tooltip title={event.title} arrow>
-                          <div>{event.title}</div>
-                        </Tooltip>
-                      ),
-                    }}
-                  />
-                
-                </div>
-              </CardContent> */}
               <CardContent>
                 <Typography variant="h6" className="admin-dashboard-calendar-title">
                   Calendar
