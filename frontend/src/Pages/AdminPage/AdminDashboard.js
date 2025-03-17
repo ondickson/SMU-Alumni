@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -109,19 +110,6 @@ const eventStyleGetter = () => ({
 });
 
 
-const dayPropGetter = (date) => {
-  const eventsOnDay = events.filter(event => 
-    moment(event.start).isSame(date, 'day')
-  );
-  
-  const className = eventsOnDay.length > 0 
-    ? `has-event events-count-${Math.min(eventsOnDay.length, 3)}` 
-    : '';
-  
-  return { className };
-};
-
-
 const modalStyle = {
   position: 'absolute',
   top: '50%',
@@ -210,16 +198,17 @@ function AdminDashboard() {
     },
   ]);
   
- // Delete this entire block (around lines 91-99)
-const dayPropGetter = (date) => {
-  const hasEvent = events.some(event => 
-    moment(event.start).isSame(date, 'day')
-  );
+  const dayPropGetter = (date) => {
+    const eventsOnDay = events.filter(event => 
+      moment(event.start).isSame(date, 'day')
+    );
   
-  return {
-    className: hasEvent ? 'has-event' : '',
+    const className = eventsOnDay.length > 0 
+      ? `has-event events-count-${Math.min(eventsOnDay.length, 3)}` 
+      : '';
+  
+    return { className };
   };
-};
 
   // Function to render stars based on rating
   const renderStars = (rating) => {
@@ -544,3 +533,4 @@ const dayPropGetter = (date) => {
 }
 
 export default AdminDashboard;
+
