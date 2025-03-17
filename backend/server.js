@@ -32,6 +32,7 @@ app.use('/api/admin', adminRoutes);
 app.use("/api/alumni", alumniRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/jobs", jobRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5001;

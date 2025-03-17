@@ -1,4 +1,6 @@
 import Alumni from "../models/Alumni.js";
+import JobPost from "../models/JobPost.js";
+import Event from "../models/Event.js";
 
 export const getAllAlumni = async (req, res) => {
     try {
@@ -68,4 +70,16 @@ export const updateAlumni = async (req, res) => {
     }
 };
 
+
+export const getTotals = async (req, res) => {
+    try {
+      const totalAlumni = await Alumni.countDocuments();
+      const totalJobs = await JobPost.countDocuments();
+      const totalEvents = await Event.countDocuments({ date: { $gte: new Date() } });
+  
+      res.json({ totalAlumni, totalJobs, totalEvents });
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching totals", error });
+    }
+  };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   AppBar, 
@@ -33,7 +33,7 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./AdminDashboard.css";
 
-const sidebarWidth = 250;
+// const sidebarWidth = 250;
 const barChartData = [
   { month: "Jan", events: 5000 },
   { month: "Feb", events: 7000 },
@@ -91,12 +91,26 @@ const clientFeedback = [
 function AdminDashboard() {
   const navigate = useNavigate();
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
+  const [totals, setTotals] = useState({ totalAlumni: 0, totalJobs: 0, totalEvents: 0 });
 
-  const handleNavigate = (path, title) => {
-    if (title === "FeedBacks") {
-      // Open modal instead of navigating
-      setFeedbackModalOpen(true);
-    } else if (path) {
+  useEffect(() => {
+    const fetchTotals = async () => {
+      try {
+        const response = await fetch("http://localhost:5001/api/admin/totals");
+        const data = await response.json();
+        console.log("Fetched totals:", data);
+        setTotals(data);
+      } catch (error) {
+        console.error("Error fetching totals:", error);
+      }
+    };
+
+    fetchTotals();
+  }, []);
+  
+
+  const handleNavigate = (path) => {
+    if (path) {
       navigate(path);
     }
   };
@@ -154,9 +168,9 @@ function AdminDashboard() {
 
         <Grid container spacing={3} style={{ marginTop: "20px" }}>
           {[
-            { title: "Incoming Events", value: "11", path: "/EventPage" },
-            { title: "Open Jobs", value: "20", path: "/JobPost" },
-            { title: "Total Alumni Registered", value: "233", path: "/AlumniInformation" },
+            { title: "Upcoming Events", value: totals.totalEvents, path: "/EventPage" },
+            { title: "Open Jobs", value: totals.totalJobs, path: "/JobPost" },
+            { title: "Total Alumni Registered", value: totals.totalAlumni, path: "/AlumniInformation" },
             { title: "FeedBacks", value: "2", path: "/AlumniInformation" }
           ].map((stat, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
@@ -164,16 +178,18 @@ function AdminDashboard() {
                 <Typography variant="h5" className="admin-dashboard-card-title">{stat.value}</Typography>
                 <Typography variant="body2" color="textSecondary">{stat.title}</Typography>
                 {stat.path ? (
+
                   <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    className="admin-dashboard-card-button"
-                    onClick={() => handleNavigate(stat.path, stat.title)}
-                  >
-                    View Details
-                  </Button>
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  className="admin-dashboard-card-button"
+                  onClick={() => handleNavigate(stat.path)}
+                >
+                  View Details
+                </Button>
                 ) : null}
+                
               </Card>
             </Grid>
           ))}

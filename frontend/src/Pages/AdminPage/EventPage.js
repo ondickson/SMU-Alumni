@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import "./EventPage.css";
-import SidebarMenu from "../Sidebar";
+import './EventPage.css';
+import SidebarMenu from '../Sidebar';
 import {
   AppBar,
   Toolbar,
@@ -16,18 +16,18 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-} from "@mui/material";
+} from '@mui/material';
 
 function EventPage() {
   const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [events, setEvents] = useState([]); // Store fetched events
   const [eventData, setEventData] = useState({
-    title: "",
-    date: "",
-    location: "",
-    description: "",
-    image: "",
+    title: '',
+    date: '',
+    location: '',
+    description: '',
+    image: '',
   });
 
   useEffect(() => {
@@ -36,10 +36,10 @@ function EventPage() {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get("http://localhost:5001/api/events");
+      const response = await axios.get('http://localhost:5001/api/events');
       setEvents(response.data);
     } catch (error) {
-      console.error("Error fetching events:", error);
+      console.error('Error fetching events:', error);
     }
   };
 
@@ -60,12 +60,18 @@ function EventPage() {
 
   const handleAddEvent = async () => {
     try {
-      const response = await axios.post("http://localhost:5001/api/events", eventData);
-      console.log("Event added:", response.data); // Debugging
+      const response = await axios.post(
+        'http://localhost:5001/api/events',
+        eventData,
+      );
+      console.log('Event added:', response.data); // Debugging
       setOpen(false);
       fetchEvents();
     } catch (error) {
-      console.error("Error adding event:", error.response ? error.response.data : error.message);
+      console.error(
+        'Error adding event:',
+        error.response ? error.response.data : error.message,
+      );
     }
   };
 
@@ -75,7 +81,9 @@ function EventPage() {
       <div className="main-content">
         <AppBar position="static" className="appbar">
           <Toolbar>
-            <Typography variant="h6" className="title">Events Management</Typography>
+            <Typography variant="h6" className="title">
+              Events Management
+            </Typography>
           </Toolbar>
         </AppBar>
 
@@ -88,7 +96,12 @@ function EventPage() {
             className="search-field"
             size="small"
           />
-          <Button variant="outlined" color="primary" className="add-event-button" onClick={() => setOpen(true)}>
+          <Button
+            variant="outlined"
+            color="primary"
+            className="add-event-button"
+            onClick={() => setOpen(true)}
+          >
             Add Event
           </Button>
         </div>
@@ -97,12 +110,37 @@ function EventPage() {
           {events.map((event) => (
             <Grid item xs={12} sm={6} md={4} key={event._id}>
               <Card className="event-card">
-                <CardMedia component="img" height="200" image={event.image} alt={event.title} />
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={event.image}
+                  alt={event.title}
+                />
                 <CardContent>
-                  <Typography variant="h5" className="event-title">{event.title}</Typography>
-                  <Typography variant="body2" color="textSecondary" className="event-date">
-                    📅 {event.date} | 📍 {event.location}
+                  <Typography variant="h5" className="event-title">
+                    {event.title}
                   </Typography>
+                  {/* <Typography variant="body2" color="textSecondary" className="event-date">
+                    📅 {event.date} | 📍 {event.location}
+                  </Typography> */}
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    className="event-date"
+                  >
+                    📅{' '}
+                    {new Date(event.date).toLocaleString('en-US', {
+                      weekday: 'short',
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true,
+                    })}{' '}
+                    | 📍 {event.location}
+                  </Typography>
+
                   <Typography variant="body2" className="event-description">
                     {event.description}
                   </Typography>
@@ -117,15 +155,50 @@ function EventPage() {
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle className="dialog-title">Add New Event</DialogTitle>
         <DialogContent className="dialog-content">
-          <TextField name="title" fullWidth margin="dense" label="Event Title" onChange={handleChange} />
-          <TextField name="date" fullWidth margin="dense" label="Date" type="date" InputLabelProps={{ shrink: true }} onChange={handleChange} />
-          <TextField name="location" fullWidth margin="dense" label="Location" onChange={handleChange} />
-          <TextField name="description" fullWidth margin="dense" label="Description" multiline rows={3} onChange={handleChange} />
-          <input type="file" className="file-input" accept="image/*" onChange={handleImageUpload} />
+          <TextField
+            name="title"
+            fullWidth
+            margin="dense"
+            label="Event Title"
+            onChange={handleChange}
+          />
+          <TextField
+            name="date"
+            fullWidth
+            margin="dense"
+            label="Date"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            onChange={handleChange}
+          />
+          <TextField
+            name="location"
+            fullWidth
+            margin="dense"
+            label="Location"
+            onChange={handleChange}
+          />
+          <TextField
+            name="description"
+            fullWidth
+            margin="dense"
+            label="Description"
+            multiline
+            rows={3}
+            onChange={handleChange}
+          />
+          <input
+            type="file"
+            className="file-input"
+            accept="image/*"
+            onChange={handleImageUpload}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button variant="contained" color="primary" onClick={handleAddEvent}>Add Event</Button>
+          <Button variant="contained" color="primary" onClick={handleAddEvent}>
+            Add Event
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
