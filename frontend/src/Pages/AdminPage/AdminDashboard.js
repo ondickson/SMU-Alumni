@@ -99,15 +99,28 @@ const clientFeedback = [
     date: '2025-03-10',
   },
 ];
-
 const eventStyleGetter = () => ({
   style: {
-    backgroundColor: '#272974',
-    color: 'white',
-    borderRadius: '4px',
-    padding: '5px',
+    backgroundColor: 'transparent',
+    border: 'none',
+    display: 'none'
   },
+  className: 'event-highlight'
 });
+
+
+const dayPropGetter = (date) => {
+  const eventsOnDay = events.filter(event => 
+    moment(event.start).isSame(date, 'day')
+  );
+  
+  const className = eventsOnDay.length > 0 
+    ? `has-event events-count-${Math.min(eventsOnDay.length, 3)}` 
+    : '';
+  
+  return { className };
+};
+
 
 const modalStyle = {
   position: 'absolute',
@@ -124,6 +137,7 @@ const modalStyle = {
   overflow: 'auto',
 };
 
+
 function AdminDashboard() {
   const navigate = useNavigate();
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
@@ -138,15 +152,13 @@ function AdminDashboard() {
     setView(newView);
   };
   
-
   const handleSelectEvent = (event) => {
     setSelectedEvent(event);
   };
-
   useEffect(() => {
     const fetchTotals = async () => {
       try {
-        const response = await fetch('http://localhost:5001/api/admin/totals');
+        const response = await fetch('http://localhost:5000/api/admin/totals');
         const data = await response.json();
         // console.log('Fetched totals:', data);
         setTotals(data);
@@ -184,7 +196,7 @@ function AdminDashboard() {
       navigate(path);
     }
   };
-
+ 
   const [events, setEvents] = useState([
     {
       title: 'Alumni Meetup',
@@ -197,7 +209,17 @@ function AdminDashboard() {
       end: new Date(2025, 5, 10),
     },
   ]);
-
+  
+ // Delete this entire block (around lines 91-99)
+const dayPropGetter = (date) => {
+  const hasEvent = events.some(event => 
+    moment(event.start).isSame(date, 'day')
+  );
+  
+  return {
+    className: hasEvent ? 'has-event' : '',
+  };
+};
 
   // Function to render stars based on rating
   const renderStars = (rating) => {
@@ -318,56 +340,96 @@ function AdminDashboard() {
                   </IconButton>
                 </div>
                 <Calendar
-                  localizer={localizer}
-                  events={events}
-                  startAccessor="start"
-                  endAccessor="end"
-                  style={{ height: 500, borderRadius: '8px' }}
-                  selectable
-                  onSelectEvent={handleSelectEvent}
-                  eventPropGetter={eventStyleGetter}
-                  view={view}
-                  onView={setView}
-                  components={{
-                    toolbar: ({ label, onNavigate }) => (
-                      <div className="admin-dashboard-calendar-toolbar">
-                        <IconButton onClick={() => onNavigate('PREV')}>
-                          <BackIcon />
-                        </IconButton>
-                        <Typography variant="h6">{label}</Typography>
-                        <IconButton onClick={() => onNavigate('NEXT')}>
-                          <NextIcon />
-                        </IconButton>
-                      </div>
-                    ),
-                    event: ({ event }) => (
-                      <Tooltip title={event.description} arrow>
-                        <div>{event.title}</div>
-                      </Tooltip>
-                    ),
-                  }}
-                />
+  localizer={localizer}
+  events={events}
+  startAccessor="start"
+  endAccessor="end"
+  style={{ height: 500, borderRadius: '8px' }}
+  selectable
+  onSelectEvent={handleSelectEvent}
+  onSelectSlot={(slotInfo) => {
+    const clickedDate = slotInfo.start;
+    const eventsOnDay = events.filter(event => 
+      moment(event.start).isSame(clickedDate, 'day')
+    );
+    if (eventsOnDay.length > 0) {
+      // Instead of just taking the first event, set a custom object with all events
+      setSelectedEvent({
+        isMultiEvent: true,
+        date: clickedDate,
+        events: eventsOnDay
+      });
+    }
+  }}
+  eventPropGetter={eventStyleGetter}
+  dayPropGetter={dayPropGetter}
+  view={view}
+  onView={setView}
+  components={{
+    toolbar: ({ label, onNavigate }) => (
+      <div className="admin-dashboard-calendar-toolbar">
+        <IconButton onClick={() => onNavigate('PREV')}>
+          <BackIcon />
+        </IconButton>
+        <Typography variant="h6">{label}</Typography>
+        <IconButton onClick={() => onNavigate('NEXT')}>
+          <NextIcon />
+        </IconButton>
+      </div>
+    ),
+  }}
+/>
               </CardContent>
             </Card>
           </Grid>
         </Grid>
 
         <Modal open={!!selectedEvent} onClose={() => setSelectedEvent(null)}>
-          <Box sx={modalStyle}>
-            <Typography variant="h6">{selectedEvent?.title}</Typography>
-            <Typography>
-              <strong>Date:</strong> {selectedEvent?.start.toDateString()}
-            </Typography>
-            <Typography>
-              <strong>Location:</strong> {selectedEvent?.location}
-            </Typography>
-            <Typography>
-              <strong>Description:</strong> {selectedEvent?.description}
-            </Typography>
-            <Button onClick={() => setSelectedEvent(null)}>Close</Button>
+  <Box sx={modalStyle}>
+    {selectedEvent?.isMultiEvent ? (
+      <>
+        <Typography variant="h6">Events on {selectedEvent.date.toDateString()}</Typography>
+        <Divider sx={{ my: 2 }} />
+        {selectedEvent.events.map((event, index) => (
+          <Box key={index} sx={{ mb: index < selectedEvent.events.length - 1 ? 3 : 0 }}>
+            <Typography variant="subtitle1" fontWeight="bold">{event.title}</Typography>
+            {event.location && (
+              <Typography>
+                <strong>Location:</strong> {event.location}
+              </Typography>
+            )}
+            {event.description && (
+              <Typography>
+                <strong>Description:</strong> {event.description}
+              </Typography>
+            )}
+            {index < selectedEvent.events.length - 1 && <Divider sx={{ mt: 2 }} />}
           </Box>
-        </Modal>
-
+        ))}
+      </>
+    ) : (
+      <>
+        <Typography variant="h6">{selectedEvent?.title}</Typography>
+        <Typography>
+          <strong>Date:</strong> {selectedEvent?.start.toDateString()}
+        </Typography>
+        <Typography>
+          <strong>Location:</strong> {selectedEvent?.location}
+        </Typography>
+        <Typography>
+          <strong>Description:</strong> {selectedEvent?.description}
+        </Typography>
+      </>
+    )}
+    <Button 
+      onClick={() => setSelectedEvent(null)}
+      variant="contained"
+      sx={{ mt: 2 }}
+    >
+      Close
+    </Button>
+  </Box>
+</Modal>
         {/* Simple Feedback Survey Modal */}
         <Modal
           open={feedbackModalOpen}
