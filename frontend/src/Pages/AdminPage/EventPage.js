@@ -60,20 +60,17 @@ function EventPage() {
 
   const handleAddEvent = async () => {
     try {
-      const response = await axios.post(
-        'http://localhost:5001/api/events',
-        eventData,
-      );
-      console.log('Event added:', response.data); // Debugging
+      await axios.post('http://localhost:5001/api/events', eventData);
       setOpen(false);
       fetchEvents();
     } catch (error) {
       console.error(
         'Error adding event:',
-        error.response ? error.response.data : error.message,
+        error.response ? error.response.data : error.message
       );
     }
   };
+  
 
   return (
     <div className="container">
@@ -120,9 +117,6 @@ function EventPage() {
                   <Typography variant="h5" className="event-title">
                     {event.title}
                   </Typography>
-                  {/* <Typography variant="body2" color="textSecondary" className="event-date">
-                    📅 {event.date} | 📍 {event.location}
-                  </Typography> */}
                   <Typography
                     variant="body2"
                     color="textSecondary"
