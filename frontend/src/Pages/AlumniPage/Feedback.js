@@ -46,7 +46,7 @@ const Feedback = () => {
   };
 
   return (
-    <div className="feedback-container">
+    <div className="feedbck">
       <Sidebar />
       <div className="feedback-content">
         <div className="feedback-card">
