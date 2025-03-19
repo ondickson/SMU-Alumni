@@ -1,22 +1,38 @@
 import React, { useState } from 'react';
 import { 
   AppBar, Toolbar, Typography, Box, Button, Card, CardContent, Grid, 
-  TextField, Select, MenuItem, Table, TableBody, TableCell, TableContainer, 
+  TextField, Table, TableBody, TableCell, TableContainer, 
   TableHead, TableRow, Paper, Switch, IconButton, Dialog, DialogActions, 
-  DialogContent, DialogTitle 
+  DialogContent, DialogTitle, Divider, List, ListItem, ListItemText
 } from '@mui/material';
-import { Edit, Delete, Settings } from '@mui/icons-material';
+import { Edit, Delete, Settings, Save } from '@mui/icons-material';
 import Sidebar from '../Sidebar'; // Import Sidebar
 import './AccountSetting.css'; // Import CSS for styling
 
 function AccountSetting() {
   // State to manage user data
   const [users, setUsers] = useState([
-    { name: 'John Doe', email: 'johndoe@example.com', active: true },
+    { 
+      name: 'John Doe', 
+      email: 'johndoe@example.com', 
+      active: true,
+      idNumber: 'EMP001',
+      position: 'Manager'
+    },
   ]);
 
   const [open, setOpen] = useState(false);
-  const [newUser, setNewUser] = useState({ name: '', email: '', role: '' });
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUserIndex, setSelectedUserIndex] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editedUser, setEditedUser] = useState(null);
+  const [newUser, setNewUser] = useState({ 
+    name: '', 
+    email: '', 
+    idNumber: '',
+    position: ''
+  });
 
   // Function to toggle active status
   const handleToggleActive = (index) => {
@@ -31,11 +47,48 @@ function AccountSetting() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  // Function to handle details modal
+  const handleDetailsOpen = (user, index) => {
+    setSelectedUser(user);
+    setSelectedUserIndex(index);
+    setEditedUser({...user});
+    setEditMode(false);
+    setDetailsOpen(true);
+  };
+  
+  const handleDetailsClose = () => {
+    setDetailsOpen(false);
+    setEditMode(false);
+  };
+
+  // Function to toggle edit mode
+  const handleToggleEdit = () => {
+    setEditMode(!editMode);
+  };
+
+  // Function to save edited user
+  const handleSaveEdit = () => {
+    if (editedUser.name && editedUser.email && editedUser.idNumber && editedUser.position) {
+      setUsers(prevUsers => 
+        prevUsers.map((user, index) => 
+          index === selectedUserIndex ? editedUser : user
+        )
+      );
+      setSelectedUser(editedUser);
+      setEditMode(false);
+    }
+  };
+
+  // Function to handle edit field changes
+  const handleEditChange = (field, value) => {
+    setEditedUser({...editedUser, [field]: value});
+  };
+
   // Function to add user
   const handleAddUser = () => {
-    if (newUser.name && newUser.email && newUser.role) {
+    if (newUser.name && newUser.email && newUser.idNumber && newUser.position) {
       setUsers([...users, { ...newUser, active: true }]);
-      setNewUser({ name: '', email: '', role: '' });
+      setNewUser({ name: '', email: '', idNumber: '', position: '' });
       handleClose();
     }
   };
@@ -65,25 +118,13 @@ function AccountSetting() {
                     <h3>Manage Users</h3>
                     <br />
                     <Grid container spacing={2} alignItems="center">
-                      <Grid item xs={3}>
+                      <Grid item xs={4}>
                         <TextField fullWidth label="Name" variant="outlined" />
                       </Grid>
-                      <Grid item xs={3}>
+                      <Grid item xs={4}>
                         <TextField fullWidth label="Email" variant="outlined" />
                       </Grid>
-                      <Grid item xs={3}>
-                        <Select 
-                          fullWidth 
-                          variant="outlined"
-                          displayEmpty
-                          defaultValue=""
-                        >
-                          <MenuItem value="" disabled>Select Role</MenuItem>
-                          <MenuItem value="Admin">Admin</MenuItem>
-                          <MenuItem value="Alumni">Alumni</MenuItem>
-                        </Select>
-                      </Grid>
-                      <Grid item xs={1.5} display="flex" alignItems="stretch">
+                      <Grid item xs={2} display="flex" alignItems="stretch">
                         <Button 
                           variant="outlined" 
                           color="primary" 
@@ -148,7 +189,10 @@ function AccountSetting() {
                                 <IconButton sx={{ color: '#272974' }}>
                                   <Edit />
                                 </IconButton>
-                                <IconButton sx={{ color: 'grey' }}>
+                                <IconButton 
+                                  sx={{ color: 'grey' }}
+                                  onClick={() => handleDetailsOpen(user, index)}
+                                >
                                   <Settings />
                                 </IconButton>
                                 <IconButton color="error">
@@ -202,24 +246,147 @@ function AccountSetting() {
             value={newUser.email} 
             onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
           />
-
-          <Select 
+          <TextField 
             fullWidth 
-            value={newUser.role || ""} 
-            onChange={(e) => setNewUser({ ...newUser, role: e.target.value })} 
-            variant="outlined"
-            displayEmpty
-            margin="dense"
-          >
-            <MenuItem value="" disabled>Select Role</MenuItem>
-            <MenuItem value="Admin">Admin</MenuItem>
-            <MenuItem value="Alumni">Alumni</MenuItem>
-          </Select>
+            label="ID Number" 
+            variant="outlined" 
+            margin="dense" 
+            value={newUser.idNumber} 
+            onChange={(e) => setNewUser({ ...newUser, idNumber: e.target.value })}
+          />
+          <TextField 
+            fullWidth 
+            label="Position" 
+            variant="outlined" 
+            margin="dense" 
+            value={newUser.position} 
+            onChange={(e) => setNewUser({ ...newUser, position: e.target.value })}
+          />
          
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleAddUser} variant="contained" color="primary">Add</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* User Details Modal */}
+      <Dialog 
+        open={detailsOpen} 
+        onClose={handleDetailsClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ bgcolor: '#f5f5f5' }}>
+          User Details
+        </DialogTitle>
+        <DialogContent dividers>
+          {selectedUser && (
+            <List>
+              <ListItem>
+                {editMode ? (
+                  <TextField
+                    fullWidth
+                    label="Name"
+                    value={editedUser.name}
+                    onChange={(e) => handleEditChange('name', e.target.value)}
+                    variant="outlined"
+                    margin="dense"
+                  />
+                ) : (
+                  <ListItemText 
+                    primary="Name" 
+                    secondary={selectedUser.name} 
+                    primaryTypographyProps={{ fontWeight: 'bold' }}
+                  />
+                )}
+              </ListItem>
+              <Divider />
+              <ListItem>
+                {editMode ? (
+                  <TextField
+                    fullWidth
+                    label="Email"
+                    value={editedUser.email}
+                    onChange={(e) => handleEditChange('email', e.target.value)}
+                    variant="outlined"
+                    margin="dense"
+                  />
+                ) : (
+                  <ListItemText 
+                    primary="Email" 
+                    secondary={selectedUser.email} 
+                    primaryTypographyProps={{ fontWeight: 'bold' }}
+                  />
+                )}
+              </ListItem>
+              <Divider />
+              <ListItem>
+                {editMode ? (
+                  <TextField
+                    fullWidth
+                    label="ID Number"
+                    value={editedUser.idNumber}
+                    onChange={(e) => handleEditChange('idNumber', e.target.value)}
+                    variant="outlined"
+                    margin="dense"
+                  />
+                ) : (
+                  <ListItemText 
+                    primary="ID Number" 
+                    secondary={selectedUser.idNumber} 
+                    primaryTypographyProps={{ fontWeight: 'bold' }}
+                  />
+                )}
+              </ListItem>
+              <Divider />
+              <ListItem>
+                {editMode ? (
+                  <TextField
+                    fullWidth
+                    label="Position"
+                    value={editedUser.position}
+                    onChange={(e) => handleEditChange('position', e.target.value)}
+                    variant="outlined"
+                    margin="dense"
+                  />
+                ) : (
+                  <ListItemText 
+                    primary="Position" 
+                    secondary={selectedUser.position} 
+                    primaryTypographyProps={{ fontWeight: 'bold' }}
+                  />
+                )}
+              </ListItem>
+              <Divider />
+              <ListItem>
+                <ListItemText 
+                  primary="Status" 
+                  secondary={selectedUser.active ? "Active" : "Inactive"} 
+                  primaryTypographyProps={{ fontWeight: 'bold' }}
+                />
+                {editMode && (
+                  <Switch
+                    checked={editedUser.active}
+                    onChange={(e) => handleEditChange('active', e.target.checked)}
+                    color="primary"
+                  />
+                )}
+              </ListItem>
+            </List>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            startIcon={editMode ? <Save /> : <Edit />}
+            onClick={editMode ? handleSaveEdit : handleToggleEdit}
+            sx={{ mr: 1 }}
+          >
+            {editMode ? 'Save' : 'Edit'}
+          </Button>
+          <Button onClick={handleDetailsClose}>Close</Button>
         </DialogActions>
       </Dialog>
     </Box>
