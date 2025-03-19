@@ -1,0 +1,46 @@
+/* === Main Layout === */
+.feedback-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    padding: 20px;
+  }
+  
+  /* === Feedback Card === */
+  .feedback-card {
+    max-width: 900px;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* === Feedback Title === */
+  .feedback-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  /* === Section Title === */
+  .feedback-section-title {
+    margin-top: 20px;
+    font-weight: bold;
+  }
+  
+  /* === Input Fields === */
+  .feedback-input {
+    margin-top: 12px !important;
+  }
+  
+  /* === Submit Button === */
+  .feedback-submit-btn {
+    margin-top: 20px;
+    background-color: #272974;
+    color: white;
+    font-weight: bold;
+  }
+  

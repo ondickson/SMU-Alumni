@@ -2,7 +2,7 @@ import React from "react";
 import { Sidebar as ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Link } from "react-router-dom";
 import { Typography } from "@mui/material";
-import { Home, AccountCircle, Group, WorkOutline, Event, Report, Security, Settings, Logout, Feedback } from "@mui/icons-material";
+import { Home, AccountCircle, Group, WorkOutline, Event, Security, Settings, Logout, Feedback } from "@mui/icons-material";
 import "./Sidebar.css"; 
 
 const sidebarWidth = 250; 
@@ -45,7 +45,9 @@ const SidebarMenu = () => {
           ) : (
             <>
               <MenuItem icon={<Home />} component={<Link to="/AlumniDashboard" />}>Home</MenuItem>
-              <MenuItem icon={<AccountCircle />} component={<Link to="/Profile" />}>Profile</MenuItem>
+              <MenuItem icon={<Settings />} component={<Link to="/Profile" />}>Profile</MenuItem>
+              <MenuItem icon={<Event />} component={<Link to="/Events" />}>Events</MenuItem>
+              <MenuItem icon={<WorkOutline />} component={<Link to="/Jobs" />}>Jobs</MenuItem>
               <MenuItem icon={<AccountCircle />} component={<Link to="/Feedback" />}>Feedback</MenuItem>
             </>
           )}
