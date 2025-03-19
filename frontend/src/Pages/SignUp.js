@@ -23,7 +23,8 @@ const SignUp = () => {
     seniorHighInSMU: '',
     tertiaryInSMU: '',
     studiedButNotGraduated: '',
-    employmentStatus: '',
+    employmentStatus: [],
+    otherEmploymentStatus: '',
     currentWork: '',
     companyAddress: '',
     address: '',
@@ -31,6 +32,7 @@ const SignUp = () => {
     contactNumber: '',
     photo: null
   });
+  const [photoPreview, setPhotoPreview] = useState(null);
   const [errors, setErrors] = useState({});
   
   const navigate = useNavigate();
@@ -38,7 +40,17 @@ const SignUp = () => {
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
     if (type === 'file') {
-      setFormData({ ...formData, [name]: files[0] });
+      const file = files[0];
+      setFormData({ ...formData, [name]: file });
+      
+      // Create preview for photo
+      if (file && name === 'photo') {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPhotoPreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -46,6 +58,32 @@ const SignUp = () => {
     // Clear related errors when typing
     if (errors[name]) {
       setErrors({...errors, [name]: ''});
+    }
+  };
+
+  // Handle checkbox changes for employment status
+  const handleEmploymentStatusChange = (e) => {
+    const { value, checked } = e.target;
+    
+    if (checked) {
+      setFormData({
+        ...formData,
+        employmentStatus: [...formData.employmentStatus, value]
+      });
+    } else {
+      setFormData({
+        ...formData,
+        employmentStatus: formData.employmentStatus.filter(status => status !== value)
+      });
+      
+      // If "Other" is unchecked, clear the otherEmploymentStatus field
+      if (value === "Other") {
+        setFormData({
+          ...formData,
+          employmentStatus: formData.employmentStatus.filter(status => status !== value),
+          otherEmploymentStatus: ''
+        });
+      }
     }
   };
 
@@ -245,19 +283,30 @@ const SignUp = () => {
       <>
         <h2 className="step-title">Step 3: Education Information</h2>
         <div className="form-grid">
-          <div className="form-field">
-            <label>School/Level <span className="required">*</span></label>
-            <input
-              type="text"
-              name="schoolLevel"
-              value={formData.schoolLevel}
-              onChange={handleChange}
-              className="input-field"
-              placeholder="Enter school/level"
-              required
-            />
-          </div>
-          
+        <div className="form-field">
+  <label>School/Level <span className="required">*</span></label>
+  <select
+    name="schoolLevel"
+    value={formData.schoolLevel}
+    onChange={handleChange}
+    className="input-field"
+    required
+  >
+    <option value="" disabled>Select school/level</option>
+    <option value="School of Accountancy and Business">School of Accountancy and Business</option>
+    <option value="School of Engineering, Architecture, and Information Technology">
+      School of Engineering, Architecture, and Information Technology
+    </option>
+    <option value="School of Health and Natural Sciences">School of Health and Natural Sciences</option>
+    <option value="School of Teacher Education and Humanities">School of Teacher Education and Humanities</option>
+    <option value="School of Graduate Studies">School of Graduate Studies</option>
+    <option value="College of Law">College of Law</option>
+    <option value="Grade School">Grade School</option>
+    <option value="Junior High School">Junior High School</option>
+    <option value="Senior High School">Senior High School</option>
+  </select>
+</div>
+
           <div className="form-field">
             <label>Course/Program <span className="required">*</span></label>
             <input
@@ -285,8 +334,8 @@ const SignUp = () => {
               <option value="No">No</option>
             </select>
           </div>
-          
-          <div className="form-field">
+          <div></div>
+          <div className="form-field full-width">
             <label>Did you take your Grade School/Elementary in SMU? <span className="required">*</span></label>
             <input
               type="text"
@@ -294,12 +343,14 @@ const SignUp = () => {
               value={formData.gradeSchoolInSMU}
               onChange={handleChange}
               className="input-field"
-              placeholder="If yes, indicate graduation year otherwise write NO"
+              
+              placeholder="If YES, indicate graduation year otherwise write NO"
               required
             />
+            
           </div>
           
-          <div className="form-field">
+          <div className="form-field full-width">
             <label>Did you take your Junior High School in SMU? <span className="required">*</span></label>
             <input
               type="text"
@@ -307,12 +358,12 @@ const SignUp = () => {
               value={formData.juniorHighInSMU}
               onChange={handleChange}
               className="input-field"
-              placeholder="If yes, indicate graduation year otherwise write NO"
+              placeholder="If YES, indicate graduation year otherwise write NO"
               required
             />
           </div>
           
-          <div className="form-field">
+          <div className="form-field full-width">
             <label>Did you take your Senior High School in SMU? <span className="required">*</span></label>
             <input
               type="text"
@@ -320,12 +371,12 @@ const SignUp = () => {
               value={formData.seniorHighInSMU}
               onChange={handleChange}
               className="input-field"
-              placeholder="If yes, indicate graduation year and STRAND otherwise write NO"
+              placeholder="If YES, indicate graduation year and STRAND otherwise write NO"
               required
             />
           </div>
           
-          <div className="form-field">
+          <div className="form-field full-width">
             <label>Did you take your tertiary education in SMU? <span className="required">*</span></label>
             <input
               type="text"
@@ -333,7 +384,7 @@ const SignUp = () => {
               value={formData.tertiaryInSMU}
               onChange={handleChange}
               className="input-field"
-              placeholder="If yes, indicate graduation year otherwise write NO"
+              placeholder="If YES, indicate graduation year otherwise write NO"
               required
             />
           </div>
@@ -348,7 +399,7 @@ const SignUp = () => {
               value={formData.studiedButNotGraduated}
               onChange={handleChange}
               className="input-field"
-              placeholder="If yes, indicate year and educational level otherwise write N/A"
+              placeholder="If YES, indicate year and educational level otherwise write N/A"
               required
             />
           </div>
@@ -372,22 +423,78 @@ const SignUp = () => {
       <>
         <h2 className="step-title">Step 4: Employment & Contact Information</h2>
         <div className="form-grid">
-          <div className="form-field">
-            <label>Employment status <span className="required">*</span></label>
-            <select
-              name="employmentStatus"
-              value={formData.employmentStatus}
-              onChange={handleChange}
-              className="select-field"
-              required
-            >
-              <option value="">Select status</option>
-              <option value="Government Employee">Government Employee</option>
-              <option value="Private Employee">Private Employee</option>
-              <option value="Self-Employed">Self-Employed</option>
-              <option value="N/A">N/A</option>
-              <option value="Other">Other</option>
-            </select>
+          <div className="form-field full-width">
+            <label>Employment status <span className="required">*</span> (Select all that apply)</label>
+            <div className="checkbox-group">
+              <div className="checkbox-item">
+                <input
+                  type="checkbox"
+                  id="government"
+                  value="Government Employee"
+                  checked={formData.employmentStatus.includes("Government Employee")}
+                  onChange={handleEmploymentStatusChange}
+                />
+                <label htmlFor="government">Government Employee</label>
+              </div>
+              
+              <div className="checkbox-item">
+                <input
+                  type="checkbox"
+                  id="private"
+                  value="Private Employee"
+                  checked={formData.employmentStatus.includes("Private Employee")}
+                  onChange={handleEmploymentStatusChange}
+                />
+                <label htmlFor="private">Private Employee</label>
+              </div>
+              
+              <div className="checkbox-item">
+                <input
+                  type="checkbox"
+                  id="self-employed"
+                  value="Self-Employed"
+                  checked={formData.employmentStatus.includes("Self-Employed")}
+                  onChange={handleEmploymentStatusChange}
+                />
+                <label htmlFor="self-employed">Self-Employed</label>
+              </div>
+              
+              <div className="checkbox-item">
+                <input
+                  type="checkbox"
+                  id="na"
+                  value="N/A"
+                  checked={formData.employmentStatus.includes("N/A")}
+                  onChange={handleEmploymentStatusChange}
+                />
+                <label htmlFor="na">N/A</label>
+              </div>
+              
+              <div className="checkbox-item">
+                <input
+                  type="checkbox"
+                  id="other"
+                  value="Other"
+                  checked={formData.employmentStatus.includes("Other")}
+                  onChange={handleEmploymentStatusChange}
+                />
+                <label htmlFor="other">Other</label>
+              </div>
+            </div>
+            
+            {formData.employmentStatus.includes("Other") && (
+              <div className="form-field">
+                <input
+                  type="text"
+                  name="otherEmploymentStatus"
+                  value={formData.otherEmploymentStatus}
+                  onChange={handleChange}
+                  className="input-field mt-2"
+                  placeholder="Please specify other employment status"
+                  required
+                />
+              </div>
+            )}
           </div>
           
           <div className="form-field">
@@ -462,9 +569,15 @@ const SignUp = () => {
               <input
                 type="file"
                 name="photo"
+                accept="image/*"
                 onChange={handleChange}
                 required
               />
+              {photoPreview && (
+                <div className="photo-preview">
+                  <img src={photoPreview} alt="Profile preview" />
+                </div>
+              )}
             </div>
           </div>
         </div>

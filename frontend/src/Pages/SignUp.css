@@ -234,3 +234,69 @@
 .full-width {
   grid-column: 1 / -1;
 }
+/* Checkbox styling */
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.checkbox-item label {
+  cursor: pointer;
+  margin: 0;
+}
+
+.mt-2 {
+  margin-top: 10px;
+}
+
+/* Photo preview styling */
+.photo-preview {
+  margin-top: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  display: flex;
+  justify-content: center;
+}
+
+.photo-preview img {
+  max-width: 200px;
+  max-height: 200px;
+  object-fit: contain;
+}
+
+/* File upload styling improvements */
+.file-upload {
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  background-color: #f8f8f8;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.file-upload:hover {
+  border-color: #aaa;
+}
+
+.file-upload input[type="file"] {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+}
