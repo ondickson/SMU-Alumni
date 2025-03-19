@@ -119,7 +119,7 @@ function AlumniDashboard() {
           }}
         >
           <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold' }}>
-            🎓 Alumni Dashboard
+            Alumni Dashboard
           </Typography>
           <Typography variant="body1" gutterBottom sx={{ opacity: 0.9 }}>
             Welcome to the alumni dashboard! Connect with fellow alumni, explore
@@ -147,7 +147,7 @@ function AlumniDashboard() {
             <Card className="alumni-dashboard-calendar-card">
               <CardContent>
                 <Typography variant="h6" className="alumni-dashboard-calendar-title">
-                  📅 Alumni Events Calendar
+                  Alumni Events Calendar
                 </Typography>
                 <div className="alumni-dashboard-calendar-toolbar">
                   <IconButton onClick={() => handleViewChange('month')} sx={{ color: '#ffffff' }}>
