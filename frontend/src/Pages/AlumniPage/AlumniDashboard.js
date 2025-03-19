@@ -45,6 +45,9 @@ const modalStyle = {
   overflow: 'auto',
 };
 
+// Custom blue color as specified
+const customBlue = '#272974';
+
 function AlumniDashboard() {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
@@ -85,123 +88,138 @@ function AlumniDashboard() {
   };
 
   return (
-    <Container
-      maxWidth="lg"
-      sx={{ mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-    >
+    <Box sx={{ display: 'flex' }}>
       <SidebarMenu />
-
-      {/* Header Section */}
-      <Paper
-        elevation={4}
+      
+      <Box
+        component="main"
         sx={{
-          p: 4,
-          textAlign: 'center',
-          background: 'rgba(30, 30, 47, 0.8)',
-          color: '#ffffff',
-          borderRadius: 3,
-          backdropFilter: 'blur(10px)',
-          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
-          width: '100%',
-          maxWidth: '900px',
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          px: 3,
+          py: 4,
+          width: { sm: `calc(100% - ${240}px)` },
+          ml: { sm: `${240}px` },
         }}
       >
-        <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold' }}>
-          🎓 Alumni Dashboard
-        </Typography>
-        <Typography variant="body1" gutterBottom sx={{ opacity: 0.9 }}>
-          Welcome to the alumni dashboard! Connect with fellow alumni, explore
-          opportunities, and manage your profile.
-        </Typography>
-        <Button
-          variant="contained"
+        {/* Header Section */}
+        <Paper
+          elevation={4}
           sx={{
-            mt: 2,
-            backgroundColor: '#ff3366',
-            '&:hover': { backgroundColor: '#cc2952' },
-            fontWeight: 'bold',
-            textTransform: 'none',
+            p: 4,
+            textAlign: 'center',
+            background: customBlue,
+            color: '#ffffff',
+            borderRadius: 3,
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
+            width: '100%',
+            maxWidth: '900px',
           }}
-          onClick={handleLogout}
         >
-          Logout
-        </Button>
-      </Paper>
-
-      {/* Calendar Section */}
-      <Grid container spacing={3} sx={{ mt: 4, maxWidth: '900px' }}>
-        <Grid item xs={12}>
-          <Card className="alumni-dashboard-calendar-card">
-            <CardContent>
-              <Typography variant="h6" className="alumni-dashboard-calendar-title">
-                📅 Alumni Events Calendar
-              </Typography>
-              <div className="alumni-dashboard-calendar-toolbar">
-                <IconButton onClick={() => handleViewChange('month')} color="primary">
-                  <MonthIcon />
-                </IconButton>
-                <IconButton onClick={() => handleViewChange('week')} color="primary">
-                  <WeekIcon />
-                </IconButton>
-                <IconButton onClick={() => handleViewChange('agenda')} color="primary">
-                  <AgendaIcon />
-                </IconButton>
-                <IconButton onClick={() => handleViewChange('day')} color="primary">
-                  <TodayIcon />
-                </IconButton>
-              </div>
-              <Calendar
-                localizer={localizer}
-                events={events}
-                startAccessor="start"
-                endAccessor="end"
-                style={{ height: 500, borderRadius: '8px' }}
-                selectable
-                onSelectEvent={handleSelectEvent}
-                view={view}
-                onView={setView}
-                components={{
-                  toolbar: ({ label, onNavigate }) => (
-                    <div className="alumni-dashboard-calendar-toolbar">
-                      <IconButton onClick={() => onNavigate('PREV')}>
-                        <BackIcon />
-                      </IconButton>
-                      <Typography variant="h6">{label}</Typography>
-                      <IconButton onClick={() => onNavigate('NEXT')}>
-                        <NextIcon />
-                      </IconButton>
-                    </div>
-                  ),
-                }}
-              />
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-
-      {/* Event Details Modal */}
-      <Modal open={!!selectedEvent} onClose={() => setSelectedEvent(null)}>
-        <Box sx={modalStyle}>
-          <Typography variant="h6">{selectedEvent?.title}</Typography>
-          <Typography>
-            <strong>Date:</strong> {selectedEvent?.start.toDateString()}
+          <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold' }}>
+            🎓 Alumni Dashboard
           </Typography>
-          <Typography>
-            <strong>Location:</strong> {selectedEvent?.location}
-          </Typography>
-          <Typography>
-            <strong>Description:</strong> {selectedEvent?.description}
+          <Typography variant="body1" gutterBottom sx={{ opacity: 0.9 }}>
+            Welcome to the alumni dashboard! Connect with fellow alumni, explore
+            opportunities, and manage your profile.
           </Typography>
           <Button
-            onClick={() => setSelectedEvent(null)}
             variant="contained"
-            sx={{ mt: 2 }}
+            sx={{
+              mt: 2,
+              backgroundColor: '#ffffff',
+              color: customBlue,
+              '&:hover': { backgroundColor: '#f0f0f0' },
+              fontWeight: 'bold',
+              textTransform: 'none',
+            }}
+            onClick={handleLogout}
           >
-            Close
+            Logout
           </Button>
-        </Box>
-      </Modal>
-    </Container>
+        </Paper>
+
+        {/* Calendar Section */}
+        <Grid container spacing={3} sx={{ mt: 4, maxWidth: '900px' }}>
+          <Grid item xs={12}>
+            <Card className="alumni-dashboard-calendar-card">
+              <CardContent>
+                <Typography variant="h6" className="alumni-dashboard-calendar-title">
+                  📅 Alumni Events Calendar
+                </Typography>
+                <div className="alumni-dashboard-calendar-toolbar">
+                  <IconButton onClick={() => handleViewChange('month')} sx={{ color: '#ffffff' }}>
+                    <MonthIcon />
+                  </IconButton>
+                  <IconButton onClick={() => handleViewChange('week')} sx={{ color: '#ffffff' }}>
+                    <WeekIcon />
+                  </IconButton>
+                  <IconButton onClick={() => handleViewChange('agenda')} sx={{ color: '#ffffff' }}>
+                    <AgendaIcon />
+                  </IconButton>
+                  <IconButton onClick={() => handleViewChange('day')} sx={{ color: '#ffffff' }}>
+                    <TodayIcon />
+                  </IconButton>
+                </div>
+                <Calendar
+                  localizer={localizer}
+                  events={events}
+                  startAccessor="start"
+                  endAccessor="end"
+                  style={{ height: 500, borderRadius: '8px' }}
+                  selectable
+                  onSelectEvent={handleSelectEvent}
+                  view={view}
+                  onView={setView}
+                  components={{
+                    toolbar: ({ label, onNavigate }) => (
+                      <div className="alumni-dashboard-calendar-toolbar">
+                        <IconButton onClick={() => onNavigate('PREV')} sx={{ color: '#ffffff' }}>
+                          <BackIcon />
+                        </IconButton>
+                        <Typography variant="h6" sx={{ color: '#ffffff' }}>{label}</Typography>
+                        <IconButton onClick={() => onNavigate('NEXT')} sx={{ color: '#ffffff' }}>
+                          <NextIcon />
+                        </IconButton>
+                      </div>
+                    ),
+                  }}
+                />
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
+        {/* Event Details Modal */}
+        <Modal open={!!selectedEvent} onClose={() => setSelectedEvent(null)}>
+          <Box sx={modalStyle}>
+            <Typography variant="h6">{selectedEvent?.title}</Typography>
+            <Typography>
+              <strong>Date:</strong> {selectedEvent?.start.toDateString()}
+            </Typography>
+            <Typography>
+              <strong>Location:</strong> {selectedEvent?.location}
+            </Typography>
+            <Typography>
+              <strong>Description:</strong> {selectedEvent?.description}
+            </Typography>
+            <Button
+              onClick={() => setSelectedEvent(null)}
+              variant="contained"
+              sx={{ 
+                mt: 2,
+                backgroundColor: customBlue,
+                '&:hover': { backgroundColor: '#3a3c8f' }
+              }}
+            >
+              Close
+            </Button>
+          </Box>
+        </Modal>
+      </Box>
+    </Box>
   );
 }
 
