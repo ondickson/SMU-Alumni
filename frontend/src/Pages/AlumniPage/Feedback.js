@@ -185,7 +185,7 @@ const Feedback = () => {
         </CardContent>
       </Card>
     </div>
-  );s
+  );
 };
 
 export default Feedback;
