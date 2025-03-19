@@ -14,6 +14,15 @@ const SignUp = () => {
     middleName: '',
     familyName: '',
     suffix: '',
+    birthday: '',
+    fatherFirstName: '',
+    fatherMiddleName: '',
+    fatherLastName: '',
+    fatherSuffix: '',
+    motherFirstName: '',
+    motherMiddleName: '',
+    motherLastName: '',
+    motherSuffix: '',
     idNumber: '',
     schoolLevel: '',
     courseProgram: '',
@@ -30,9 +39,14 @@ const SignUp = () => {
     address: '',
     facebookAccount: '',
     contactNumber: '',
-    photo: null
+    photo: null,
+    topAchievements: '',
+    curriculumVitae: null,
+    signature: null
   });
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [signaturePreview, setSignaturePreview] = useState(null);
+  const [cvFileName, setCvFileName] = useState('');
   const [errors, setErrors] = useState({});
   
   const navigate = useNavigate();
@@ -50,6 +64,20 @@ const SignUp = () => {
           setPhotoPreview(reader.result);
         };
         reader.readAsDataURL(file);
+      }
+      
+      // Create preview for signature
+      if (file && name === 'signature') {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setSignaturePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
+      
+      // Store CV filename
+      if (file && name === 'curriculumVitae') {
+        setCvFileName(file.name);
       }
     } else {
       setFormData({ ...formData, [name]: value });
@@ -247,7 +275,18 @@ const SignUp = () => {
               onChange={handleChange}
               className="input-field"
               placeholder="Enter suffix (if applicable)"
-            
+            />
+          </div>
+          
+          <div className="form-field">
+            <label>Birthday <span className="required">*</span></label>
+            <input
+              type="date"
+              name="birthday"
+              value={formData.birthday}
+              onChange={handleChange}
+              className="input-field"
+              required
             />
           </div>
           
@@ -261,6 +300,118 @@ const SignUp = () => {
               className="input-field"
               placeholder="Enter ID number"
               required
+            />
+          </div>
+        </div>
+        
+        <div className="left-aligned">
+  <h4 className="subsection-title">Father's Information</h4>
+</div>
+        <div className="form-grid">
+          <div className="form-field">
+            <label>First Name <span className="required">*</span></label>
+            <input
+              type="text"
+              name="fatherFirstName"
+              value={formData.fatherFirstName}
+              onChange={handleChange}
+              className="input-field"
+              placeholder="Enter father's first name"
+              required
+            />
+          </div>
+          
+          <div className="form-field">
+            <label>Middle Name <span className="required">*</span></label>
+            <input
+              type="text"
+              name="fatherMiddleName"
+              value={formData.fatherMiddleName}
+              onChange={handleChange}
+              className="input-field"
+              placeholder="Enter father's middle name"
+              required
+            />
+          </div>
+          
+          <div className="form-field">
+            <label>Last Name <span className="required">*</span></label>
+            <input
+              type="text"
+              name="fatherLastName"
+              value={formData.fatherLastName}
+              onChange={handleChange}
+              className="input-field"
+              placeholder="Enter father's last name"
+              required
+            />
+          </div>
+          
+          <div className="form-field">
+            <label>Suffix</label>
+            <input
+              type="text"
+              name="fatherSuffix"
+              value={formData.fatherSuffix}
+              onChange={handleChange}
+              className="input-field"
+              placeholder="Enter father's suffix (if applicable)"
+            />
+          </div>
+        </div>
+        
+        <div className="left-aligned">
+  <h4 className="subsection-title">Mother's Information</h4>
+</div>
+        <div className="form-grid">
+          <div className="form-field">
+            <label>First Name <span className="required">*</span></label>
+            <input
+              type="text"
+              name="motherFirstName"
+              value={formData.motherFirstName}
+              onChange={handleChange}
+              className="input-field"
+              placeholder="Enter mother's first name"
+              required
+            />
+          </div>
+          
+          <div className="form-field">
+            <label>Middle Name <span className="required">*</span></label>
+            <input
+              type="text"
+              name="motherMiddleName"
+              value={formData.motherMiddleName}
+              onChange={handleChange}
+              className="input-field"
+              placeholder="Enter mother's middle name"
+              required
+            />
+          </div>
+          
+          <div className="form-field">
+            <label>Last Name <span className="required">*</span></label>
+            <input
+              type="text"
+              name="motherLastName"
+              value={formData.motherLastName}
+              onChange={handleChange}
+              className="input-field"
+              placeholder="Enter mother's last name"
+              required
+            />
+          </div>
+          
+          <div className="form-field">
+            <label>Suffix</label>
+            <input
+              type="text"
+              name="motherSuffix"
+              value={formData.motherSuffix}
+              onChange={handleChange}
+              className="input-field"
+              placeholder="Enter mother's suffix (if applicable)"
             />
           </div>
         </div>
@@ -283,29 +434,29 @@ const SignUp = () => {
       <>
         <h2 className="step-title">Step 3: Education Information</h2>
         <div className="form-grid">
-        <div className="form-field">
-  <label>School/Level <span className="required">*</span></label>
-  <select
-    name="schoolLevel"
-    value={formData.schoolLevel}
-    onChange={handleChange}
-    className="input-field"
-    required
-  >
-    <option value="" disabled>Select school/level</option>
-    <option value="School of Accountancy and Business">School of Accountancy and Business</option>
-    <option value="School of Engineering, Architecture, and Information Technology">
-      School of Engineering, Architecture, and Information Technology
-    </option>
-    <option value="School of Health and Natural Sciences">School of Health and Natural Sciences</option>
-    <option value="School of Teacher Education and Humanities">School of Teacher Education and Humanities</option>
-    <option value="School of Graduate Studies">School of Graduate Studies</option>
-    <option value="College of Law">College of Law</option>
-    <option value="Grade School">Grade School</option>
-    <option value="Junior High School">Junior High School</option>
-    <option value="Senior High School">Senior High School</option>
-  </select>
-</div>
+          <div className="form-field">
+            <label>School/Level <span className="required">*</span></label>
+            <select
+              name="schoolLevel"
+              value={formData.schoolLevel}
+              onChange={handleChange}
+              className="input-field"
+              required
+            >
+              <option value="" disabled>Select school/level</option>
+              <option value="School of Accountancy and Business">School of Accountancy and Business</option>
+              <option value="School of Engineering, Architecture, and Information Technology">
+                School of Engineering, Architecture, and Information Technology
+              </option>
+              <option value="School of Health and Natural Sciences">School of Health and Natural Sciences</option>
+              <option value="School of Teacher Education and Humanities">School of Teacher Education and Humanities</option>
+              <option value="School of Graduate Studies">School of Graduate Studies</option>
+              <option value="College of Law">College of Law</option>
+              <option value="Grade School">Grade School</option>
+              <option value="Junior High School">Junior High School</option>
+              <option value="Senior High School">Senior High School</option>
+            </select>
+          </div>
 
           <div className="form-field">
             <label>Course/Program <span className="required">*</span></label>
@@ -343,11 +494,9 @@ const SignUp = () => {
               value={formData.gradeSchoolInSMU}
               onChange={handleChange}
               className="input-field"
-              
               placeholder="If YES, indicate graduation year otherwise write NO"
               required
             />
-            
           </div>
           
           <div className="form-field full-width">
@@ -400,6 +549,19 @@ const SignUp = () => {
               onChange={handleChange}
               className="input-field"
               placeholder="If YES, indicate year and educational level otherwise write N/A"
+              required
+            />
+          </div>
+          
+          <div className="form-field full-width">
+            <label>Top 5 Achievements <span className="required">*</span></label>
+            <textarea
+              name="topAchievements"
+              value={formData.topAchievements}
+              onChange={handleChange}
+              className="input-field textarea"
+              placeholder="List your top 5 achievements (one per line)"
+              rows="5"
               required
             />
           </div>
@@ -563,6 +725,26 @@ const SignUp = () => {
           </div>
           
           <div className="form-field">
+            
+          </div>
+          
+          <div className="form-field">
+            <label>Curriculum Vitae <span className="required">*</span></label>
+            <div className="file-upload">
+              <p>Drop your CV file here to upload</p>
+              <input
+                type="file"
+                name="curriculumVitae"
+                accept=".pdf,.doc,.docx"
+                onChange={handleChange}
+                required
+              />
+              {cvFileName && (
+                <div className="file-name">
+                  <p>Selected file: {cvFileName}</p>
+                </div>
+              )}
+            </div>
             <label>Photo <span className="required">*</span></label>
             <div className="file-upload">
               <p>Drop your files here to upload</p>
@@ -580,6 +762,8 @@ const SignUp = () => {
               )}
             </div>
           </div>
+          
+      
         </div>
         
         <div className="buttons-container">
