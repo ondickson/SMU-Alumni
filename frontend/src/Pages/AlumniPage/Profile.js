@@ -695,7 +695,7 @@ function Profile() {
           mt={1}
         >
           <SignatureCanvas
-            ref={sigCanvasRef}
+            ref={null}
             penColor="black"
             canvasProps={{
               width: '100%',
@@ -709,7 +709,7 @@ function Profile() {
           <Button
             variant="outlined"
             className="upload-button"
-            onClick={clearSignature}
+            onClick={null}
           >
             Clear
           </Button>
