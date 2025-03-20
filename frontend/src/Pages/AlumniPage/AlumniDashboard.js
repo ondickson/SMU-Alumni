@@ -125,20 +125,6 @@ function AlumniDashboard() {
             Welcome to the alumni dashboard! Connect with fellow alumni, explore
             opportunities, and manage your profile.
           </Typography>
-          <Button
-            variant="contained"
-            sx={{
-              mt: 2,
-              backgroundColor: '#ffffff',
-              color: customBlue,
-              '&:hover': { backgroundColor: '#f0f0f0' },
-              fontWeight: 'bold',
-              textTransform: 'none',
-            }}
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
         </Paper>
 
         {/* Calendar Section */}

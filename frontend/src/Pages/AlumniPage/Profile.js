@@ -80,7 +80,7 @@ function Profile() {
     companyAddress: '',
     address: '',
     facebookAccount: '',
-    contactNumber: '09626799162',
+    contactNumber: '',
     achievements: ['', '', '', '', ''],
     
     // Files and Photos

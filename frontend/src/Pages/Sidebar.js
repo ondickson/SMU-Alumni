@@ -48,7 +48,7 @@ const SidebarMenu = () => {
               <MenuItem icon={<Settings />} component={<Link to="/Profile" />}>Profile</MenuItem>
               <MenuItem icon={<Event />} component={<Link to="/Events" />}>Events</MenuItem>
               <MenuItem icon={<WorkOutline />} component={<Link to="/Jobs" />}>Jobs</MenuItem>
-              <MenuItem icon={<AccountCircle />} component={<Link to="/Feedback" />}>Feedback</MenuItem>
+              <MenuItem icon={<Feedback />} component={<Link to="/Feedback" />}>Feedback</MenuItem>
             </>
           )}
         </Menu>
