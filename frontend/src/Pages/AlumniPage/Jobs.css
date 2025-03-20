@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+.jobs-container {
+    display: flex;
+}
+
+.jobs-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.jobs-main-content {
+    flex: 1;
+    padding: 20px;
+    margin-left: 250px;
+}
+
+/* App Bar */
+.jobs-appbar {
+    background-color: #272974;
+}
+
+.jobs-title {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* Search Section */
+.jobs-search {
+    margin-bottom: 20px;
+    padding-top: 15px;
+}
+
+.jobs-searchfield {
+    width: 300px;
+}
+
+/* Job List */
+.jobs-list {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+/* Job Card Styling */
+.jobs-card {
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #ffffff;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.jobs-card:hover {
+    transform: scale(1.05);
+}
+
+.jobs-image {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.jobs-title-text {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.jobs-description {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.jobs-link {
+    display: inline-block;
+    padding: 8px 16px;
+    color: black;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.jobs-link:hover {
+    color: #1e1e5b;
+}
