@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -9,7 +8,6 @@ import {
   Card,
   CardContent,
   Button,
-  Tooltip,
   Modal,
   Box,
   Divider,
@@ -19,6 +17,10 @@ import {
   Paper,
   IconButton,
   DialogTitle,
+  TextField,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
 } from '@mui/material';
 import {
   Today as TodayIcon,
@@ -55,31 +57,6 @@ const barChartData = [
 
 const localizer = momentLocalizer(moment);
 
-// Simple survey feedback data
-const surveyData = [
-  {
-    question: 'How satisfied are you with the alumni portal?',
-    averageRating: 4.2,
-    responses: 47,
-  },
-  {
-    question: 'How would you rate the job posting features?',
-    averageRating: 3.8,
-    responses: 35,
-  },
-  {
-    question: 'Rate the effectiveness of our networking events',
-    averageRating: 4.5,
-    responses: 42,
-  },
-  {
-    question: 'How likely are you to recommend our portal to other alumni?',
-    averageRating: 4.3,
-    responses: 46,
-  },
-];
-
-// Client suggestions and observations
 const clientFeedback = [
   {
     name: 'John Doe',
@@ -100,6 +77,33 @@ const clientFeedback = [
     date: '2025-03-10',
   },
 ];
+
+// Recent alumni feedback form submissions
+const recentFeedbackSubmissions = [
+  {
+    name: 'Alex Thompson',
+    academic: ['Voluntary Consultancy Service', 'Curriculum Development/enrichment'],
+    administrative: ['Assist in the formation of plans, programs, projects of the alumni'],
+    finance: ['Assist in the development programs of the university', 'Outreach Program'],
+    importantThings: 'The critical thinking skills and communication techniques learned at SMU have been invaluable in my career.',
+    suggestions: 'Consider adding more industry partnerships for internships before graduation.',
+    alumniList: 'Maria Garcia (maria@example.com), Chris Wong (chris.wong@company.org)',
+    employmentAddress: 'Tech Innovations Inc., 123 Business Park, Seattle, WA',
+    submittedOn: '2025-03-15'
+  },
+  {
+    name: 'Priya Patel',
+    academic: ['Volunteer Guest Lecture in the University', 'Volunteer Researcher of the University'],
+    administrative: ['Assist in appraising institutional objectives in relation to community services'],
+    finance: ['Environmental Concerns', 'Assist in generating resources for the realization of the objectives of the alumni affairs'],
+    importantThings: 'SMU taught me the importance of ethical leadership and diverse perspectives in decision-making.',
+    suggestions: 'The online library resources could be expanded to better serve remote alumni.',
+    alumniList: 'James Lee (jameslee@gmail.com), Sophia Chen (sophia.c@outlook.com)',
+    employmentAddress: 'Healthcare Solutions Group, 456 Medical Plaza, Boston, MA',
+    submittedOn: '2025-03-12'
+  }
+];
+
 const eventStyleGetter = () => ({
   style: {
     backgroundColor: 'transparent',
@@ -108,7 +112,6 @@ const eventStyleGetter = () => ({
   },
   className: 'event-highlight'
 });
-
 
 const modalStyle = {
   position: 'absolute',
@@ -125,10 +128,11 @@ const modalStyle = {
   overflow: 'auto',
 };
 
-
 function AdminDashboard() {
   const navigate = useNavigate();
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
+  const [feedbackFormModalOpen, setFeedbackFormModalOpen] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [totals, setTotals] = useState({
     totalAlumni: 0,
     totalJobs: 0,
@@ -220,6 +224,12 @@ function AdminDashboard() {
 
     return stars;
   };
+  
+  // Handle feedback form details view
+  const handleViewFeedbackDetails = (feedback) => {
+    setSelectedFeedback(feedback);
+    setFeedbackFormModalOpen(true);
+  };
 
   return (
     <div className="admin-dashboard">
@@ -244,7 +254,7 @@ function AdminDashboard() {
               value: totals.totalAlumni,
               path: '/AlumniInformation',
             },
-            { title: 'FeedBacks', value: '2', path: '/AlumniInformation' },
+            { title: 'FeedBacks', value: recentFeedbackSubmissions.length, action: () => setFeedbackModalOpen(true) },
           ].map((stat, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
               <Card className="admin-dashboard-card">
@@ -254,17 +264,15 @@ function AdminDashboard() {
                 <Typography variant="body2" color="textSecondary">
                   {stat.title}
                 </Typography>
-                {stat.path ? (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    className="admin-dashboard-card-button"
-                    onClick={() => handleNavigate(stat.path)}
-                  >
-                    View Details
-                  </Button>
-                ) : null}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  className="admin-dashboard-card-button"
+                  onClick={() => stat.action ? stat.action() : handleNavigate(stat.path)}
+                >
+                  View Details
+                </Button>
               </Card>
             </Grid>
           ))}
@@ -329,97 +337,98 @@ function AdminDashboard() {
                   </IconButton>
                 </div>
                 <Calendar
-  localizer={localizer}
-  events={events}
-  startAccessor="start"
-  endAccessor="end"
-  style={{ height: 500, borderRadius: '8px' }}
-  selectable
-  onSelectEvent={handleSelectEvent}
-  onSelectSlot={(slotInfo) => {
-    const clickedDate = slotInfo.start;
-    const eventsOnDay = events.filter(event => 
-      moment(event.start).isSame(clickedDate, 'day')
-    );
-    if (eventsOnDay.length > 0) {
-      // Instead of just taking the first event, set a custom object with all events
-      setSelectedEvent({
-        isMultiEvent: true,
-        date: clickedDate,
-        events: eventsOnDay
-      });
-    }
-  }}
-  eventPropGetter={eventStyleGetter}
-  dayPropGetter={dayPropGetter}
-  view={view}
-  onView={setView}
-  components={{
-    toolbar: ({ label, onNavigate }) => (
-      <div className="admin-dashboard-calendar-toolbar">
-        <IconButton onClick={() => onNavigate('PREV')}>
-          <BackIcon />
-        </IconButton>
-        <Typography variant="h6">{label}</Typography>
-        <IconButton onClick={() => onNavigate('NEXT')}>
-          <NextIcon />
-        </IconButton>
-      </div>
-    ),
-  }}
-/>
+                  localizer={localizer}
+                  events={events}
+                  startAccessor="start"
+                  endAccessor="end"
+                  style={{ height: 500, borderRadius: '8px' }}
+                  selectable
+                  onSelectEvent={handleSelectEvent}
+                  onSelectSlot={(slotInfo) => {
+                    const clickedDate = slotInfo.start;
+                    const eventsOnDay = events.filter(event => 
+                      moment(event.start).isSame(clickedDate, 'day')
+                    );
+                    if (eventsOnDay.length > 0) {
+                      // Instead of just taking the first event, set a custom object with all events
+                      setSelectedEvent({
+                        isMultiEvent: true,
+                        date: clickedDate,
+                        events: eventsOnDay
+                      });
+                    }
+                  }}
+                  eventPropGetter={eventStyleGetter}
+                  dayPropGetter={dayPropGetter}
+                  view={view}
+                  onView={setView}
+                  components={{
+                    toolbar: ({ label, onNavigate }) => (
+                      <div className="admin-dashboard-calendar-toolbar">
+                        <IconButton onClick={() => onNavigate('PREV')}>
+                          <BackIcon />
+                        </IconButton>
+                        <Typography variant="h6">{label}</Typography>
+                        <IconButton onClick={() => onNavigate('NEXT')}>
+                          <NextIcon />
+                        </IconButton>
+                      </div>
+                    ),
+                  }}
+                />
               </CardContent>
             </Card>
           </Grid>
         </Grid>
 
         <Modal open={!!selectedEvent} onClose={() => setSelectedEvent(null)}>
-  <Box sx={modalStyle}>
-    {selectedEvent?.isMultiEvent ? (
-      <>
-        <Typography variant="h6">Events on {selectedEvent.date.toDateString()}</Typography>
-        <Divider sx={{ my: 2 }} />
-        {selectedEvent.events.map((event, index) => (
-          <Box key={index} sx={{ mb: index < selectedEvent.events.length - 1 ? 3 : 0 }}>
-            <Typography variant="subtitle1" fontWeight="bold">{event.title}</Typography>
-            {event.location && (
-              <Typography>
-                <strong>Location:</strong> {event.location}
-              </Typography>
+          <Box sx={modalStyle}>
+            {selectedEvent?.isMultiEvent ? (
+              <>
+                <Typography variant="h6">Events on {selectedEvent.date.toDateString()}</Typography>
+                <Divider sx={{ my: 2 }} />
+                {selectedEvent.events.map((event, index) => (
+                  <Box key={index} sx={{ mb: index < selectedEvent.events.length - 1 ? 3 : 0 }}>
+                    <Typography variant="subtitle1" fontWeight="bold">{event.title}</Typography>
+                    {event.location && (
+                      <Typography>
+                        <strong>Location:</strong> {event.location}
+                      </Typography>
+                    )}
+                    {event.description && (
+                      <Typography>
+                        <strong>Description:</strong> {event.description}
+                      </Typography>
+                    )}
+                    {index < selectedEvent.events.length - 1 && <Divider sx={{ mt: 2 }} />}
+                  </Box>
+                ))}
+              </>
+            ) : (
+              <>
+                <Typography variant="h6">{selectedEvent?.title}</Typography>
+                <Typography>
+                  <strong>Date:</strong> {selectedEvent?.start.toDateString()}
+                </Typography>
+                <Typography>
+                  <strong>Location:</strong> {selectedEvent?.location}
+                </Typography>
+                <Typography>
+                  <strong>Description:</strong> {selectedEvent?.description}
+                </Typography>
+              </>
             )}
-            {event.description && (
-              <Typography>
-                <strong>Description:</strong> {event.description}
-              </Typography>
-            )}
-            {index < selectedEvent.events.length - 1 && <Divider sx={{ mt: 2 }} />}
+            <Button 
+              onClick={() => setSelectedEvent(null)}
+              variant="contained"
+              sx={{ mt: 2 }}
+            >
+              Close
+            </Button>
           </Box>
-        ))}
-      </>
-    ) : (
-      <>
-        <Typography variant="h6">{selectedEvent?.title}</Typography>
-        <Typography>
-          <strong>Date:</strong> {selectedEvent?.start.toDateString()}
-        </Typography>
-        <Typography>
-          <strong>Location:</strong> {selectedEvent?.location}
-        </Typography>
-        <Typography>
-          <strong>Description:</strong> {selectedEvent?.description}
-        </Typography>
-      </>
-    )}
-    <Button 
-      onClick={() => setSelectedEvent(null)}
-      variant="contained"
-      sx={{ mt: 2 }}
-    >
-      Close
-    </Button>
-  </Box>
-</Modal>
-        {/* Simple Feedback Survey Modal */}
+        </Modal>
+        
+        {/* Feedback Survey Modal */}
         <Modal
           open={feedbackModalOpen}
           onClose={() => setFeedbackModalOpen(false)}
@@ -434,53 +443,10 @@ function AdminDashboard() {
                 color: 'white',
               }}
             >
-              Client Survey Results
+              Alumni Feedback Data
             </DialogTitle>
 
             <Paper elevation={1} sx={{ p: 2, mb: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                Survey Questions & Ratings (1-5 Scale)
-              </Typography>
-
-              <List>
-                {surveyData.map((item, index) => (
-                  <React.Fragment key={index}>
-                    <ListItem>
-                      <ListItemText
-                        primary={item.question}
-                        secondary={
-                          <Box sx={{ mt: 1 }}>
-                            <Box
-                              sx={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                              }}
-                            >
-                              <Typography
-                                variant="body1"
-                                sx={{ color: '#272974', fontWeight: 'bold' }}
-                              >
-                                {renderStars(item.averageRating)} (
-                                {item.averageRating}/5)
-                              </Typography>
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                              >
-                                {item.responses} responses
-                              </Typography>
-                            </Box>
-                          </Box>
-                        }
-                      />
-                    </ListItem>
-                    {index < surveyData.length - 1 && <Divider />}
-                  </React.Fragment>
-                ))}
-              </List>
-            </Paper>
-
-            <Paper elevation={1} sx={{ p: 2 }}>
               <Typography variant="h6" gutterBottom>
                 Client Suggestions & Observations
               </Typography>
@@ -517,6 +483,57 @@ function AdminDashboard() {
               </List>
             </Paper>
 
+            <Paper elevation={1} sx={{ p: 2, mb: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                Recent Feedback Form Submissions
+              </Typography>
+
+              <List>
+                {recentFeedbackSubmissions.map((feedback, index) => (
+                  <React.Fragment key={index}>
+                    <ListItem alignItems="flex-start">
+                      <ListItemText
+                        primary={
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                            }}
+                          >
+                            <Typography
+                              variant="subtitle1"
+                              sx={{ fontWeight: 'bold' }}
+                            >
+                              {feedback.name}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {feedback.submittedOn}
+                            </Typography>
+                          </Box>
+                        }
+                        secondary={
+                          <>
+                            <Typography variant="body2" color="text.secondary">
+                              Employment: {feedback.employmentAddress}
+                            </Typography>
+                            <Button 
+                              size="small" 
+                              color="primary" 
+                              onClick={() => handleViewFeedbackDetails(feedback)}
+                              sx={{ mt: 1 }}
+                            >
+                              View Full Details
+                            </Button>
+                          </>
+                        }
+                      />
+                    </ListItem>
+                    {index < recentFeedbackSubmissions.length - 1 && <Divider />}
+                  </React.Fragment>
+                ))}
+              </List>
+            </Paper>
+
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
               <Button
                 onClick={() => setFeedbackModalOpen(false)}
@@ -527,10 +544,128 @@ function AdminDashboard() {
             </Box>
           </Box>
         </Modal>
+
+        {/* Individual Feedback Form Details Modal */}
+        <Modal
+          open={feedbackFormModalOpen}
+          onClose={() => setFeedbackFormModalOpen(false)}
+          aria-labelledby="feedback-form-details-modal-title"
+        >
+          <Box sx={modalStyle}>
+            {selectedFeedback && (
+              <>
+                <DialogTitle
+                  style={{
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    background: '#272974',
+                    color: 'white',
+                  }}
+                >
+                  Feedback Submission Details
+                </DialogTitle>
+
+                <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
+                  <Typography variant="h6" gutterBottom>
+                    {selectedFeedback.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Submitted on: {selectedFeedback.submittedOn}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Employment: {selectedFeedback.employmentAddress}
+                  </Typography>
+                </Paper>
+
+                <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
+                  <Typography variant="h6" gutterBottom>
+                    Areas of Involvement
+                  </Typography>
+
+                  {selectedFeedback.academic.length > 0 && (
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="subtitle1" gutterBottom>
+                        Academic:
+                      </Typography>
+                      <List dense>
+                        {selectedFeedback.academic.map((item, index) => (
+                          <ListItem key={index}>
+                            <ListItemText primary={`• ${item}`} />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  )}
+
+                  {selectedFeedback.administrative.length > 0 && (
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="subtitle1" gutterBottom>
+                        Administrative:
+                      </Typography>
+                      <List dense>
+                        {selectedFeedback.administrative.map((item, index) => (
+                          <ListItem key={index}>
+                            <ListItemText primary={`• ${item}`} />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  )}
+
+                  {selectedFeedback.finance.length > 0 && (
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="subtitle1" gutterBottom>
+                        Finance/Development:
+                      </Typography>
+                      <List dense>
+                        {selectedFeedback.finance.map((item, index) => (
+                          <ListItem key={index}>
+                            <ListItemText primary={`• ${item}`} />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  )}
+                </Paper>
+
+                <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
+                  <Typography variant="subtitle1" gutterBottom>
+                    Important Things Learned at SMU:
+                  </Typography>
+                  <Typography variant="body2" paragraph>
+                    {selectedFeedback.importantThings}
+                  </Typography>
+
+                  <Typography variant="subtitle1" gutterBottom>
+                    Suggestions for Improvement:
+                  </Typography>
+                  <Typography variant="body2" paragraph>
+                    {selectedFeedback.suggestions}
+                  </Typography>
+
+                  <Typography variant="subtitle1" gutterBottom>
+                    Alumni Contacts:
+                  </Typography>
+                  <Typography variant="body2">
+                    {selectedFeedback.alumniList}
+                  </Typography>
+                </Paper>
+
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
+                  <Button
+                    onClick={() => setFeedbackFormModalOpen(false)}
+                    variant="contained"
+                  >
+                    Close
+                  </Button>
+                </Box>
+              </>
+            )}
+          </Box>
+        </Modal>
       </div>
     </div>
   );
 }
 
 export default AdminDashboard;
-
