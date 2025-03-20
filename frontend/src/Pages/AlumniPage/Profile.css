@@ -1,81 +1,223 @@
-/* Main container with padding */
-.main-container {
+/* Main container layout */
+.container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .sidebar-container {
+    position: fixed;
+    width: 250px;
+    height: 100%;
+    z-index: 1000;
+  }
+  
+  .main-container {
     flex-grow: 1;
     margin-left: 250px;
-    padding: 20px;
+    padding: 0;
     width: calc(100% - 250px);
-    background-color: #f9f9f9;
-}
-
-/* Styled title box similar to Events */
-.title-box {
-    background-color: #272974;
-    color: white;
-    padding: 15px 20px;
-    border-radius: 8px;
-    text-align: left;
+    background-color: #f5f5f5;
+  }
+  
+  /* Header styles */
+  .appbar {
+    background-color: white !important;
+    color: #333 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .title {
     font-weight: bold;
-    margin-bottom: 20px;
-    width: fit-content;
-}
-
-.title-text {
     font-size: 18px;
-}
-
-/* Ensure content wrapper aligns properly */
-.content-wrapper {
+    color: #333;
+  }
+  
+  .status-label {
+    color: #d72013;
+    font-weight: bold;
+  }
+  
+  /* Navigation button styles */
+  .profile-navigation {
+    display: flex;
+    padding: 15px;
+    background-color: white;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .nav-button {
+    margin-right: 20px !important;
+    font-weight: bold !important;
+    color: #434240 !important;
+  }
+  
+  .nav-button:first-child {
+    border-bottom: 2px solid #4c4a46 !important;
+  }
+  
+  /* Content area */
+  .content-wrapper {
     max-width: 100%;
     margin: 0;
-}
-
-/* Ensure cards take full width */
-.MuiGrid-item {
-    width: 100%;
-}
-
-.MuiCard-root {
-    width: 100%;
-}
-
-/* Profile picture container */
-.profile-picture-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.profile-picture {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #272974;
-}
-
-.upload-button {
-    margin-top: 10px;
-    background-color: #272974;
+  }
+  
+  .content-paper {
+    margin: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  /* Tab styles */
+  .profile-tabs {
+    background-color: #292828;
     color: white;
-}
-
-.upload-button:hover {
-    background-color: #1f2068;
-}
-
-/* Form fields styling */
-.form-field {
+  }
+  
+  .profile-tabs .MuiTab-root {
+    color: white;
+    font-weight: bold;
+    opacity: 0.7;
+  }
+  
+  .profile-tabs .Mui-selected {
+    opacity: 1;
+  }
+  
+  /* Section titles */
+  .section-title {
+    margin-bottom: 20px !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    color: #333;
+  }
+  
+  .sub-section-title {
+    font-weight: bold !important;
+    color: #555;
+    margin-bottom: 10px !important;
+  }
+  
+  /* Form fields */
+  .form-field {
+    margin-bottom: 10px;
+  }
+  
+  /* Upload sections */
+  .upload-section {
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    height: 100%;
+  }
+  
+  .profile-avatar {
+    margin: 15px 0;
+    border: 3px solid #f2994a;
+  }
+  
+  .signature-box {
+    background-color: white;
     margin-bottom: 15px;
-}
+  }
+  
+  .file-upload-section {
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    height: 100%;
+  }
+  
+  .file-status {
+    background-color: white;
+  }
+  
+  /* Buttons */
+  .upload-button {
+    background-color: #383736 !important;
+    color: white !important;
+    margin-top: 10px !important;
+  }
+  
+  .upload-button:hover {
+    background-color: #3a3939 !important;
+  }
+  
+  .save-profile-button {
+    background-color: #4CAF50 !important;
+    color: white !important;
+    padding: 10px 30px !important;
+    font-size: 16px !important;
+  }
+  
+  .save-profile-button:hover {
+    background-color: #16bc1f !important;
+  }
+  
+  /* Dividers */
+  .section-divider {
+    margin: 20px 0 !important;
+  }
+  
+  /* Dialog styling */
+  .MuiDialog-paper {
+    border-radius: 8px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 960px) {
+    .sidebar-container {
+      display: none;
+    }
+    
+    .main-container {
+      margin-left: 0;
+      width: 100%;
+    }
+    
+    .profile-navigation {
+      flex-direction: column;
+    }
+    
+    .nav-button {
+      margin-bottom: 10px;
+    }
+    
+    .upload-section, .file-upload-section {
+      margin-bottom: 20px;
+    }
+  }
 
-/* Save button */
-.save-button {
-    background-color: #272974;
-    color: white;
+  /* Signature canvas styles */
+.signature-box {
+    background-color: white;
+    border: 1px solid #ccc;
     margin-top: 10px;
-}
-
-.save-button:hover {
-    background-color: #1f2068;
-}
+    border-radius: 8px;
+  }
+  
+  .signature-canvas {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .signature-pad-container {
+    border: 1px dashed #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .clear-signature-button {
+    color: #f44336 !important;
+    border-color: #f44336 !important;
+  }
+  
+  .save-signature-button {
+    background-color: #4CAF50 !important;
+    color: white !important;
+  }
