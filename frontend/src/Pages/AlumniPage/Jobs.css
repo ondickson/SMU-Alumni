@@ -21,7 +21,7 @@
 
 /* App Bar */
 .jobs-appbar {
-    background-color: #272974;
+    background-color: #272974 !important;
 }
 
 .jobs-title {
