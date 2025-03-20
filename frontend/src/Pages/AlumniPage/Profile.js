@@ -160,9 +160,6 @@ function Profile() {
             <Button startIcon={<AccountCircle />} className="nav-button">
               MY PROFILE
             </Button>
-            <Button startIcon={<Badge />} className="nav-button">
-              MY REQUIREMENTS
-            </Button>
           </Box>
           
           <Paper elevation={3} className="content-paper">
