@@ -1,12 +1,18 @@
 import express from 'express';
-import { getAllAlumni, addAlumni, deleteAlumni, updateAlumni, getTotals } from '../controllers/adminController.js';
+import { 
+    addAdmin, 
+    getAllAdmins, 
+    updateAdmin, 
+    toggleAdminActive, 
+    deleteAdmin 
+} from '../controllers/adminController.js';
 
 const router = express.Router();
 
-router.get('/alumni', getAllAlumni);
-router.post('/alumni', addAlumni); 
-router.delete('/alumni/:idNo', deleteAlumni);
-router.put('/alumni/:idNo', updateAlumni);
-router.get("/totals", getTotals);
+router.post("/admins", addAdmin);
+router.get("/admins", getAllAdmins);
+router.put("/admins/:id", updateAdmin);
+router.put("/admins/:id/toggle-active", toggleAdminActive);
+router.delete("/admins/:id", deleteAdmin);
 
 export default router;

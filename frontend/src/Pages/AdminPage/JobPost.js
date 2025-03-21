@@ -50,46 +50,46 @@ function JobPost() {
   };
 
   // DON'T DELETE THIS (FOR POSTING JOB WITH LINK)
-  const handlePostJob = async () => {
-    const formDataToSend = new FormData();
-    formDataToSend.append('title', formData.title);
-    formDataToSend.append('description', formData.description);
-    formDataToSend.append('link', formData.link);
-    if (formData.image) {
-      formDataToSend.append('image', formData.image);
-    }
-
-    try {
-      await axios.post('http://localhost:5001/api/jobs', formDataToSend, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      setOpen(false);
-      window.location.reload();
-    } catch (error) {
-      console.error('Error adding job:', error);
-    }
-  };
-
-// DON'T DELETE THIS (FOR POSTING JOB WITH FILE)
   // const handlePostJob = async () => {
   //   const formDataToSend = new FormData();
-  //   formDataToSend.append("title", formData.title);
-  //   formDataToSend.append("description", formData.description);
-  //   formDataToSend.append("link", formData.link);
+  //   formDataToSend.append('title', formData.title);
+  //   formDataToSend.append('description', formData.description);
+  //   formDataToSend.append('link', formData.link);
   //   if (formData.image) {
-  //     formDataToSend.append("image", formData.image);
+  //     formDataToSend.append('image', formData.image);
   //   }
-  
+
   //   try {
-  //     await axios.post("http://localhost:5001/api/jobs", formDataToSend, {
-  //       headers: { "Content-Type": "multipart/form-data" },
+  //     await axios.post('http://localhost:5001/api/jobs', formDataToSend, {
+  //       headers: { 'Content-Type': 'multipart/form-data' },
   //     });
   //     setOpen(false);
   //     window.location.reload();
   //   } catch (error) {
-  //     console.error("Error adding job:", error);
+  //     console.error('Error adding job:', error);
   //   }
   // };
+
+// DON'T DELETE THIS (FOR POSTING JOB WITH FILE)
+  const handlePostJob = async () => {
+    const formDataToSend = new FormData();
+    formDataToSend.append("title", formData.title);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("link", formData.link);
+    if (formData.image) {
+      formDataToSend.append("image", formData.image);
+    }
+  
+    try {
+      await axios.post("http://localhost:5001/api/jobs", formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setOpen(false);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error adding job:", error);
+    }
+  };
   
 
   return (
@@ -131,14 +131,14 @@ function JobPost() {
                 <Card className="job-card">
                   <CardContent>
                     {/* // DON'T DELETE THIS (FOR POSTING JOB WITH LINK) */}
-                    <img
+                    {/* <img
                       src={job.image || 'https://via.placeholder.com/300'}
                       alt="Job"
                       className="job-image"
-                    />
+                    /> */}
 
                     {/* // DON'T DELETE THIS (FOR POSTING JOB WITH FILE) */}
-                    {/* <img
+                    <img
                       src={
                         job.image
                           ? `data:image/png;base64,${job.image}`
@@ -146,7 +146,7 @@ function JobPost() {
                       }
                       alt="Job"
                       className="job-image"
-                    /> */}
+                    />
 
                     <Typography variant="h6" className="job-title">
                       {job.title}

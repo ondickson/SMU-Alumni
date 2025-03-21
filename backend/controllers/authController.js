@@ -46,7 +46,10 @@ export const login = async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
-
+        
+        if (user.role === "admin" && user.active === false) {
+            return res.status(403).json({ error: "Account is inactive. Contact support." });
+        }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ error: "Invalid credentials" });
@@ -58,3 +61,33 @@ export const login = async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 };
+
+// Admin Login
+export const loginAdmin = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const admin = await Admin.findOne({ email });
+
+        if (!admin) {
+            return res.status(404).json({ message: "Admin not found" });
+        }
+
+        if (!admin.active) {
+            return res.status(403).json({ message: "Account is inactive. Contact support." });
+        }
+
+        const isMatch = await bcrypt.compare(password, admin.password);
+
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        const token = jwt.sign({ id: admin._id, role: "admin" }, JWT_SECRET, { expiresIn: '1h' });
+
+        res.json({ token, admin: { id: admin._id, name: admin.name, email: admin.email } });
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
+};
+

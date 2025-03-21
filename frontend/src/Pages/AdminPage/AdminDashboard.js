@@ -17,10 +17,10 @@ import {
   Paper,
   IconButton,
   DialogTitle,
-  TextField,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
+  // TextField,
+  // Checkbox,
+  // FormControlLabel,
+  // FormGroup,
 } from '@mui/material';
 import {
   Today as TodayIcon,
@@ -143,30 +143,42 @@ function AdminDashboard() {
   const handleViewChange = (newView) => {
     setView(newView);
   };
+
+  
   
   const handleSelectEvent = (event) => {
     setSelectedEvent(event);
   };
+
   useEffect(() => {
     const fetchTotals = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/admin/totals');
+        const response = await fetch('http://localhost:5001/api/alumni/totals');
         const data = await response.json();
         // console.log('Fetched totals:', data);
-        setTotals(data);
+  
+        setTotals((prev) => ({
+          ...prev, // Keep existing values
+          totalAlumni: data.totalAlumni,
+          totalJobs: data.totalJobs, 
+          // Do NOT update totalEvents here, let fetchEvents handle it
+        }));
       } catch (error) {
         console.error('Error fetching totals:', error);
       }
     };
-
+  
     fetchTotals();
   }, []);
+  
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const response = await fetch('http://localhost:5001/api/events');
         const data = await response.json();
+        // console.log("Fetched events:", data.length);
+
         const formattedEvents = data.map((event) => ({
           title: event.title,
           start: new Date(event.date),
@@ -175,6 +187,11 @@ function AdminDashboard() {
           description: event.description,
         }));
         setEvents(formattedEvents);
+
+        setTotals((prev) => ({
+          ...prev,
+          totalEvents: data.length, // Ensure it's set correctly
+        }));
       } catch (error) {
         console.error('Error fetching events:', error);
       }
@@ -182,6 +199,10 @@ function AdminDashboard() {
 
     fetchEvents();
   }, []);
+
+  
+
+
 
   const handleNavigate = (path) => {
     if (path) {
@@ -215,15 +236,15 @@ function AdminDashboard() {
   };
 
   // Function to render stars based on rating
-  const renderStars = (rating) => {
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating - fullStars >= 0.5;
+  // const renderStars = (rating) => {
+  //   const fullStars = Math.floor(rating);
+  //   const hasHalfStar = rating - fullStars >= 0.5;
 
-    let stars = '★'.repeat(fullStars);
-    if (hasHalfStar) stars += '☆';
+  //   let stars = '★'.repeat(fullStars);
+  //   if (hasHalfStar) stars += '☆';
 
-    return stars;
-  };
+  //   return stars;
+  // };
   
   // Handle feedback form details view
   const handleViewFeedbackDetails = (feedback) => {
@@ -231,6 +252,10 @@ function AdminDashboard() {
     setFeedbackFormModalOpen(true);
   };
 
+  // useEffect(() => {
+  //   console.log("Updated events state:", events.length); // Ensure all events are stored
+  // }, [events]);
+  
   return (
     <div className="admin-dashboard">
       <SidebarMenu />

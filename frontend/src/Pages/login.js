@@ -39,32 +39,65 @@ const Login = () => {
     return () => clearInterval(interval);
   }, [carouselSlides.length]);
 
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   setEmailTouched(true);
+  //   setPasswordTouched(true);
+    
+  //   if (!email || !password) {
+  //     return;
+  //   }
+    
+  //   try {
+  //     const res = await axios.post('http://localhost:5001/api/auth/login', {
+  //       email,
+  //       password,
+  //     });
+  //     localStorage.setItem('token', res.data.token);
+  //     localStorage.setItem('role', res.data.role);
+
+  //     if (res.data.role === 'admin') {
+  //       navigate('/AdminDashboard');
+  //     } else {
+  //       navigate('/AlumniDashboard');
+  //     }
+  //   } catch (error) {
+  //     alert('Invalid Credentials');
+  //   }
+  // };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setEmailTouched(true);
     setPasswordTouched(true);
-    
-    if (!email || !password) {
-      return;
-    }
-    
-    try {
-      const res = await axios.post('http://localhost:5001/api/auth/login', {
-        email,
-        password,
-      });
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('role', res.data.role);
 
-      if (res.data.role === 'admin') {
-        navigate('/AdminDashboard');
-      } else {
-        navigate('/AlumniDashboard');
-      }
-    } catch (error) {
-      alert('Invalid Credentials');
+    if (!email || !password) {
+        return;
     }
-  };
+
+    try {
+        const res = await axios.post("http://localhost:5001/api/auth/login", {
+            email,
+            password,
+        });
+
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("role", res.data.role);
+
+        if (res.data.role === "admin") {
+            navigate("/AdminDashboard");
+        } else {
+            navigate("/AlumniDashboard");
+        }
+    } catch (error) {
+        if (error.response && error.response.data && error.response.data.error) {
+            alert(error.response.data.error); // Show backend error message
+        } else {
+            alert("Something went wrong. Please try again.");
+        }
+    }
+};
+
 
   return (
     <div className="login-page">
