@@ -79,14 +79,14 @@ function AlumniInformation() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:5001/api/admin/alumni')
+      .get('http://localhost:5001/api/alumni/alumni')
       .then((response) => setAlumniData(response.data))
       .catch((error) => console.error('Error fetching alumni:', error));
   }, []);
 
   const handleAddAlumni = () => {
     axios
-      .post('http://localhost:5001/api/admin/alumni', selectedAlumni)
+      .post('http://localhost:5001/api/alumni/alumni', selectedAlumni)
       .then((response) => {
         setAlumniData((prevData) => [...prevData, response.data]); // Update UI
         handleCloseDialog(); // Close form
@@ -116,7 +116,7 @@ function AlumniInformation() {
 
   const handleDelete = (idNo) => {
     axios
-      .delete(`http://localhost:5001/api/admin/alumni/${idNo}`)
+      .delete(`http://localhost:5001/api/alumni/alumni/${idNo}`)
       .then(() => {
         setAlumniData(alumniData.filter((alumni) => alumni.idNo !== idNo));
         console.log('Alumni deleted successfully');
@@ -132,25 +132,26 @@ function AlumniInformation() {
   const handleSaveEdit = () => {
     axios
       .put(
-        `http://localhost:5001/api/admin/alumni/${selectedAlumni.idNo}`,
-        selectedAlumni,
+        `http://localhost:5001/api/alumni/alumni/${selectedAlumni.idNo}`,
+        selectedAlumni
       )
       .then((response) => {
         setAlumniData((prevData) =>
           prevData.map((alumni) =>
-            alumni.idNo === response.data.idNo ? response.data : alumni,
-          ),
+            alumni.idNo === response.data.alumni.idNo ? response.data.alumni : alumni
+          )
         );
         handleCloseDialog();
       })
       .catch((error) => console.error('Error updating alumni:', error));
   };
 
+
   const handleDownloadAll = async () => {
     try {
       // API request with optional filtering
       const response = await axios.get(
-        'http://localhost:5001/api/admin/alumni',
+        'http://localhost:5001/api/alumni/alumni',
         {
           params: {
             yearGraduated: selectedYear || undefined, // Send only if selected

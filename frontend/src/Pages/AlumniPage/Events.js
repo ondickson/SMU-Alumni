@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './Events.css';
 import Sidebar from '../Sidebar';
 import {
@@ -12,61 +13,22 @@ import {
   Grid,
 } from '@mui/material';
 
-// Static sample events data
-const sampleEvents = [
-  {
-    _id: '1',
-    title: 'Annual Alumni Homecoming',
-    date: '2025-04-25T18:00:00',
-    location: 'University Main Campus',
-    description: 'Join us for our biggest alumni gathering of the year!',
-    image: '/Annual Alumni Homecoming.jpg'
-  },
-  {
-    _id: '2',
-    title: 'Career Networking Night',
-    date: '2025-04-10T17:30:00',
-    location: 'University Business Center',
-    description: 'Connect with fellow alumni across various industries.',
-    image: '/Career Networking Night.jpg'
-  },
-  {
-    _id: '3',
-    title: 'Tech Innovation Summit',
-    date: '2025-05-15T09:00:00',
-    location: 'Tech Innovation Hub',
-    description: 'A day-long conference featuring alumni speakers who are leaders in technology.',
-    image: '/Tech Innovation Summit.jpg'
-  },
-  {
-    _id: '4',
-    title: 'Alumni Sports Tournament',
-    date: '2025-06-05T10:00:00',
-    location: 'University Sports Complex',
-    description: 'Annual sports competition between alumni batches.',
-    image: '/Alumni Sports Tournament.jpg'
-  },
-  {
-    _id: '5',
-    title: 'Community Service Day',
-    date: '2025-04-18T08:00:00',
-    location: 'Community Center',
-    description: 'Give back to the community through this volunteer opportunity.',
-    image: '/Community Service Day.jpg'
-  },
-  {
-    _id: '6',
-    title: 'Alumni Business Expo',
-    date: '2025-05-22T11:00:00',
-    location: 'University Convention Center',
-    description: 'Showcase your business or discover ventures started by fellow alumni.',
-    image: '/Alumni Business Expo.jpg'
-  }
-];
-
 function Events() {
   const [search, setSearch] = useState('');
-  const [events] = useState(sampleEvents); // Use sampleEvents directly
+  const [events, setEvents] = useState([]); // Store fetched events
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get('http://localhost:5001/api/events');
+      setEvents(response.data); // Update state with fetched events
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
 
   // Filter events based on search term
   const filteredEvents = events.filter(event =>

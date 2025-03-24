@@ -1,4 +1,6 @@
 import Alumni from "../models/Alumni.js";
+import JobPost from "../models/JobPost.js";
+import Event from "../models/Event.js";
 
 // Fetch all alumni
 export const getAllAlumni = async (req, res) => {
@@ -37,7 +39,7 @@ export const addAlumni = async (req, res) => {
 // Fetch single alumni by ID
 export const getAlumniById = async (req, res) => {
   try {
-    const alumni = await Alumni.findById(req.params.id);
+    const alumni = await Alumni.findById(req.params.idNo);
     if (!alumni) {
       return res.status(404).json({ message: "Alumni not found" });
     }
@@ -50,25 +52,47 @@ export const getAlumniById = async (req, res) => {
 // Update alumni details
 export const updateAlumni = async (req, res) => {
   try {
-    const updatedAlumni = await Alumni.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updatedAlumni = await Alumni.findOneAndUpdate(
+      { idNo: req.params.idNo }, 
+      req.body, 
+      { new: true }
+    );
+
     if (!updatedAlumni) {
       return res.status(404).json({ message: "Alumni not found" });
     }
+
     res.status(200).json({ message: "Alumni updated successfully", alumni: updatedAlumni });
   } catch (error) {
-    res.status(500).json({ message: "Error updating alumni", error });
+    res.status(500).json({ message: "Error updating alumni", error: error.message });
   }
 };
+
 
 // Delete alumni
 export const deleteAlumni = async (req, res) => {
   try {
-    const deletedAlumni = await Alumni.findByIdAndDelete(req.params.id);
+    // console.log("Deleting alumni with idNo:", req.params.idNo);
+    // const deletedAlumni = await Alumni.findByIdAndDelete(req.params.idNo);
+    const deletedAlumni = await Alumni.findOneAndDelete({ idNo: req.params.idNo });
+
     if (!deletedAlumni) {
       return res.status(404).json({ message: "Alumni not found" });
     }
     res.status(200).json({ message: "Alumni deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting alumni", error });
+  }
+};
+
+export const getTotals = async (req, res) => {
+  try {
+    const totalAlumni = await Alumni.countDocuments();
+    const totalJobs = await JobPost.countDocuments();
+    const totalEvents = await Event.countDocuments({ date: { $gte: new Date() } });
+
+    res.json({ totalAlumni, totalJobs, totalEvents });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching totals", error });
   }
 };

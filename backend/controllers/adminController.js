@@ -1,85 +1,104 @@
-import Alumni from "../models/Alumni.js";
-import JobPost from "../models/JobPost.js";
-import Event from "../models/Event.js";
+import Admin from '../models/Admin.js';
+import bcrypt from 'bcryptjs';
 
-export const getAllAlumni = async (req, res) => {
-    try {
-        const alumni = await Alumni.find();
-        res.json(alumni);
-    } catch (error) {
-        res.status(500).json({ error: "Server error" });
+export const addAdmin = async (req, res) => {
+  try {
+    const { name, email, password, idNumber, position } = req.body;
+
+    if (!name || !email || !password || !idNumber || !position) {
+      return res.status(400).json({ error: 'All fields are required' });
     }
+
+    const existingAdmin = await Admin.findOne({ email });
+    if (existingAdmin) {
+      return res
+        .status(400)
+        .json({ error: 'Admin with this email already exists' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newAdmin = new Admin({
+      name,
+      email,
+      password: hashedPassword,
+      idNumber,
+      position,
+      role: 'admin',
+    });
+
+    await newAdmin.save();
+    res
+      .status(201)
+      .json({ message: 'Admin added successfully', admin: newAdmin });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error', details: error.message });
+  }
 };
 
-export const addAlumni = async (req, res) => {
-    try {
-        // console.log("Incoming request body:", req.body);
-        const { idNo, name, email, password, program, yearGraduated } = req.body;
-        if (!idNo || !name || !email || !password || !program || !yearGraduated) {
-            return res.status(400).json({ error: "All fields are required" });
-        }
-
-        const newAlumni = new Alumni({ idNo: String(idNo), name, email, password, program, yearGraduated });
-        await newAlumni.save();
-
-        res.status(201).json({ message: "Alumni added successfully", alumni: newAlumni });
-    } catch (error) {
-        // console.error("Error adding alumni:", error);
-        res.status(500).json({ error: error.message });
-    }
+// Get All Admins
+export const getAllAdmins = async (req, res) => {
+  try {
+    const admins = await Admin.find();
+    res.json(admins);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 };
 
-export const deleteAlumni = async (req, res) => {
-    try {
-        const idNo = String(req.params.idNo); // Ensure it's a string
-        console.log("Received request to delete alumni with idNo:", idNo);
-        
-        const deletedAlumni = await Alumni.findOneAndDelete({ idNo });
+// Update Admin
+export const updateAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedAdmin = await Admin.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
 
-        if (!deletedAlumni) {
-            return res.status(404).json({ error: "Alumni not found in database" });
-        }
-
-        res.json({ message: "Alumni deleted successfully", deletedAlumni });
-    } catch (error) {
-        console.error("Error deleting alumni:", error);
-        res.status(500).json({ error: "Server error" });
+    if (!updatedAdmin) {
+      return res.status(404).json({ error: 'Admin not found' });
     }
+
+    res
+      .status(200)
+      .json({ message: 'Admin updated successfully', admin: updatedAdmin });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error', details: error.message });
+  }
 };
 
+// Toggle Active Status
+export const toggleAdminActive = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const admin = await Admin.findById(id);
 
-
-export const updateAlumni = async (req, res) => {
-    try {
-        const { idNo } = req.params;
-        const updatedData = req.body;
-
-        const updatedAlumni = await Alumni.findOneAndUpdate(
-            { idNo },
-            updatedData,
-            { new: true }
-        );
-
-        if (!updatedAlumni) {
-            return res.status(404).json({ error: "Alumni not found" });
-        }
-
-        res.json(updatedAlumni);
-    } catch (error) {
-        res.status(500).json({ error: "Server error" });
+    if (!admin) {
+      return res.status(404).json({ error: 'Admin not found' });
     }
+
+    admin.active = !admin.active;
+    await admin.save();
+
+    res
+      .status(200)
+      .json({ message: 'Admin status updated', active: admin.active });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error', details: error.message });
+  }
 };
 
+// Delete Admin
+export const deleteAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedAdmin = await Admin.findByIdAndDelete(id);
 
-export const getTotals = async (req, res) => {
-    try {
-      const totalAlumni = await Alumni.countDocuments();
-      const totalJobs = await JobPost.countDocuments();
-      const totalEvents = await Event.countDocuments({ date: { $gte: new Date() } });
-  
-      res.json({ totalAlumni, totalJobs, totalEvents });
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching totals", error });
+    if (!deletedAdmin) {
+      return res.status(404).json({ error: 'Admin not found' });
     }
-  };
 
+    res.status(200).json({ message: 'Admin deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error', details: error.message });
+  }
+};

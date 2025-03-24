@@ -1,61 +1,95 @@
-import React, { useState } from 'react';
-import { 
-  AppBar, Toolbar, Typography, Box, Button, Card, CardContent, Grid, 
-  TextField, Table, TableBody, TableCell, TableContainer, 
-  TableHead, TableRow, Paper, Switch, IconButton, Dialog, DialogActions, 
-  DialogContent, DialogTitle, Divider, List, ListItem, ListItemText
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Switch,
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
 import { Edit, Delete, Settings, Save } from '@mui/icons-material';
-import Sidebar from '../Sidebar'; // Import Sidebar
-import './AccountSetting.css'; // Import CSS for styling
+import Sidebar from '../Sidebar'; 
+import './AccountSetting.css';
 
 function AccountSetting() {
-  // State to manage user data
-  const [users, setUsers] = useState([
-    { 
-      name: 'John Doe', 
-      email: 'johndoe@example.com', 
-      active: true,
-      idNumber: 'EMP001',
-      position: 'Manager'
-    },
-  ]);
 
+
+  const [admins, setAdmins] = useState([]);
+  const [filteredAdmins, setFilteredAdmins] = useState([]);
+  const [selectedAdmin, setSelectedAdmin] = useState(null);
+  const [editedAdmin, setEditedAdmin] = useState(null);
+  const [newAdmin, setNewAdmin] = useState({
+    name: '',
+    email: '',
+    password: '',
+    idNumber: '',
+    position: '',
+  });
+  const [filterName, setFilterName] = useState('');
   const [open, setOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [selectedUserIndex, setSelectedUserIndex] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [editedUser, setEditedUser] = useState(null);
-  const [newUser, setNewUser] = useState({ 
-    name: '', 
-    email: '', 
-    idNumber: '',
-    position: ''
-  });
 
-  // Function to toggle active status
-  const handleToggleActive = (index) => {
-    setUsers((prevUsers) =>
-      prevUsers.map((user, i) =>
-        i === index ? { ...user, active: !user.active } : user
-      )
-    );
+
+
+  useEffect(() => {
+    fetchAdmins();
+  }, []);
+
+  const fetchAdmins = async () => {
+    try {
+      const response = await axios.get('http://localhost:5001/api/admins');
+      setAdmins(response.data);
+      setFilteredAdmins(response.data);
+    } catch (error) {
+      console.error('Error fetching admins:', error);
+    }
+  };
+
+  const handleToggleActive = async (id, active) => {
+    try {
+      await axios.put(`http://localhost:5001/api/admins/${id}`, {
+        active: !active,
+      });
+      fetchAdmins();
+    } catch (error) {
+      console.error('Error updating admin:', error);
+    }
   };
 
   // Function to handle modal open/close
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  // Function to handle details modal
-  const handleDetailsOpen = (user, index) => {
-    setSelectedUser(user);
-    setSelectedUserIndex(index);
-    setEditedUser({...user});
+
+  const handleDetailsOpen = (admin) => {
+    setSelectedAdmin(admin);
+    setEditedAdmin({ ...admin });
     setEditMode(false);
     setDetailsOpen(true);
   };
-  
+
   const handleDetailsClose = () => {
     setDetailsOpen(false);
     setEditMode(false);
@@ -66,31 +100,64 @@ function AccountSetting() {
     setEditMode(!editMode);
   };
 
-  // Function to save edited user
-  const handleSaveEdit = () => {
-    if (editedUser.name && editedUser.email && editedUser.idNumber && editedUser.position) {
-      setUsers(prevUsers => 
-        prevUsers.map((user, index) => 
-          index === selectedUserIndex ? editedUser : user
-        )
+  const handleSaveEdit = async () => {
+    try {
+      await axios.put(
+        `http://localhost:5001/api/admins/${editedAdmin._id}`,
+        editedAdmin,
       );
-      setSelectedUser(editedUser);
+      fetchAdmins();
       setEditMode(false);
+    } catch (error) {
+      console.error('Error updating admin:', error);
     }
   };
 
-  // Function to handle edit field changes
   const handleEditChange = (field, value) => {
-    setEditedUser({...editedUser, [field]: value});
+    setEditedAdmin({ ...editedAdmin, [field]: value });
   };
 
-  // Function to add user
-  const handleAddUser = () => {
-    if (newUser.name && newUser.email && newUser.idNumber && newUser.position) {
-      setUsers([...users, { ...newUser, active: true }]);
-      setNewUser({ name: '', email: '', idNumber: '', position: '' });
-      handleClose();
+  const handleAddAdmin = async () => {
+    if (newAdmin.name && newAdmin.email && newAdmin.password && newAdmin.idNumber && newAdmin.position) {
+      try {
+        await axios.post('http://localhost:5001/api/admins', {
+          name: newAdmin.name,
+          email: newAdmin.email,
+          password: newAdmin.password,
+          idNumber: newAdmin.idNumber,
+          position: newAdmin.position,
+        });
+        fetchAdmins();
+        setNewAdmin({
+          name: '',
+          email: '',
+          password: '',
+          idNumber: '',
+          position: '',
+        });
+        handleClose();
+      } catch (error) {
+        console.error('Error adding admin:', error);
+      }
     }
+  };
+
+  
+  const handleDeleteAdmin = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5001/api/admins/${id}`);
+      fetchAdmins();
+    } catch (error) {
+      console.error('Error deleting admin:', error);
+    }
+  };
+
+  const handleFilterChange = (e) => {
+    const value = e.target.value.toLowerCase();
+    setFilterName(value);
+    setFilteredAdmins(
+      admins.filter((admin) => admin.name.toLowerCase().includes(value)),
+    );
   };
 
   return (
@@ -105,7 +172,9 @@ function AccountSetting() {
         <div className="content-wrapper">
           <AppBar position="static" className="appbar">
             <Toolbar>
-              <Typography variant="h6" className="title">Account Settings</Typography>
+              <Typography variant="h6" className="title">
+                Account Settings
+              </Typography>
             </Toolbar>
           </AppBar>
 
@@ -115,31 +184,34 @@ function AccountSetting() {
               <Grid item xs={12}>
                 <Card>
                   <CardContent>
-                    <h3>Manage Users</h3>
+                    <h3>Manage Admins</h3>
                     <br />
                     <Grid container spacing={2} alignItems="center">
                       <Grid item xs={4}>
-                        <TextField fullWidth label="Name" variant="outlined" />
-                      </Grid>
-                      <Grid item xs={4}>
-                        <TextField fullWidth label="Email" variant="outlined" />
+                        <TextField
+                          fullWidth
+                          label="Filter by Name"
+                          variant="outlined"
+                          value={filterName}
+                          onChange={handleFilterChange}
+                        />
                       </Grid>
                       <Grid item xs={2} display="flex" alignItems="stretch">
-                        <Button 
-                          variant="outlined" 
-                          color="primary" 
+                        <Button
+                          variant="outlined"
+                          color="primary"
                           onClick={handleOpen}
-                          sx={{ 
-                            height: '53px', 
-                            width: '100%', 
-                            '&:hover': { 
-                              backgroundColor: '#272974', 
-                              color: '#fff', 
-                              borderColor: '#272974' 
-                            } 
+                          sx={{
+                            height: '53px',
+                            width: '100%',
+                            '&:hover': {
+                              backgroundColor: '#272974',
+                              color: '#fff',
+                              borderColor: '#272974',
+                            },
                           }}
                         >
-                          Create User
+                          Add Admin
                         </Button>
                       </Grid>
                     </Grid>
@@ -151,58 +223,82 @@ function AccountSetting() {
               <Grid item xs={12}>
                 <Card>
                   <CardContent>
-                    <h3>User List</h3>
+                    <h3>Admin List</h3>
                     <br />
                     <TableContainer component={Paper}>
                       <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell sx={{ width: '150px' }}><b>Name</b></TableCell>
-                          <TableCell sx={{ width: '250px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                            <b>Email</b>
-                          </TableCell>
-                          <TableCell align="center" sx={{ width: '100px' }}><b>Active</b></TableCell>
-                          <TableCell align="center" sx={{ width: '150px' }}><b>Actions</b></TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {users.map((user, index) => (
-                          <TableRow key={index}>
-                            <TableCell>{user.name}</TableCell>
-                            <TableCell sx={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                              {user.email}
+                        <TableHead>
+                          <TableRow>
+                            <TableCell sx={{ width: '150px' }}>
+                              <b>Name</b>
                             </TableCell>
-                            <TableCell align="center">
-                              <Switch 
-                                checked={user.active} 
-                                onChange={() => handleToggleActive(index)} 
-                                color="primary"
-                                sx={{
-                                  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                                    backgroundColor: '#272974',
-                                  }
-                                }}
-                              />
+                            <TableCell
+                              sx={{
+                                width: '250px',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                              }}
+                            >
+                              <b>Email</b>
                             </TableCell>
-                            <TableCell align="center">
-                              <Box display="flex" justifyContent="center" gap={1}>
-                                <IconButton sx={{ color: '#272974' }}>
-                                  <Edit />
-                                </IconButton>
-                                <IconButton 
-                                  sx={{ color: 'grey' }}
-                                  onClick={() => handleDetailsOpen(user, index)}
-                                >
-                                  <Settings />
-                                </IconButton>
-                                <IconButton color="error">
-                                  <Delete />
-                                </IconButton>
-                              </Box>
+                            <TableCell align="center" sx={{ width: '100px' }}>
+                              <b>Active</b>
+                            </TableCell>
+                            <TableCell align="center" sx={{ width: '150px' }}>
+                              <b>Actions</b>
                             </TableCell>
                           </TableRow>
-                        ))}
-                      </TableBody>
+                        </TableHead>
+                        <TableBody>
+                          {filteredAdmins.map((admin) => (
+                            <TableRow key={admin._id}>
+                              <TableCell>{admin.name}</TableCell>
+                              <TableCell
+                                sx={{
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                  overflow: 'hidden',
+                                }}
+                              >
+                                {admin.email}
+                              </TableCell>
+                              <TableCell align="center">
+                                <Switch
+                                  checked={admin.active}
+                                  onChange={() =>
+                                    handleToggleActive(admin._id, admin.active)
+                                  }
+                                  color="primary"
+                                  sx={{
+                                    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
+                                      {
+                                        backgroundColor: '#272974',
+                                      },
+                                  }}
+                                />
+                              </TableCell>
+                              <TableCell align="center">
+                                <Box
+                                  display="flex"
+                                  justifyContent="center"
+                                  gap={1}
+                                >
+
+                                  <IconButton
+                                    sx={{ color: 'grey' }}
+                                    onClick={() => handleDetailsOpen(admin)}
+                                  >
+                                    <Settings />
+                                  </IconButton>
+                                  <IconButton color="error" onClick={() => handleDeleteAdmin(admin._id)}>
+                                    <Delete />
+                                  </IconButton>
+                                </Box>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
                       </Table>
                     </TableContainer>
                   </CardContent>
@@ -212,12 +308,24 @@ function AccountSetting() {
               {/* Backup Section */}
               <Grid item xs={12} mt={3}>
                 <Card>
-                  <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                  <CardContent
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      textAlign: 'center',
+                    }}
+                  >
                     <h3>Backup</h3>
                     <br />
-                    <p>The backup process is fully automated and runs daily at 10:00 AM.</p>
+                    <p>
+                      The backup process is fully automated and runs daily at
+                      10:00 AM.
+                    </p>
                     <br />
-                    <Button variant="outlined" color="primary">Restore Backup Database</Button>
+                    <Button variant="outlined" color="primary">
+                      Restore Backup Database
+                    </Button>
                   </CardContent>
                 </Card>
               </Grid>
@@ -228,75 +336,47 @@ function AccountSetting() {
 
       {/* Add User Modal */}
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add New User</DialogTitle>
+        <DialogTitle>Add New Admin</DialogTitle>
         <DialogContent>
-          <TextField 
-            fullWidth 
-            label="Name" 
-            variant="outlined" 
-            margin="dense" 
-            value={newUser.name} 
-            onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-          />
-          <TextField 
-            fullWidth 
-            label="Email" 
-            variant="outlined" 
-            margin="dense" 
-            value={newUser.email} 
-            onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-          />
-          <TextField 
-            fullWidth 
-            label="ID Number" 
-            variant="outlined" 
-            margin="dense" 
-            value={newUser.idNumber} 
-            onChange={(e) => setNewUser({ ...newUser, idNumber: e.target.value })}
-          />
-          <TextField 
-            fullWidth 
-            label="Position" 
-            variant="outlined" 
-            margin="dense" 
-            value={newUser.position} 
-            onChange={(e) => setNewUser({ ...newUser, position: e.target.value })}
-          />
-         
+          <TextField fullWidth label="Name" variant="outlined" margin="dense" value={newAdmin.name} onChange={(e) => setNewAdmin({ ...newAdmin, name: e.target.value })}/>
+          <TextField fullWidth label="Email" variant="outlined" margin="dense" value={newAdmin.email} onChange={(e) => setNewAdmin({ ...newAdmin, email: e.target.value })}/>
+          <TextField fullWidth label="Password" type="password" variant="outlined" margin="dense" value={newAdmin.password} onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}/>
+          <TextField fullWidth label="ID Number" variant="outlined" margin="dense" value={newAdmin.idNumber} onChange={(e) => setNewAdmin({ ...newAdmin, idNumber: e.target.value })}/>
+          <TextField fullWidth label="Position" variant="outlined" margin="dense" value={newAdmin.position} onChange={(e) => setNewAdmin({ ...newAdmin, position: e.target.value })}/>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleAddUser} variant="contained" color="primary">Add</Button>
+          <Button onClick={handleAddAdmin} variant="contained" color="primary">
+            Add
+          </Button>
         </DialogActions>
       </Dialog>
 
       {/* User Details Modal */}
-      <Dialog 
-        open={detailsOpen} 
+      <Dialog
+        open={detailsOpen}
         onClose={handleDetailsClose}
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle sx={{ bgcolor: '#f5f5f5' }}>
-          User Details
-        </DialogTitle>
+        <DialogTitle sx={{ bgcolor: '#f5f5f5' }}>User Details</DialogTitle>
         <DialogContent dividers>
-          {selectedUser && (
+          {selectedAdmin && (
             <List>
               <ListItem>
                 {editMode ? (
                   <TextField
                     fullWidth
                     label="Name"
-                    value={editedUser.name}
+                    value={editedAdmin.name}
                     onChange={(e) => handleEditChange('name', e.target.value)}
                     variant="outlined"
                     margin="dense"
                   />
                 ) : (
-                  <ListItemText 
-                    primary="Name" 
-                    secondary={selectedUser.name} 
+                  <ListItemText
+                    primary="Name"
+                    secondary={selectedAdmin.name}
                     primaryTypographyProps={{ fontWeight: 'bold' }}
                   />
                 )}
@@ -307,15 +387,15 @@ function AccountSetting() {
                   <TextField
                     fullWidth
                     label="Email"
-                    value={editedUser.email}
+                    value={editedAdmin.email}
                     onChange={(e) => handleEditChange('email', e.target.value)}
                     variant="outlined"
                     margin="dense"
                   />
                 ) : (
-                  <ListItemText 
-                    primary="Email" 
-                    secondary={selectedUser.email} 
+                  <ListItemText
+                    primary="Email"
+                    secondary={selectedAdmin.email}
                     primaryTypographyProps={{ fontWeight: 'bold' }}
                   />
                 )}
@@ -326,15 +406,17 @@ function AccountSetting() {
                   <TextField
                     fullWidth
                     label="ID Number"
-                    value={editedUser.idNumber}
-                    onChange={(e) => handleEditChange('idNumber', e.target.value)}
+                    value={editedAdmin.idNumber}
+                    onChange={(e) =>
+                      handleEditChange('idNumber', e.target.value)
+                    }
                     variant="outlined"
                     margin="dense"
                   />
                 ) : (
-                  <ListItemText 
-                    primary="ID Number" 
-                    secondary={selectedUser.idNumber} 
+                  <ListItemText
+                    primary="ID Number"
+                    secondary={selectedAdmin.idNumber}
                     primaryTypographyProps={{ fontWeight: 'bold' }}
                   />
                 )}
@@ -345,30 +427,34 @@ function AccountSetting() {
                   <TextField
                     fullWidth
                     label="Position"
-                    value={editedUser.position}
-                    onChange={(e) => handleEditChange('position', e.target.value)}
+                    value={editedAdmin.position}
+                    onChange={(e) =>
+                      handleEditChange('position', e.target.value)
+                    }
                     variant="outlined"
                     margin="dense"
                   />
                 ) : (
-                  <ListItemText 
-                    primary="Position" 
-                    secondary={selectedUser.position} 
+                  <ListItemText
+                    primary="Position"
+                    secondary={selectedAdmin.position}
                     primaryTypographyProps={{ fontWeight: 'bold' }}
                   />
                 )}
               </ListItem>
               <Divider />
               <ListItem>
-                <ListItemText 
-                  primary="Status" 
-                  secondary={selectedUser.active ? "Active" : "Inactive"} 
+                <ListItemText
+                  primary="Status"
+                  secondary={selectedAdmin.active ? 'Active' : 'Inactive'}
                   primaryTypographyProps={{ fontWeight: 'bold' }}
                 />
                 {editMode && (
                   <Switch
-                    checked={editedUser.active}
-                    onChange={(e) => handleEditChange('active', e.target.checked)}
+                    checked={editedAdmin.active}
+                    onChange={(e) =>
+                      handleEditChange('active', e.target.checked)
+                    }
                     color="primary"
                   />
                 )}
@@ -377,9 +463,9 @@ function AccountSetting() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button 
-            variant="contained" 
-            color="primary" 
+          <Button
+            variant="contained"
+            color="primary"
             startIcon={editMode ? <Save /> : <Edit />}
             onClick={editMode ? handleSaveEdit : handleToggleEdit}
             sx={{ mr: 1 }}
