@@ -515,14 +515,24 @@ const SignUp = () => {
           <div className="form-field full-width">
             <label>Did you take your Senior High School in SMU? <span className="required">*</span></label>
             <input
-              type="text"
-              name="seniorHighInSMU"
-              value={formData.seniorHighInSMU}
-              onChange={handleChange}
-              className="input-field"
-              placeholder="If YES, indicate graduation year and STRAND otherwise write NO"
-              required
-            />
+               type="text"
+               name="seniorHighInSMU"
+               value={formData.seniorHighInSMU}
+               onChange={handleChange}
+               className="input-field"
+              //  placeholder="If YES, indicate graduation year and STRAND otherwise write NO"
+               placeholder="If YES, indicate graduation year otherwise write NO"
+               required
+             />
+             <input
+               type="text"
+               name="seniorHighInSMU"
+               value={formData.strandInSMU}
+               onChange={handleChange}
+               className="input-field"
+               placeholder="If YES, indicate graduation STRAND otherwise write N/A"
+               required
+             />
           </div>
           
           <div className="form-field full-width">
