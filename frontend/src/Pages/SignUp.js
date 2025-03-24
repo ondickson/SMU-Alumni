@@ -30,6 +30,7 @@ const SignUp = () => {
     gradeSchoolInSMU: '',
     juniorHighInSMU: '',
     seniorHighInSMU: '',
+    strandInSMU:'',
     tertiaryInSMU: '',
     studiedButNotGraduated: '',
     employmentStatus: [],
@@ -520,7 +521,17 @@ const SignUp = () => {
               value={formData.seniorHighInSMU}
               onChange={handleChange}
               className="input-field"
-              placeholder="If YES, indicate graduation year and STRAND otherwise write NO"
+              placeholder="If YES, indicate graduation year otherwise write NO"
+              required
+            />
+
+            <input
+              type="text"
+              name="seniorHighInSMU"
+              value={formData.strandInSMU}
+              onChange={handleChange}
+              className="input-field"
+              placeholder="If YES, indicate graduation STRAND otherwise write N/A"
               required
             />
           </div>

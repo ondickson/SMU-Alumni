@@ -480,8 +480,18 @@ function Profile() {
                 <Grid item xs={12} md={6}>
                   <TextField
                     fullWidth
-                    label="Did you take your Senior High School in SMU?"
-                    helperText="If yes, indicate grad year and STRAND, otherwise write NO"
+                    label="Year Graduated Senior High School in SMU?"
+                    helperText
+                    name="seniorHighSMU"
+                    value={profile.seniorHighSMU}
+                    onChange={handleChange}
+                    variant="outlined"
+                    className="form-field"
+                  />
+                   <TextField
+                    fullWidth
+                    label="Strand in Senior High School in SMU?"
+                    helperText="If yes, indicate year graduated and strand, otherwise write NO"
                     name="seniorHighSMU"
                     value={profile.seniorHighSMU}
                     onChange={handleChange}

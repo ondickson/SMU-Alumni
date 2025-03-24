@@ -35,7 +35,7 @@ const Login = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev === carouselSlides.length - 1 ? 0 : prev + 1));
-    }, 5000);
+    }, 5001);
     return () => clearInterval(interval);
   }, [carouselSlides.length]);
 
