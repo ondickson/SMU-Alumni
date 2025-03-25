@@ -497,7 +497,7 @@ const handleToggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPas
                   <TextField
                     fullWidth
                     label="School/Level"
-                    name="schoolLevel"
+                    name="school"
                     value={profile.school || ''}
                     onChange={handleChange}
                     variant="outlined"
@@ -508,7 +508,7 @@ const handleToggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPas
                   <TextField
                     fullWidth
                     label="Course/Program"
-                    name="courseProgram"
+                    name="program"
                     value={profile.program || ''}
                     onChange={handleChange}
                     variant="outlined"
@@ -547,7 +547,7 @@ const handleToggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPas
                     label="Did you take your Grade School/Elementary in SMU?"
                     helperText="If yes, indicate graduation year, otherwise write NO"
                     name="elementarySMU"
-                    value={profile.elementaryAtSMU === 'Yes' ? 'Yes' : 'No'}
+                    value={profile.elementarySMU === 'Yes' ? 'Yes' : 'No'}
                     onChange={handleChange}
                     variant="outlined"
                     className="form-field"
@@ -560,7 +560,7 @@ const handleToggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPas
                     label="Did you take your Junior High School in SMU?"
                     helperText="If yes, indicate graduation year, otherwise write NO"
                     name="juniorHighSMU"
-                    value={profile.juniorHighAtSMU === 'Yes' ? 'Yes' : 'No'}
+                    value={profile.juniorHighSMU === 'Yes' ? 'Yes' : 'No'}
                     onChange={handleChange}
                     variant="outlined"
                     className="form-field"
@@ -574,8 +574,8 @@ const handleToggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPas
                     helperText="If yes, indicate grad year and STRAND, otherwise write NO"
                     name="seniorHighSMU"
                     value={
-                      profile.seniorHighAtSMU === 'Yes'
-                        ? `Yes - ${profile.seniorHighStrand}`
+                      profile.seniorHighSMU === 'Yes'
+                        ? `Yes - ${profile.strandInSMU}`
                         : 'No'
                     }
                     onChange={handleChange}
@@ -591,7 +591,7 @@ const handleToggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPas
                     helperText="If yes, indicate graduation year, otherwise write NO"
                     name="tertiarySMU"
                     value={
-                      profile.tertiaryAtSMU === 'Yes'
+                      profile.tertiarySMU === 'Yes'
                         ? profile.yearGraduated
                         : 'No'
                     }
@@ -608,7 +608,7 @@ const handleToggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPas
                     helperText="If yes, indicate year and level last attended, otherwise write N/A"
                     name="nonGraduateSMU"
                     value={
-                      profile.nonGraduateAttendance === 'Yes' ? 'Yes' : 'N/A'
+                      profile.nonGraduateSMU === 'Yes' ? 'Yes' : 'N/A'
                     }
                     onChange={handleChange}
                     variant="outlined"
