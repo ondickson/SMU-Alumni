@@ -42,7 +42,10 @@ function AlumniInformation() {
   const [alumniData, setAlumniData] = useState([]);
   const [selectedAlumni, setSelectedAlumni] = useState({
     idNo: '',
-    name: '',
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    suffix: '',
     email: '',
     program: '',
     yearGraduated: '',
@@ -401,7 +404,10 @@ function AlumniInformation() {
                     <TableCell>{alumni.idNo}</TableCell>
                     <TableCell>
                       <Typography style={{ fontWeight: 'bold' }}>
-                        {alumni.name}
+                        {alumni.firstName}
+                      </Typography>
+                      <Typography style={{ fontWeight: 'bold' }}>
+                        {alumni.lastName}
                       </Typography>
                       <Typography variant="body2" color="textSecondary">
                         {alumni.email}

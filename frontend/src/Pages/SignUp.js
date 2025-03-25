@@ -377,6 +377,7 @@ const handleEmploymentStatusChange = (e) => {
   
       console.log("Server Response:", data);
       alert("Registration successful. Awaiting admin approval.");
+      navigate("/login")
     } catch (error) {
       console.error("Error registering:", error);
       setErrors({ general: "Something went wrong. Please try again." });

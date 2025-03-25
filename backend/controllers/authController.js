@@ -7,37 +7,6 @@ const JWT_SECRET =
   process.env.JWT_SECRET ||
   'eAYMJgr7KZt4KHm9tk3kGHIfCHV0CGwFMRuyTy1wtRtdzMtdiTwvi32CM3AcZOym';
 
-// Signup
-// export const signup = async (req, res) => {
-//     const { idNo, name, email, password, program, yearGraduated } = req.body;
-//     try {
-//         // Check if the email or ID number already exists
-//         const existingUser = await Alumni.findOne({ $or: [{ email }, { idNo }] });
-//         if (existingUser) {
-//             return res.status(400).json({ error: "Email or ID number already exists" });
-//         }
-
-//         const hashedPassword = await bcrypt.hash(password, 10);
-
-//         // Create a new Alumni user
-//         const user = new Alumni({
-//             idNo,
-//             name,
-//             email,
-//             password: hashedPassword,
-//             program,
-//             yearGraduated,
-//             role: "alumni"
-//         });
-
-//         // Save user to database
-//         await user.save();
-//         res.status(201).json({ message: "User registered successfully!" });
-//     } catch (error) {
-//         res.status(400).json({ error: "Server error" });
-//     }
-// };
-
 // Login
 export const login = async (req, res) => {
   const { email, password } = req.body;
