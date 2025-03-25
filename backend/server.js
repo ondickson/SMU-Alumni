@@ -11,7 +11,7 @@ import jobRoutes from "./routes/jobRoutes.js";
 
 dotenv.config();
 
-const app = express(); // Define the Express app FIRST
+const app = express();
 
 // Middleware
 app.use(express.json({ limit: "10mb" }));

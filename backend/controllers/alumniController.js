@@ -96,3 +96,23 @@ export const getTotals = async (req, res) => {
     res.status(500).json({ message: "Error fetching totals", error });
   }
 };
+
+
+  // getAlumniProfile
+  export const getAlumniProfile = async (req, res) => {
+    try {
+        const { idNo } = req.user; 
+        const alumni = await Alumni.findOne({ idNo });
+  
+        if (!alumni) {
+            return res.status(404).json({ message: "User not found" });
+        }
+  
+        res.status(200).json(alumni);
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
+  };
+
+  
+  
