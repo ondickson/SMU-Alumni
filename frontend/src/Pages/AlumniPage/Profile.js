@@ -112,10 +112,11 @@ function Profile() {
   });
   const getValue = (value) => (value ? value : 'N/A');
   const [showPassword, setShowPassword] = useState(false);
-const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-const handleTogglePassword = () => setShowPassword(!showPassword);
-const handleToggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
+  const handleTogglePassword = () => setShowPassword(!showPassword);
+  const handleToggleConfirmPassword = () =>
+    setShowConfirmPassword(!showConfirmPassword);
 
   const [open, setOpen] = useState(false);
 
@@ -164,7 +165,6 @@ const handleToggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPas
     }));
   };
 
-  
   // Function to handle achievement changes
   const handleAchievementChange = (index, value) => {
     const updatedAchievements = [...profile.achievements];
@@ -547,7 +547,7 @@ const handleToggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPas
                     label="Did you take your Grade School/Elementary in SMU?"
                     helperText="If yes, indicate graduation year, otherwise write NO"
                     name="elementarySMU"
-                    value={profile.elementarySMU === 'Yes' ? 'Yes' : 'No'}
+                    value={profile.elementarySMU || ''}
                     onChange={handleChange}
                     variant="outlined"
                     className="form-field"
@@ -560,24 +560,32 @@ const handleToggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPas
                     label="Did you take your Junior High School in SMU?"
                     helperText="If yes, indicate graduation year, otherwise write NO"
                     name="juniorHighSMU"
-                    value={profile.juniorHighSMU === 'Yes' ? 'Yes' : 'No'}
+                    value={profile.juniorHighSMU || ''}
+                    onChange={handleChange}
+                    variant="outlined"
+                    className="form-field"
+                  />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField
+                    fullWidth
+                    label="Did you take your Senior High School in SMU?"
+                    helperText="If yes, indicate grad year, otherwise write NO"
+                    name="seniorHighSMU"
+                    value={profile.seniorHighSMU || ''} 
                     onChange={handleChange}
                     variant="outlined"
                     className="form-field"
                   />
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={3}>
                   <TextField
                     fullWidth
-                    label="Did you take your Senior High School in SMU?"
-                    helperText="If yes, indicate grad year and STRAND, otherwise write NO"
-                    name="seniorHighSMU"
-                    value={
-                      profile.seniorHighSMU === 'Yes'
-                        ? `Yes - ${profile.strandInSMU}`
-                        : 'No'
-                    }
+                    label="Strand in SMU"
+                    helperText="Enter your strand if applicable"
+                    name="strandInSMU"
+                    value={profile.strandInSMU || ''}
                     onChange={handleChange}
                     variant="outlined"
                     className="form-field"
@@ -591,9 +599,13 @@ const handleToggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPas
                     helperText="If yes, indicate graduation year, otherwise write NO"
                     name="tertiarySMU"
                     value={
-                      profile.tertiarySMU === 'Yes'
-                        ? profile.yearGraduated
-                        : 'No'
+                      profile.tertiarySMU
+                        ? `${profile.tertiarySMU} ${
+                            profile.yearGraduated
+                              ? '- ' + profile.yearGraduated
+                              : ''
+                          }`
+                        : ''
                     }
                     onChange={handleChange}
                     variant="outlined"
@@ -607,9 +619,7 @@ const handleToggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPas
                     label="Did you study at SMU at any level but did not graduate?"
                     helperText="If yes, indicate year and level last attended, otherwise write N/A"
                     name="nonGraduateSMU"
-                    value={
-                      profile.nonGraduateSMU === 'Yes' ? 'Yes' : 'N/A'
-                    }
+                    value={profile.nonGraduateSMU || ''}
                     onChange={handleChange}
                     variant="outlined"
                     className="form-field"
@@ -723,11 +733,7 @@ const handleToggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPas
                     <TextField
                       fullWidth
                       label={`Achievement ${index + 1}`}
-                      value={
-                        index === 0
-                          ? profile.topAchievements || ''
-                          : profile.achievements?.[index] || ''
-                      }
+                      value={profile.achievements?.[index] || ''}
                       onChange={(e) =>
                         handleAchievementChange(index, e.target.value)
                       }

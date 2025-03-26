@@ -97,7 +97,6 @@ export const getTotals = async (req, res) => {
   }
 };
 
-
   // getAlumniProfile
   export const getAlumniProfile = async (req, res) => {
     try {
@@ -113,6 +112,3 @@ export const getTotals = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
   };
-
-  
-  

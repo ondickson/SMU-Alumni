@@ -219,13 +219,10 @@ const handleEmploymentStatusChange = (e) => {
         'Please indicate if you studied at SMU but did not graduate.';
     }
 
-    if (!formData.topAchievements.trim()) {
-      errors.topAchievements = 'Please list your top 5 achievements.';
-    } else if (formData.topAchievements.split('\n').length < 5) {
-      errors.topAchievements =
-        'You must list at least 5 achievements (one per line).';
+    if (formData.topAchievements.trim() && formData.topAchievements.split('\n').length < 5) {
+      errors.topAchievements = 'You can list up to 5 achievements, but fewer is allowed.';
     }
-
+    
     return errors;
   };
 
@@ -356,8 +353,8 @@ const handleEmploymentStatusChange = (e) => {
     };
   
     // **Debugging Console Logs**
-    // console.log("Form Data before submission:", formData);
-    // console.log("Formatted Data to be Sent:", formDataToSend);
+    console.log("Form Data before submission:", formData);
+    console.log("Formatted Data to be Sent:", formDataToSend);
   
     try {
       const response = await fetch("http://localhost:5001/api/auth/signup", {

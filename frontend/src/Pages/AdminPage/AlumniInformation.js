@@ -136,19 +136,20 @@ function AlumniInformation() {
     axios
       .put(
         `http://localhost:5001/api/alumni/alumni/${selectedAlumni.idNo}`,
-        selectedAlumni
+        selectedAlumni,
       )
       .then((response) => {
         setAlumniData((prevData) =>
           prevData.map((alumni) =>
-            alumni.idNo === response.data.alumni.idNo ? response.data.alumni : alumni
-          )
+            alumni.idNo === response.data.alumni.idNo
+              ? response.data.alumni
+              : alumni,
+          ),
         );
         handleCloseDialog();
       })
       .catch((error) => console.error('Error updating alumni:', error));
   };
-
 
   const handleDownloadAll = async () => {
     try {
@@ -404,11 +405,16 @@ function AlumniInformation() {
                     <TableCell>{alumni.idNo}</TableCell>
                     <TableCell>
                       <Typography style={{ fontWeight: 'bold' }}>
-                        {alumni.firstName}
+                        {[
+                          alumni.firstName,
+                          alumni.middleName,
+                          alumni.lastName,
+                          alumni.suffixName,
+                        ]
+                          .filter(Boolean)
+                          .join(' ')}
                       </Typography>
-                      <Typography style={{ fontWeight: 'bold' }}>
-                        {alumni.lastName}
-                      </Typography>
+
                       <Typography variant="body2" color="textSecondary">
                         {alumni.email}
                       </Typography>
@@ -489,7 +495,11 @@ function AlumniInformation() {
                     marginBottom: '8px',
                   }}
                 >
-                  {selectedAlumni?.fullName || selectedAlumni?.name}
+                  {`${selectedAlumni?.firstName || ''} ${
+                    selectedAlumni?.middleName || ''
+                  } ${selectedAlumni?.lastName || ''} ${
+                    selectedAlumni?.suffix || ''
+                  }`.trim()}
                 </Typography>
                 <Typography
                   variant="body1"
@@ -725,14 +735,88 @@ function AlumniInformation() {
         <Dialog open={open} onClose={handleCloseDialog}>
           <DialogTitle>Edit Alumni Details</DialogTitle>
           <DialogContent>
-            <TextField
-              label="Full Name"
-              name="name"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.name || ''}
-              onChange={handleEditChange}
-            />
+            <Typography>Personal Information</Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="First Name"
+                  name="firstName"
+                  fullWidth
+                  margin="dense"
+                  value={selectedAlumni?.firstName || ''}
+                  onChange={handleEditChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Last Name"
+                  name="lastName"
+                  fullWidth
+                  margin="dense"
+                  value={selectedAlumni?.lastName || ''}
+                  onChange={handleEditChange}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Middle Name"
+                  name="name"
+                  fullWidth
+                  margin="dense"
+                  value={selectedAlumni?.middleName || ''}
+                  onChange={handleEditChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Suffix"
+                  name="name"
+                  fullWidth
+                  margin="dense"
+                  value={selectedAlumni?.suffix || ''}
+                  onChange={handleEditChange}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={2}>
+            <Grid item xs={12} sm={8}>
+                <TextField
+                  label="Email"
+                  name="email"
+                  fullWidth
+                  margin="dense"
+                  value={selectedAlumni?.email || ''}
+                  onChange={handleEditChange}
+                  disabled
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+              <TextField
+  label="Birthday"
+  name="birthday"
+  type="date"
+  fullWidth
+  margin="dense"
+  value={selectedAlumni?.birthday ? selectedAlumni.birthday.split('T')[0] : ''}
+  onChange={handleEditChange}
+  InputLabelProps={{
+    shrink: true,
+  }}
+/>
+              </Grid>
+              
+            </Grid>
+
+            <Typography>Father's Name</Typography>
+
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}></Grid>
+            </Grid>
+
             <TextField
               label="Email"
               name="email"
