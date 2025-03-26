@@ -783,7 +783,7 @@ function AlumniInformation() {
             </Grid>
 
             <Grid container spacing={2}>
-            <Grid item xs={12} sm={8}>
+              <Grid item xs={12} sm={8}>
                 <TextField
                   label="Email"
                   name="email"
@@ -795,20 +795,23 @@ function AlumniInformation() {
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
-              <TextField
-  label="Birthday"
-  name="birthday"
-  type="date"
-  fullWidth
-  margin="dense"
-  value={selectedAlumni?.birthday ? selectedAlumni.birthday.split('T')[0] : ''}
-  onChange={handleEditChange}
-  InputLabelProps={{
-    shrink: true,
-  }}
-/>
+                <TextField
+                  label="Birthday"
+                  name="birthday"
+                  type="date"
+                  fullWidth
+                  margin="dense"
+                  value={
+                    selectedAlumni?.birthday
+                      ? selectedAlumni.birthday.split('T')[0]
+                      : ''
+                  }
+                  onChange={handleEditChange}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
               </Grid>
-              
             </Grid>
 
             <Typography>Father's Name</Typography>

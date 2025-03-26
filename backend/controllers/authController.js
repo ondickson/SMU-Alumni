@@ -114,130 +114,6 @@ export const getProfile = async (req, res) => {
 
 // Signup
 // Register Alumni
-// export const registerAlumni = async (req, res) => {
-//     try {
-//       const {
-//         // Step 1: Account Information
-//         email,
-//         password,
-//         confirmPassword,
-  
-//         // Step 2: Personal Information
-//         idNo,
-//         firstName,
-//         middleName,
-//         lastName,
-//         suffix,
-//         birthday,
-//         fatherFirstName,
-//         fatherMiddleName,
-//         fatherLastName,
-//         fatherSuffix,
-//         motherFirstName,
-//         motherMiddleName,
-//         motherLastName,
-//         motherSuffix,
-  
-//         // Step 3: Educational Information
-//         school,
-//         program,
-//         recentGraduate,
-//         elementarySMU,
-//         juniorHighSMU,
-//         seniorHighSMU,
-//         strandInSMU,
-//         tertiarySMU,
-//         nonGraduateSMU,
-//         topAchievements,
-  
-//         // Step 4: Employment and Contact Information
-//         employmentStatus,
-//         EmploymentStatus,
-//         currentWork,
-//         companyAddress,
-//         address,
-//         facebookAccount,
-//         contactNumber,
-//       } = req.body;
-  
-//       // Check if ID number is already registered
-//       const existingAlumni = await Alumni.findOne({ idNo });
-//       if (existingAlumni)
-//         return res.status(400).json({ message: "ID number already registered." });
-  
-//       // Check if email is already registered
-//       const existingEmail = await Alumni.findOne({ email });
-//       if (existingEmail)
-//         return res.status(400).json({ message: "Email already registered." });
-  
-//       // Validate password match
-//       if (password !== confirmPassword) {
-//         return res.status(400).json({ message: "Passwords do not match." });
-//       }
-  
-//       // Hash the password before saving
-//       const salt = await bcrypt.genSalt(10);
-//       const hashedPassword = await bcrypt.hash(password, salt);
-  
-//       // Create new alumni entry with full details
-//       const newAlumni = new Alumni({
-//         // Step 1: Account Information
-//         email,
-//         password: hashedPassword,
-  
-//         // Step 2: Personal Information
-//         idNo,
-//         firstName,
-//         middleName,
-//         lastName,
-//         suffix,
-//         birthday,
-//         fatherFirstName,
-//         fatherMiddleName,
-//         fatherLastName,
-//         fatherSuffix,
-//         motherFirstName,
-//         motherMiddleName,
-//         motherLastName,
-//         motherSuffix,
-  
-//         // Step 3: Educational Information
-//         school,
-//         program,
-//         recentGraduate,
-//         elementarySMU,
-//         juniorHighSMU,
-//         seniorHighSMU,
-//         strandInSMU,
-//         tertiarySMU,
-//         nonGraduateSMU,
-//         topAchievements,
-  
-//         // Step 4: Employment and Contact Information
-//         employmentStatus,
-//         EmploymentStatus,
-//         currentWork,
-//         companyAddress,
-//         address,
-//         facebookAccount,
-//         contactNumber,
-//       });
-  
-//       // Save to database
-//       await newAlumni.save();
-      
-//     //   console.log("Registration successful. Awaiting admin approval.", newAlumni);
-//     //   console.log("Received request body:", req.body);
-      
-//       res.status(201).json({
-//         message: "Registration successful. Awaiting admin approval.",
-//       });
-  
-//     } catch (error) {
-//       console.error("Server error:", error);
-//       res.status(500).json({ message: "Server error. Please try again later." });
-//     }
-//   };
 export const registerAlumni = async (req, res) => {
   try {
     const {
@@ -357,6 +233,7 @@ export const registerAlumni = async (req, res) => {
 
     // Save to database
     await newAlumni.save();
+    console.log("Uploaded Files:", req.files);
 
     res.status(201).json({
       message: "Registration successful. Awaiting admin approval.",
