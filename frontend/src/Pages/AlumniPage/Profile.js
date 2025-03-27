@@ -647,7 +647,7 @@ function Profile() {
                       </Avatar>
                     )}
                     <Button
-                      variant="contained"
+                      variant="outlined"
                       component="label"
                       className="upload-button"
                       startIcon={<PhotoCamera />}
@@ -670,7 +670,7 @@ function Profile() {
         </Typography>
 
         <Button
-          variant="contained"
+          variant="outlined"
           component="label"
           className="upload-button"
         >
@@ -734,7 +734,7 @@ function Profile() {
                       )}
                     </Box>
                     <Button
-                      variant="contained"
+                      variant="outlined"
                       component="label"
                       className="upload-button"
                     >
@@ -769,7 +769,7 @@ function Profile() {
                       )}
                     </Box>
                     <Button
-                      variant="contained"
+                      variant="outlined"
                       component="label"
                       className="upload-button"
                     >
@@ -792,6 +792,7 @@ function Profile() {
                   color="primary" 
                   size="large"
                   onClick={() => setOpen(true)}
+                  style={{ backgroundColor: '#272974' }}
                   className="save-profile-button"
                 >
                   Save Profile
