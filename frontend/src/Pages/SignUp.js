@@ -158,7 +158,7 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/auth/signup', formData);
+      await axios.post('http://localhost:5001/api/auth/signup', formData);
       alert('Registration successful!');
       navigate('/login');
     } catch (error) {
@@ -255,11 +255,11 @@ const SignUp = () => {
           </div>
           
           <div className="form-field">
-            <label>Family Name <span className="required">*</span></label>
+            <label>Last Name<span className="required">*</span></label>
             <input
               type="text"
               name="familyName"
-              value={formData.familyName}
+              value={formData.lastName}
               onChange={handleChange}
               className="input-field"
               placeholder="Enter family name"
@@ -296,7 +296,7 @@ const SignUp = () => {
             <input
               type="text"
               name="idNumber"
-              value={formData.idNumber}
+              value={formData.idNo}
               onChange={handleChange}
               className="input-field"
               placeholder="Enter ID number"
@@ -568,7 +568,7 @@ const SignUp = () => {
             <label>Top 5 Achievements <span className="required">*</span></label>
             <textarea
               name="topAchievements"
-              value={formData.topAchievements}
+              value={formData.achievements}
               onChange={handleChange}
               className="input-field textarea"
               placeholder="List your top 5 achievements (one per line)"

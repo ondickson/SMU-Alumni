@@ -41,3 +41,87 @@
     margin-left: 10px;
   }
   
+  /* Container Styles */
+.dialog-content {
+  padding: 24px;
+  background-color: #ffffff;
+}
+
+/* Modal Title */
+.dialog-title {
+  text-align: center;
+  font-weight: bold;
+  background-color: #272974;
+  color: white;
+}
+
+/* Avatar Styles */
+.avatar {
+  width: 150px !important;
+  height: 150px !important;
+  background-color: #272974;
+  font-size: 60px;
+  margin-bottom: 8px;
+}
+
+/* Name and Contact Info */
+.name-text {
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 8px;
+  text-transform: capitalize;
+}
+
+.contact-text {
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+/* ID and Facebook Info */
+.info-text {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+
+/* Paper Container for Sections */
+.section-container {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+/* Section Title */
+.section-title {
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #272974;
+  font-size: 1.1rem;
+}
+
+/* Sub-Section Title */
+.subtitle {
+  font-weight: bold;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+/* Text Style for Details */
+.detail-text {
+  margin-bottom: 8px;
+}
+
+/* Button Styles */
+.close-btn {
+  padding: 8px 16px;
+  background-color: #337ab7;
+  color: white;
+  border-radius: 5px;
+  text-transform: uppercase;
+}
+
+.close-btn:hover {
+  background-color: #23527c;
+}

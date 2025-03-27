@@ -40,7 +40,7 @@ const SidebarMenu = () => {
               <MenuItem icon={<Event />} component={<Link to="/EventPage" />}>Events</MenuItem>
               <MenuItem icon={<Security />} component={<Link to="/JobPost" />}>JobPost</MenuItem>
               <MenuItem icon={<Settings />} component={<Link to="/AccountSetting" />}>Account Settings</MenuItem>
-              <MenuItem icon={<Feedback />} component={<Link to="/Feedback" />}>Feedback</MenuItem>
+
             </>
           ) : (
             <>
