@@ -58,13 +58,13 @@ function Jobs() {
     <div className="jobs-container">
       <SidebarMenu className="jobs-sidebar" />
       <div className="jobs-main-content">
-        <AppBar position="static" className="jobs-appbar">
-          <Toolbar>
-            <Typography variant="h6" className="jobs-title">
-              Job Listings
-            </Typography>
-          </Toolbar>
-        </AppBar>
+      <AppBar position="static" className="custom-jobs-appbar">
+        <Toolbar>
+          <Typography variant="h6" className="custom-jobs-title">
+            Job Listings
+          </Typography>
+        </Toolbar>
+      </AppBar>
 
         <div className="jobs-search">
           <TextField

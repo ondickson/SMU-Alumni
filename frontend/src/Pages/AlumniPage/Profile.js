@@ -144,24 +144,14 @@ function Profile() {
       {/* Main Content */}
       <Box component="main" className="main-container">
         <div className="content-wrapper">
-          <AppBar position="static" className="appbar">
-            <Toolbar>
-              <Typography variant="h6" className="title">
-                {profile.firstName} {profile.middleName} {profile.lastName}
-              </Typography>
-              <Box flexGrow={1} />
-              {/* <Typography variant="h6" className="status-label">
-                QUALIFIED
-              </Typography> */}
-            </Toolbar>
-          </AppBar>
-          
-          <Box className="profile-navigation">
-            <Button startIcon={<AccountCircle />} className="nav-button">
-              MY PROFILE
-            </Button>
-          </Box>
-          
+        <AppBar position="static" className="custom-profile-appbar">
+          <Toolbar>
+            <Typography variant="h6" className="custom-profile-title">
+              My Profile
+            </Typography>
+          </Toolbar>
+        </AppBar>
+                  
           <Paper elevation={3} className="content-paper">
             <Tabs
               value={tabValue}

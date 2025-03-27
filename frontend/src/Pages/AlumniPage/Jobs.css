@@ -92,3 +92,11 @@
 .jobs-link:hover {
     color: #1e1e5b;
 }
+
+.custom-jobs-appbar {
+    background-color: #272974 !important;
+  }
+  
+  .custom-jobs-title {
+    flex-grow: 1;
+  }
