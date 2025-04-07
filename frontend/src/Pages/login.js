@@ -15,56 +15,30 @@ const Login = () => {
   // Sample carousel content - replace with your actual images and content
   const carouselSlides = [
     {
-      image: "/campus1.jpg",
-      title: "Welcome Alumni",
-      description: "Stay connected with your alma mater"
+      image: "https://smu.edu.ph/wp-content/uploads/2023/09/366365685_3612711768995875_4613685649229899442_n.jpg",
+      title: "Campus Life",
+      description: "Experience the vibrant SMU community"
     },
     {
-      image: "/campus2.jpg",
-      title: "Alumni Network",
-      description: "Connect with fellow graduates and expand your network"
+      image: "https://smu.edu.ph/wp-content/uploads/2023/09/382548523_217296047805896_1706455415830682916_n.jpg",
+      title: "Alumni Connections",
+      description: "Building networks that last a lifetime"
     },
     {
-      image: "/campus3.jpg",
-      title: "Stay Updated",
-      description: "Get the latest news and events from your university"
+      image: "https://smu.edu.ph/wp-content/uploads/2024/08/medtech.png",
+      title: "Medical Technology",
+      description: "Advancing healthcare through innovative education"
     }
+
   ];
 
   // Auto-advance carousel
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev === carouselSlides.length - 1 ? 0 : prev + 1));
-    }, 5000);
+    }, 5001);
     return () => clearInterval(interval);
   }, [carouselSlides.length]);
-
-  // const handleLogin = async (e) => {
-  //   e.preventDefault();
-  //   setEmailTouched(true);
-  //   setPasswordTouched(true);
-    
-  //   if (!email || !password) {
-  //     return;
-  //   }
-    
-  //   try {
-  //     const res = await axios.post('http://localhost:5001/api/auth/login', {
-  //       email,
-  //       password,
-  //     });
-  //     localStorage.setItem('token', res.data.token);
-  //     localStorage.setItem('role', res.data.role);
-
-  //     if (res.data.role === 'admin') {
-  //       navigate('/AdminDashboard');
-  //     } else {
-  //       navigate('/AlumniDashboard');
-  //     }
-  //   } catch (error) {
-  //     alert('Invalid Credentials');
-  //   }
-  // };
 
   const handleLogin = async (e) => {
     e.preventDefault();

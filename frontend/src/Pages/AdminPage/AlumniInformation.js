@@ -13,6 +13,7 @@ import {
   TableHead,
   TableRow,
   Paper,
+  FormControlLabel,
   IconButton,
   Dialog,
   DialogActions,
@@ -20,9 +21,14 @@ import {
   DialogTitle,
   Alert,
   Grid,
+  Radio,
+  RadioGroup,
   Avatar,
+  Tabs,
+  Tab,
+  Select,
+  MenuItem,
 } from '@mui/material';
-import { Select, MenuItem } from '@mui/material';
 
 import {
   Upload,
@@ -39,34 +45,59 @@ const sidebarWidth = 250;
 function AlumniInformation() {
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedProgram, setSelectedProgram] = useState('');
+  const [tabIndex, setTabIndex] = useState(0);
   const [alumniData, setAlumniData] = useState([]);
   const [selectedAlumni, setSelectedAlumni] = useState({
+    // Account Information
+    email: '',
+    password: '',
+    confirmPassword: '',
+
+    // Personal Information
     idNo: '',
     firstName: '',
     middleName: '',
     lastName: '',
     suffix: '',
-    email: '',
-    program: '',
-    yearGraduated: '',
-    // Additional fields
-    fullName: '',
+    birthday: '',
+
+    // Father's Information
+    fatherFirstName: '',
+    fatherMiddleName: '',
+    fatherLastName: '',
+    fatherSuffix: '',
+
+    // Mother's Information
+    motherFirstName: '',
+    motherMiddleName: '',
+    motherLastName: '',
+    motherSuffix: '',
+
+    // Educational Information
     school: '',
-    level: '',
+    program: '',
     recentGraduate: '',
-    elementaryAtSMU: '',
-    juniorHighAtSMU: '',
-    seniorHighAtSMU: '',
-    seniorHighStrand: '',
-    tertiaryAtSMU: '',
-    nonGraduateAttendance: '',
+    elementarySMU: '',
+    juniorHighSMU: '',
+    seniorHighSMU: '',
+    strandInSMU: '',
+    tertiarySMU: '',
+    nonGraduateSMU: '',
+
+    // Employment and Contact Information
     employmentStatus: '',
     currentWork: '',
     companyAddress: '',
     address: '',
     facebookAccount: '',
     contactNumber: '',
+    achievements: ['', '', '', '', ''],
+
+    // Files and Photos
     photo: '',
+    curriculumVitae: null,
+    alumniIdApplication: null,
+    signature: null,
   });
 
   const [open, setOpen] = useState(false);
@@ -79,6 +110,10 @@ function AlumniInformation() {
     message: '',
     type: 'info',
   });
+
+  const handleTabChange = (event, newValue) => {
+    setTabIndex(newValue);
+  };
 
   useEffect(() => {
     axios
@@ -95,6 +130,14 @@ function AlumniInformation() {
         handleCloseDialog(); // Close form
       })
       .catch((error) => console.error('Error adding alumni:', error));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setSelectedAlumni((prevProfile) => ({
+      ...prevProfile,
+      [name]: value,
+    }));
   };
 
   const handleOpenDialog = (alumni) => {
@@ -321,7 +364,7 @@ function AlumniInformation() {
             placeholder="Search ID Number"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ width: '50%' }} // Ensures half-width for balance
+            style={{ width: '50%' }} 
           />
 
           {/* Year Filter */}
@@ -420,7 +463,7 @@ function AlumniInformation() {
                       </Typography>
                     </TableCell>
                     <TableCell>{alumni.program}</TableCell>
-                    <TableCell>{alumni.yearGraduated}</TableCell>
+                    <TableCell>{alumni.nonGraduateSMU}</TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleOpenViewDialog(alumni)}>
                         <Visibility />
@@ -455,7 +498,7 @@ function AlumniInformation() {
           >
             Alumni Profile
           </DialogTitle>
-          <DialogContent style={{ padding: '24px' }}>
+          <DialogContent style={{ padding: '10px' }}>
             <Grid container spacing={3}>
               {/* Left Column: Profile Picture and Basic Info */}
               <Grid
@@ -531,7 +574,10 @@ function AlumniInformation() {
                   style={{
                     marginBottom: '8px',
                     display: 'flex',
-                    alignItems: 'center',
+                    alignItems: 'flex-start',
+                    flexWrap: 'wrap',
+                    wordBreak: 'break-word',
+                    whiteSpace: 'normal',
                   }}
                 >
                   <strong>Facebook:</strong>&nbsp;
@@ -562,28 +608,19 @@ function AlumniInformation() {
 
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
-                      <Typography
-                        variant="body1"
-                        style={{ marginBottom: '8px' }}
-                      >
+                      <Typography variant="body1">
                         <strong>School/Level:</strong> {selectedAlumni?.school}/
                         {selectedAlumni?.level}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <Typography
-                        variant="body1"
-                        style={{ marginBottom: '8px' }}
-                      >
+                      <Typography variant="body1">
                         <strong>Course/Program:</strong>{' '}
                         {selectedAlumni?.program}
                       </Typography>
                     </Grid>
                     <Grid item xs={12}>
-                      <Typography
-                        variant="body1"
-                        style={{ marginBottom: '8px' }}
-                      >
+                      <Typography variant="body1">
                         <strong>Recent Graduate (past 5 years):</strong>{' '}
                         {selectedAlumni?.recentGraduate}
                       </Typography>
@@ -594,8 +631,7 @@ function AlumniInformation() {
                     variant="subtitle1"
                     style={{
                       fontWeight: 'bold',
-                      marginTop: '16px',
-                      marginBottom: '8px',
+                      marginBottom: '0px',
                     }}
                   >
                     SMU Education History
@@ -603,57 +639,39 @@ function AlumniInformation() {
 
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
-                      <Typography
-                        variant="body1"
-                        style={{ marginBottom: '8px' }}
-                      >
+                      <Typography variant="body1">
                         <strong>Elementary at SMU:</strong>{' '}
-                        {selectedAlumni?.elementaryAtSMU}
+                        {selectedAlumni?.elementarySMU}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <Typography
-                        variant="body1"
-                        style={{ marginBottom: '8px' }}
-                      >
+                      <Typography variant="body1">
                         <strong>Junior High at SMU:</strong>{' '}
-                        {selectedAlumni?.juniorHighAtSMU}
+                        {selectedAlumni?.juniorHighSMU}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <Typography
-                        variant="body1"
-                        style={{ marginBottom: '8px' }}
-                      >
+                      <Typography variant="body1">
                         <strong>Senior High at SMU:</strong>{' '}
-                        {selectedAlumni?.seniorHighAtSMU}
+                        {selectedAlumni?.seniorHighSMU}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <Typography
-                        variant="body1"
-                        style={{ marginBottom: '8px' }}
-                      >
+                      <Typography variant="body1">
                         <strong>Senior High Strand:</strong>{' '}
-                        {selectedAlumni?.seniorHighStrand || 'N/A'}
+                        {selectedAlumni?.strandInSMU || 'N/A'}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <Typography
-                        variant="body1"
-                        style={{ marginBottom: '8px' }}
-                      >
+                      <Typography variant="body1">
                         <strong>Tertiary at SMU:</strong>{' '}
-                        {selectedAlumni?.tertiaryAtSMU}
+                        {selectedAlumni?.tertiarySMU}
                       </Typography>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Typography
-                        variant="body1"
-                        style={{ marginBottom: '8px' }}
-                      >
+                    <Grid item xs={12} sm={12}>
+                      <Typography variant="body1">
                         <strong>Non-Graduate Attendance:</strong>{' '}
-                        {selectedAlumni?.nonGraduateAttendance}
+                        {selectedAlumni?.nonGraduateSMU}
                       </Typography>
                     </Grid>
                   </Grid>
@@ -665,14 +683,14 @@ function AlumniInformation() {
                     background: '#f8f9fa',
                     padding: '20px',
                     borderRadius: '10px',
-                    marginTop: '16px',
+                    marginTop: '5px',
                   }}
                 >
                   <Typography
                     variant="h6"
                     style={{
                       fontWeight: 'bold',
-                      marginBottom: '16px',
+                      marginBottom: '5px',
                       color: '#272974',
                     }}
                   >
@@ -681,37 +699,25 @@ function AlumniInformation() {
 
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
-                      <Typography
-                        variant="body1"
-                        style={{ marginBottom: '8px' }}
-                      >
+                      <Typography variant="body1">
                         <strong>Employment Status:</strong>{' '}
                         {selectedAlumni?.employmentStatus}
                       </Typography>
                     </Grid>
                     <Grid item xs={12}>
-                      <Typography
-                        variant="body1"
-                        style={{ marginBottom: '8px' }}
-                      >
+                      <Typography variant="body1">
                         <strong>Current Work:</strong>{' '}
                         {selectedAlumni?.currentWork}
                       </Typography>
                     </Grid>
                     <Grid item xs={12}>
-                      <Typography
-                        variant="body1"
-                        style={{ marginBottom: '8px' }}
-                      >
+                      <Typography variant="body1">
                         <strong>Company Address:</strong>{' '}
                         {selectedAlumni?.companyAddress}
                       </Typography>
                     </Grid>
                     <Grid item xs={12}>
-                      <Typography
-                        variant="body1"
-                        style={{ marginBottom: '8px' }}
-                      >
+                      <Typography variant="body1">
                         <strong>Home Address:</strong> {selectedAlumni?.address}
                       </Typography>
                     </Grid>
@@ -731,242 +737,555 @@ function AlumniInformation() {
           </DialogActions>
         </Dialog>
 
-        {/* Edit Alumni Modal - Keep simple with just basic info for now */}
-        <Dialog open={open} onClose={handleCloseDialog}>
-          <DialogTitle>Edit Alumni Details</DialogTitle>
-          <DialogContent>
-            <Typography>Personal Information</Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="First Name"
-                  name="firstName"
-                  fullWidth
-                  margin="dense"
-                  value={selectedAlumni?.firstName || ''}
-                  onChange={handleEditChange}
-                />
+        {/* Edit Alumni Dialog */}
+        <Dialog open={open} onClose={handleCloseDialog} maxWidth="md" fullWidth>
+          <DialogTitle style={{ backgroundColor: '#272974', color: '#fff' }}>
+            Edit Alumni Details
+          </DialogTitle>
+          <Tabs
+            value={tabIndex}
+            onChange={handleTabChange}
+            indicatorColor="primary"
+            textColor="primary"
+          >
+            <Tab label="Account Information" />
+            <Tab label="Personal Information" />
+            <Tab label="Educational Information" />
+            <Tab label="Employment & Contact" />
+          </Tabs>
+          <DialogContent style={{ paddingTop: '20px' }}>
+            {/* Account Information */}
+            {tabIndex === 0 && (
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    label="Email"
+                    name="email"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.email || ''}
+                    // disabled
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    label="Password"
+                    name="password"
+                    type="password"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.password || '********'}
+                    // disabled
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    label="Confirm Password"
+                    name="confirmPassword"
+                    type="password"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.confirmPassword || '********'}
+                    // disabled
+                  />
+                </Grid>
+                {/* Reset Password Button */}
+                <Grid item xs={12} style={{ marginTop: '16px' }}>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => alert('Reset Password clicked')}
+                  >
+                    Reset Password
+                  </Button>
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Last Name"
-                  name="lastName"
-                  fullWidth
-                  margin="dense"
-                  value={selectedAlumni?.lastName || ''}
-                  onChange={handleEditChange}
-                />
-              </Grid>
-            </Grid>
+            )}
 
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Middle Name"
-                  name="name"
-                  fullWidth
-                  margin="dense"
-                  value={selectedAlumni?.middleName || ''}
-                  onChange={handleEditChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Suffix"
-                  name="name"
-                  fullWidth
-                  margin="dense"
-                  value={selectedAlumni?.suffix || ''}
-                  onChange={handleEditChange}
-                />
-              </Grid>
-            </Grid>
+            {/* Personal Information */}
+            {tabIndex === 1 && (
+              <Grid container spacing={2}>
+                {/* Basic Personal Info */}
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label="First Name"
+                    name="firstName"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.firstName || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label="Middle Name"
+                    name="middleName"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.middleName || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label="Last Name"
+                    name="lastName"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.lastName || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label="Suffix"
+                    name="suffix"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.suffix || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label="Birthday"
+                    name="birthday"
+                    type="date"
+                    fullWidth
+                    value={
+                      selectedAlumni?.birthday
+                        ? selectedAlumni.birthday.split('T')[0]
+                        : ''
+                    }
+                    onChange={handleEditChange}
+                    variant="outlined"
+                    className="form-field"
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Grid>
 
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={8}>
-                <TextField
-                  label="Email"
-                  name="email"
-                  fullWidth
-                  margin="dense"
-                  value={selectedAlumni?.email || ''}
-                  onChange={handleEditChange}
-                  disabled
-                />
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label="ID Number"
+                    name="idNumber"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.idNo || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+
+                {/* Father's Information */}
+                <Grid item xs={12}>
+                  <Typography variant="h6" style={{ marginTop: '20px' }}>
+                    Father's Name
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    label="First Name"
+                    name="fatherFirstName"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.fatherFirstName || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    label="Middle Name"
+                    name="fatherMiddleName"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.fatherMiddleName || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    label="Last Name"
+                    name="fatherLastName"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.fatherLastName || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    label="Suffix"
+                    name="fatherSuffix"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.fatherSuffix || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+
+                {/* Mother's Information */}
+                <Grid item xs={12}>
+                  <Typography variant="h6" style={{ marginTop: '20px' }}>
+                    Mother's Name
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    label="First Name"
+                    name="motherFirstName"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.motherFirstName || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    label="Middle Name"
+                    name="motherMiddleName"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.motherMiddleName || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    label="Last Name"
+                    name="motherLastName"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.motherLastName || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    label="Suffix"
+                    name="motherSuffix"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.motherSuffix || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={4}>
-                <TextField
-                  label="Birthday"
-                  name="birthday"
-                  type="date"
-                  fullWidth
-                  margin="dense"
-                  value={
-                    selectedAlumni?.birthday
-                      ? selectedAlumni.birthday.split('T')[0]
-                      : ''
-                  }
-                  onChange={handleEditChange}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
+            )}
+
+            {/* Educational Information */}
+            {tabIndex === 2 && (
+              <Grid container spacing={2}>
+                {/* Employment Status */}
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    select
+                    label="School/Level"
+                    name="School/Level"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.school || ''}
+                    onChange={handleEditChange}
+                  >
+                    <MenuItem value="School of Accountancy and Business">
+                      School of Accountancy and Business
+                    </MenuItem>
+                    <MenuItem value="School of Engineering, Architecture, and Information Technology">
+                      School of Engineering, Architecture, and Information
+                      Technology
+                    </MenuItem>
+                    <MenuItem value="School of Health and Natural Sciences">
+                      School of Health and Natural Sciences
+                    </MenuItem>
+                    <MenuItem value="School of Teacher Education and Humanities">
+                      School of Teacher Education and Humanities
+                    </MenuItem>
+                    <MenuItem value="School of Graduate Studies">
+                      School of Graduate Studies
+                    </MenuItem>
+                    <MenuItem value="College of Law">College of Law</MenuItem>
+                    <MenuItem value="Grade School">Grade School</MenuItem>
+                    <MenuItem value="Junior High School">
+                      Junior High School
+                    </MenuItem>
+                    <MenuItem value="Senior High School">
+                      Senior High School
+                    </MenuItem>
+                  </TextField>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label="Course/Program"
+                    name="courseProgram"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.program || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="subtitle1">
+                    Are you a graduate for the past five years?
+                  </Typography>
+                  <RadioGroup
+                    row
+                    name="recentGraduate"
+                    value={
+                      selectedAlumni?.recentGraduate === 'yes' ? 'yes' : 'no'
+                    }
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel
+                      value="yes"
+                      control={<Radio />}
+                      label="Yes"
+                    />
+                    <FormControlLabel
+                      value="no"
+                      control={<Radio />}
+                      label="No"
+                    />
+                  </RadioGroup>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    label="Did you take your Grade School/Elementary in SMU? (If yes, year graduated or NO)"
+                    name="elementaryAtSMU"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.elementarySMU || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    label="Did you take your Junior High School in SMU? (If yes, year graduated or NO)"
+                    name="juniorHighAtSMU"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.juniorHighSMU || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <TextField
+                    label="Did you take your Senior High School in SMU? (If yes, year graduated and STRAND or NO)"
+                    name="seniorHighAtSMU"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.seniorHighSMU || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+                <Grid item xs={12} md={2}>
+                  <TextField
+                    fullWidth
+                    label="Strand in SMU"
+                    name="strandInSMU"
+                    margin="dense"
+                    value={selectedAlumni?.strandInSMU || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    label="Did you take your tertiary education in SMU? (If yes, year graduated or NO)"
+                    name="tertiaryAtSMU"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.tertiarySMU || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Did you study at SMU at any level but did not graduate? (Year and level or N/A)"
+                    name="nonGraduateSMU"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.nonGraduateSMU || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
               </Grid>
-            </Grid>
+            )}
 
-            <Typography>Father's Name</Typography>
+            {/* Employment and Contact Information */}
+            {tabIndex === 3 && (
+              <Grid container spacing={2}>
+                {/* Employment Status */}
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    select
+                    label="Employment Status"
+                    name="employmentStatus"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.employmentStatus || ''}
+                    onChange={handleEditChange}
+                  >
+                    <MenuItem value="Government Employee">
+                      Government Employee
+                    </MenuItem>
+                    <MenuItem value="Private Employee">
+                      Private Employee
+                    </MenuItem>
+                    <MenuItem value="Self-Employed">Self-Employed</MenuItem>
+                    <MenuItem value="N/A">N/A</MenuItem>
+                    <MenuItem value="Other">Other</MenuItem>
+                  </TextField>
+                </Grid>
 
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}></Grid>
-            </Grid>
+                {/* Current Work */}
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label="Currently Work"
+                    name="currentWork"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.currentWork || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
 
-            <TextField
-              label="Email"
-              name="email"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.email || ''}
-              onChange={handleEditChange}
-              disabled
-            />
-            <TextField
-              label="Program"
-              name="program"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.program || ''}
-              onChange={handleEditChange}
-            />
-            <TextField
-              label="Year Graduated"
-              name="yearGraduated"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.yearGraduated || ''}
-              onChange={handleEditChange}
-            />
-            <TextField
-              label="School"
-              name="school"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.school || ''}
-              onChange={handleEditChange}
-            />
-            <TextField
-              label="Level"
-              name="level"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.level || ''}
-              onChange={handleEditChange}
-            />
-            <TextField
-              label="Recent Graduate"
-              name="recentGraduate"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.recentGraduate || ''}
-              onChange={handleEditChange}
-            />
-            <TextField
-              label="Elementary at SMU"
-              name="elementaryAtSMU"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.elementaryAtSMU || ''}
-              onChange={handleEditChange}
-            />
-            <TextField
-              label="Junior High at SMU"
-              name="juniorHighAtSMU"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.juniorHighAtSMU || ''}
-              onChange={handleEditChange}
-            />
-            <TextField
-              label="Senior High at SMU"
-              name="seniorHighAtSMU"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.seniorHighAtSMU || ''}
-              onChange={handleEditChange}
-            />
-            <TextField
-              label="Senior High Strand"
-              name="seniorHighStrand"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.seniorHighStrand || ''}
-              onChange={handleEditChange}
-            />
-            <TextField
-              label="Tertiary at SMU"
-              name="tertiaryAtSMU"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.tertiaryAtSMU || ''}
-              onChange={handleEditChange}
-            />
-            <TextField
-              label="Non Graduate Attentance"
-              name="nonGraduateAttentance"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.nonGraduateAttentance || ''}
-              onChange={handleEditChange}
-            />
-            <TextField
-              label="Employment Status"
-              name="employmentStatus"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.employmentStatus || ''}
-              onChange={handleEditChange}
-            />
-            <TextField
-              label="Current Work"
-              name="currentWork"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.currentWork || ''}
-              onChange={handleEditChange}
-            />
-            <TextField
-              label="Company Address"
-              name="companyAddress"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.companyAddress || ''}
-              onChange={handleEditChange}
-            />
-            <TextField
-              label="Address"
-              name="address"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.address || ''}
-              onChange={handleEditChange}
-            />
-            <TextField
-              label="Facebook Account"
-              name="facebookAccount"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.facebookAccount || ''}
-              onChange={handleEditChange}
-              disabled
-            />
-            <TextField
-              label="Contact Number"
-              name="contactNumber"
-              fullWidth
-              margin="dense"
-              value={selectedAlumni?.contactNumber || ''}
-              onChange={handleEditChange}
-            />
+                {/* Company Address */}
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label="Company Address"
+                    name="companyAddress"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.companyAddress || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+
+                {/* Home Address */}
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label="Address"
+                    name="address"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.address || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+
+                {/* Facebook Account */}
+                <Grid item xs={12}>
+                  <TextField
+                    label="Facebook Account"
+                    name="facebookAccount"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.facebookAccount || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+
+                {/* Contact Number */}
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label="Contact Number"
+                    name="contactNumber"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.contactNumber || ''}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+
+                {/* Top 5 Achievements */}
+                <Grid item xs={12} sm={12}>
+                  <label
+                    style={{
+                      fontWeight: 'bold',
+                      marginBottom: 8,
+                      display: 'block',
+                    }}
+                  >
+                    Top 5 Achievements
+                  </label>
+                  {[0, 1, 2, 3, 4].map((index) => (
+                    <TextField
+                      key={index}
+                      label={`Achievement ${index + 1}`}
+                      name={`topAchievements[${index}]`}
+                      fullWidth
+                      margin="dense"
+                      value={selectedAlumni?.achievements?.[index] || ''}
+                      onChange={(e) => {
+                        const newAchievements = [
+                          ...(selectedAlumni?.achievements || []),
+                        ];
+                        newAchievements[index] = e.target.value;
+                        handleEditChange({
+                          target: {
+                            name: 'topAchievements',
+                            value: newAchievements,
+                          },
+                        });
+                      }}
+                    />
+                  ))}
+                </Grid>
+
+                {/* Upload Alumni ID Application */}
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    type="file"
+                    label="Upload Alumni ID Application"
+                    name="alumniIdApplication"
+                    fullWidth
+                    margin="dense"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    inputProps={{
+                      accept: 'image/*,application/pdf',
+                    }}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+
+                {/* Upload Curriculum Vitae */}
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    type="file"
+                    label="Upload Curriculum Vitae"
+                    name="curriculumVitae"
+                    fullWidth
+                    margin="dense"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    inputProps={{
+                      accept: 'application/pdf',
+                    }}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+
+                {/* Upload Signature */}
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    type="file"
+                    label="Upload Signature"
+                    name="signature"
+                    fullWidth
+                    margin="dense"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    inputProps={{
+                      accept: 'image/*',
+                    }}
+                    onChange={handleEditChange}
+                  />
+                </Grid>
+              </Grid>
+            )}
           </DialogContent>
+
           <DialogActions>
             <Button onClick={handleCloseDialog}>Cancel</Button>
             <Button

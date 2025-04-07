@@ -8,8 +8,7 @@ import "./Sidebar.css";
 const sidebarWidth = 250; 
 
 const SidebarMenu = () => {
-  const role = localStorage.getItem("role"); // Get role from localStorage
-
+  const role = localStorage.getItem("role");
   return (
     <ProSidebar 
       className="custom-sidebar"
@@ -41,6 +40,7 @@ const SidebarMenu = () => {
               <MenuItem icon={<Security />} component={<Link to="/JobPost" />}>JobPost</MenuItem>
               <MenuItem icon={<Settings />} component={<Link to="/AccountSetting" />}>Account Settings</MenuItem>
               <MenuItem icon={<Feedback />} component={<Link to="/Feedback" />}>Feedback</MenuItem>
+              <MenuItem icon={<Feedback />} component={<Link to="/Feedback" />}>New test</MenuItem>
             </>
           ) : (
             <>
