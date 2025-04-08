@@ -6,6 +6,7 @@ import {
   Typography,
   TextField,
   Button,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -28,6 +29,7 @@ import {
   Tab,
   Select,
   MenuItem,
+  InputAdornment,
 } from '@mui/material';
 
 import {
@@ -36,6 +38,7 @@ import {
   Delete,
   Edit,
   Visibility,
+  VisibilityOff,
 } from '@mui/icons-material';
 import SidebarMenu from '../Sidebar';
 import './AlumniInformation.css';
@@ -43,6 +46,7 @@ import './AlumniInformation.css';
 const sidebarWidth = 250;
 
 function AlumniInformation() {
+  // const [alumniData, setAlumniData] = useState([]);
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedProgram, setSelectedProgram] = useState('');
   const [tabIndex, setTabIndex] = useState(0);
@@ -110,6 +114,36 @@ function AlumniInformation() {
     message: '',
     type: 'info',
   });
+
+  // Toggle password hide/unhide
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  // Toggle active/inactive switch
+  // Fetch alumni data from backend when component mounts
+  useEffect(() => {
+    fetchAlumni();
+  }, []);
+
+  // Fetch alumni from backend
+  const fetchAlumni = async () => {
+    try {
+      const response = await axios.get(
+        'http://localhost:5001/api/alumni/alumni',
+      );
+      setAlumniData(response.data); // Update alumniData directly with the fetched data
+    } catch (error) {
+      console.error('Error fetching alumni:', error);
+    }
+  };
 
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue);
@@ -330,6 +364,27 @@ function AlumniInformation() {
     }
   };
 
+  // Handle toggle for alumni active status
+  const handleToggleAlumniActive = async (idNo, currentActive) => {
+    try {
+      // Immediately update local state
+      const updatedData = alumniData.map((a) =>
+        a.idNo === idNo ? { ...a, active: !currentActive } : a,
+      );
+      setAlumniData(updatedData); // Update alumniData state with new data
+
+      // Then update the backend
+      await axios.put(`http://localhost:5001/api/alumni/alumni/${idNo}`, {
+        active: !currentActive,
+      });
+
+      // Optional: refetch to ensure complete sync between backend and frontend
+      // await fetchAlumni();
+    } catch (error) {
+      console.error('Error updating alumni:', error);
+    }
+  };
+
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
       <SidebarMenu />
@@ -364,7 +419,7 @@ function AlumniInformation() {
             placeholder="Search ID Number"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ width: '50%' }} 
+            style={{ width: '50%' }}
           />
 
           {/* Year Filter */}
@@ -433,6 +488,9 @@ function AlumniInformation() {
                   <strong>Year Graduated</strong>
                 </TableCell>
                 <TableCell>
+                  <strong>Active</strong>
+                </TableCell>
+                <TableCell>
                   <strong>Actions</strong>
                 </TableCell>
               </TableRow>
@@ -464,6 +522,23 @@ function AlumniInformation() {
                     </TableCell>
                     <TableCell>{alumni.program}</TableCell>
                     <TableCell>{alumni.nonGraduateSMU}</TableCell>
+                    {/* toggle active/inactive */}
+                    <TableCell align="center">
+                      <Switch
+                        checked={alumni.active}
+                        onChange={() =>
+                          handleToggleAlumniActive(alumni.idNo, alumni.active)
+                        }
+                        color="primary"
+                        sx={{
+                          '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
+                            {
+                              backgroundColor: '#272974',
+                            },
+                        }}
+                      />
+                    </TableCell>
+
                     <TableCell>
                       <IconButton onClick={() => handleOpenViewDialog(alumni)}>
                         <Visibility />
@@ -737,7 +812,7 @@ function AlumniInformation() {
           </DialogActions>
         </Dialog>
 
-        {/* Edit Alumni Dialog */}
+        {/* Modal for Edit Alumni Dialog */}
         <Dialog open={open} onClose={handleCloseDialog} maxWidth="md" fullWidth>
           <DialogTitle style={{ backgroundColor: '#272974', color: '#fff' }}>
             Edit Alumni Details
@@ -764,29 +839,54 @@ function AlumniInformation() {
                     fullWidth
                     margin="dense"
                     value={selectedAlumni?.email || ''}
-                    // disabled
+                    onChange={handleChange}
                   />
                 </Grid>
+                {/* Password Field */}
                 <Grid item xs={12} sm={4}>
                   <TextField
                     label="Password"
                     name="password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     fullWidth
                     margin="dense"
-                    value={selectedAlumni?.password || '********'}
-                    // disabled
+                    value={selectedAlumni?.password || ''}
+                    onChange={handleChange} 
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={togglePasswordVisibility}>
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </Grid>
+
+                {/* Confirm Password Field */}
                 <Grid item xs={12} sm={4}>
                   <TextField
                     label="Confirm Password"
                     name="confirmPassword"
-                    type="password"
+                    type={showConfirmPassword ? 'text' : 'password'}
                     fullWidth
                     margin="dense"
-                    value={selectedAlumni?.confirmPassword || '********'}
-                    // disabled
+                    value={selectedAlumni?.confirmPassword || ''} 
+                    onChange={handleChange}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={toggleConfirmPasswordVisibility}>
+                            {showConfirmPassword ? (
+                              <VisibilityOff />
+                            ) : (
+                              <Visibility />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </Grid>
                 {/* Reset Password Button */}

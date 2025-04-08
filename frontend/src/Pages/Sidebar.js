@@ -2,13 +2,14 @@ import React from "react";
 import { Sidebar as ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Link } from "react-router-dom";
 import { Typography } from "@mui/material";
-import { Home, AccountCircle, Group, WorkOutline, Event, Security, Settings, Logout, Feedback } from "@mui/icons-material";
+import { Home, Group, WorkOutline, Event, Security, Settings, Logout, Feedback } from "@mui/icons-material";
 import "./Sidebar.css"; 
 
 const sidebarWidth = 250; 
 
 const SidebarMenu = () => {
-  const role = localStorage.getItem("role");
+  const role = localStorage.getItem("role"); // Get role from localStorage
+
   return (
     <ProSidebar 
       className="custom-sidebar"
@@ -40,7 +41,6 @@ const SidebarMenu = () => {
               <MenuItem icon={<Security />} component={<Link to="/JobPost" />}>JobPost</MenuItem>
               <MenuItem icon={<Settings />} component={<Link to="/AccountSetting" />}>Account Settings</MenuItem>
               <MenuItem icon={<Feedback />} component={<Link to="/Feedback" />}>Feedback</MenuItem>
-              <MenuItem icon={<Feedback />} component={<Link to="/Feedback" />}>New test</MenuItem>
             </>
           ) : (
             <>

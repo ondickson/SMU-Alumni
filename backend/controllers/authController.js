@@ -19,11 +19,13 @@ export const login = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    if (user.role === 'admin' && user.active === false) {
+    // Check if account is inactive (applies to both alumni and admins)
+    if (user.active === false) {
       return res
         .status(403)
         .json({ error: 'Account is inactive. Contact support.' });
     }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ error: 'Invalid credentials' });
@@ -162,21 +164,23 @@ export const registerAlumni = async (req, res) => {
 
     // Extract file paths from uploaded files
     const photo = req.files?.photo ? req.files.photo[0].path : null;
-    const curriculumVitae = req.files?.curriculumVitae ? req.files.curriculumVitae[0].path : null;
+    const curriculumVitae = req.files?.curriculumVitae
+      ? req.files.curriculumVitae[0].path
+      : null;
 
     // Check if ID number is already registered
     const existingAlumni = await Alumni.findOne({ idNo });
     if (existingAlumni)
-      return res.status(400).json({ message: "ID number already registered." });
+      return res.status(400).json({ message: 'ID number already registered.' });
 
     // Check if email is already registered
     const existingEmail = await Alumni.findOne({ email });
     if (existingEmail)
-      return res.status(400).json({ message: "Email already registered." });
+      return res.status(400).json({ message: 'Email already registered.' });
 
     // Validate password match
     if (password !== confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match." });
+      return res.status(400).json({ message: 'Passwords do not match.' });
     }
 
     // Hash the password before saving
@@ -233,15 +237,13 @@ export const registerAlumni = async (req, res) => {
 
     // Save to database
     await newAlumni.save();
-    console.log("Uploaded Files:", req.files);
+    console.log('Uploaded Files:', req.files);
 
     res.status(201).json({
-      message: "Registration successful. Awaiting admin approval.",
+      message: 'Registration successful. Awaiting admin approval.',
     });
-
   } catch (error) {
-    console.error("Server error:", error);
-    res.status(500).json({ message: "Server error. Please try again later." });
+    console.error('Server error:', error);
+    res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 };
-

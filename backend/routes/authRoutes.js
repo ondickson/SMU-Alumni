@@ -22,8 +22,8 @@ router.get("/profile", authMiddleware, getProfile);
 
 // Login route
 router.post('/login', login);
-// router.post('/signup', registerAlumni);
-// Signup route (with file uploads)
+
+// Alumni registration route
 router.post('/signup', upload.fields([{ name: 'photo' }, { name: 'curriculumVitae' }]), registerAlumni);
 
 export default router;

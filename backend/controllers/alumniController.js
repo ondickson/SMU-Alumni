@@ -112,3 +112,24 @@ export const getTotals = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
   };
+
+  // Toggle Active Status for Alumni
+  export const toggleAlumniActive = async (req, res) => {
+    try {
+      const { idNo } = req.params;
+      const { active } = req.body;
+  
+      const alumni = await Alumni.findOne({ idNo });
+      if (!alumni) {
+        return res.status(404).json({ error: 'Alumni not found' });
+      }
+  
+      alumni.active = active;
+      await alumni.save();
+  
+      res.status(200).json({ message: 'Alumni status updated', active: alumni.active });
+    } catch (error) {
+      res.status(500).json({ error: 'Server error', details: error.message });
+    }
+  };
+  

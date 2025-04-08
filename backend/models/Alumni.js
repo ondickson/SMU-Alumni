@@ -55,7 +55,7 @@ const AlumniSchema = new mongoose.Schema({
     motherSuffix: { type: String, trim: true, default: "" },
     achievements: { type: [String], default: ["", "", "", "", ""] },
     role: { type: String, default: "alumni" },
-    status: { type: String, enum: ["pending", "approved"], default: "pending" }
+    active:{ type: Boolean, default: false },
 }, { timestamps: true });
 
 export default mongoose.model('Alumni', AlumniSchema);
