@@ -124,38 +124,43 @@ function Profile() {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-        // console.log('Token being sent:', token);
-
+  
         if (!token) {
           console.error('No token found. Please log in.');
           return;
         }
-
+  
         const response = await axios.get(
           'http://localhost:5001/api/alumni/profile',
           {
             headers: { Authorization: `Bearer ${token}` },
-          },
+          }
         );
-
-        // console.log('Profile Data:', response.data); // Debugging
-        setProfile(response.data);
+  
+        // Set profile without including password fields
+        const profileData = { ...response.data };
+        delete profileData.password;
+        delete profileData.confirmPassword;
+  
+        setProfile((prevProfile) => ({
+          ...prevProfile,
+          ...profileData,
+          password: '',   
+          confirmPassword: '',
+        }));
       } catch (error) {
         console.error('Error fetching profile', error.response?.data || error);
       }
     };
-
+  
     fetchProfile();
   }, []);
+  
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
-  // Function to handle input changes
-  // const handleChange = (e) => {
-  //   setProfile({ ...profile, [e.target.name]: e.target.value });
-  // };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -214,9 +219,6 @@ function Profile() {
                 {profile.firstName} {profile.middleName} {profile.lastName}
               </Typography>
               <Box flexGrow={1} />
-              {/* <Typography variant="h6" className="status-label">
-                QUALIFIED
-              </Typography> */}
             </Toolbar>
           </AppBar>
 
@@ -256,18 +258,22 @@ function Profile() {
                     onChange={handleChange}
                     variant="outlined"
                     className="form-field"
+                    disabled
                   />
                 </Grid>
+
+                {/* Password Fields */}
                 <Grid item xs={12} md={4}>
                   <TextField
                     fullWidth
                     type={showPassword ? 'text' : 'password'}
                     label="Password"
                     name="password"
-                    value={profile.password}
+                    value={profile.password || ''}
                     onChange={handleChange}
                     variant="outlined"
                     className="form-field"
+                    autoComplete="new-password"
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
@@ -279,20 +285,23 @@ function Profile() {
                     }}
                   />
                 </Grid>
+
+                {/* Confirm Password Field */}
                 <Grid item xs={12} md={4}>
                   <TextField
                     fullWidth
                     type={showPassword ? 'text' : 'password'}
                     label="Confirm Password"
                     name="confirmPassword"
-                    value={profile.confirmPassword}
+                    value={profile.confirmPassword || ''}
                     onChange={handleChange}
                     variant="outlined"
                     className="form-field"
+                    autoComplete="new-password"
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <IconButton onClick={handleTogglePassword} edge="end">
+                          <IconButton onClick={handleToggleConfirmPassword} edge="end">
                             {showPassword ? <VisibilityOff /> : <Visibility />}
                           </IconButton>
                         </InputAdornment>

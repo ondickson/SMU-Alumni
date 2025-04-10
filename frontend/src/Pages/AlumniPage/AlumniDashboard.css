@@ -181,6 +181,11 @@
   height: 350px;
 }
 
+.alumni-dashboard-calendar-toolbar {
+  margin-bottom: 10px;
+}
+
+
 /* QR Code Section */
 .qr-container {
   margin-top: 32px;

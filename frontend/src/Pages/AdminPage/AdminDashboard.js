@@ -366,7 +366,7 @@ function AdminDashboard() {
                   events={events}
                   startAccessor="start"
                   endAccessor="end"
-                  style={{ height: 500, borderRadius: '8px' }}
+                  style={{ height: 300, borderRadius: '8px' }}
                   selectable
                   onSelectEvent={handleSelectEvent}
                   onSelectSlot={(slotInfo) => {
@@ -390,11 +390,11 @@ function AdminDashboard() {
                   components={{
                     toolbar: ({ label, onNavigate }) => (
                       <div className="admin-dashboard-calendar-toolbar">
-                        <IconButton onClick={() => onNavigate('PREV')}>
+                        <IconButton onClick={() => onNavigate('PREV')} sx={{ color: '#ffffff !important' }}>
                           <BackIcon />
                         </IconButton>
                         <Typography variant="h6">{label}</Typography>
-                        <IconButton onClick={() => onNavigate('NEXT')}>
+                        <IconButton onClick={() => onNavigate('NEXT')} sx={{ color: '#ffffff !important' }}>
                           <NextIcon />
                         </IconButton>
                       </div>

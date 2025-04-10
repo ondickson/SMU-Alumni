@@ -100,18 +100,39 @@ export const getTotals = async (req, res) => {
   // getAlumniProfile
   export const getAlumniProfile = async (req, res) => {
     try {
-        const { idNo } = req.user; 
-        const alumni = await Alumni.findOne({ idNo });
+      const { idNo } = req.user; 
+      const alumni = await Alumni.findOne({ idNo });
   
-        if (!alumni) {
-            return res.status(404).json({ message: "User not found" });
-        }
+      if (!alumni) {
+        return res.status(404).json({ message: "User not found" });
+      }
   
-        res.status(200).json(alumni);
+      // Convert to object and remove password
+      const alumniData = alumni.toObject();
+      delete alumniData.password;
+  
+      res.status(200).json(alumniData);
     } catch (error) {
-        res.status(500).json({ message: "Server error" });
+      res.status(500).json({ message: "Server error" });
     }
   };
+  
+  // export const getAlumniProfile = async (req, res) => {
+  //   try {
+  //       const { idNo } = req.user; 
+  //       const alumni = await Alumni.findOne({ idNo });
+  
+  //       if (!alumni) {
+  //           return res.status(404).json({ message: "User not found" });
+  //       }
+  
+  //       res.status(200).json(alumni);
+  //   } catch (error) {
+  //       res.status(500).json({ message: "Server error" });
+  //   }
+  // };
+
+  
 
   // Toggle Active Status for Alumni
   export const toggleAlumniActive = async (req, res) => {

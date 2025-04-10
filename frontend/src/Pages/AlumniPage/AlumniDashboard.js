@@ -149,6 +149,7 @@ function AlumniDashboard() {
                     <TodayIcon />
                   </IconButton>
                 </div>
+                
                 <Calendar
                   localizer={localizer}
                   events={events}
@@ -162,11 +163,11 @@ function AlumniDashboard() {
                   components={{
                     toolbar: ({ label, onNavigate }) => (
                       <div className="alumni-dashboard-calendar-toolbar">
-                        <IconButton onClick={() => onNavigate('PREV')} sx={{ color: '#ffffff' }}>
+                        <IconButton onClick={() => onNavigate('PREV')} sx={{ color: '#ffffff !important' }}>
                           <BackIcon />
                         </IconButton>
                         <Typography variant="h6" sx={{ color: '#ffffff' }}>{label}</Typography>
-                        <IconButton onClick={() => onNavigate('NEXT')} sx={{ color: '#ffffff' }}>
+                        <IconButton onClick={() => onNavigate('NEXT')} sx={{ color: '#ffffff !important' }}>
                           <NextIcon />
                         </IconButton>
                       </div>

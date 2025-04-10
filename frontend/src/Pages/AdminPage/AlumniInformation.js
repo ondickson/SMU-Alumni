@@ -90,6 +90,7 @@ function AlumniInformation() {
 
     // Employment and Contact Information
     employmentStatus: '',
+    otherEmploymentStatus: '',
     currentWork: '',
     companyAddress: '',
     address: '',
@@ -139,7 +140,7 @@ function AlumniInformation() {
       const response = await axios.get(
         'http://localhost:5001/api/alumni/alumni',
       );
-      setAlumniData(response.data); // Update alumniData directly with the fetched data
+      setAlumniData(response.data);
     } catch (error) {
       console.error('Error fetching alumni:', error);
     }
@@ -471,6 +472,7 @@ function AlumniInformation() {
           </Button>
         </div>
 
+        {/* Table Header */}
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -488,7 +490,7 @@ function AlumniInformation() {
                   <strong>Year Graduated</strong>
                 </TableCell>
                 <TableCell>
-                  <strong>Active</strong>
+                  <strong>Activate Alumni</strong>
                 </TableCell>
                 <TableCell>
                   <strong>Actions</strong>
@@ -773,24 +775,47 @@ function AlumniInformation() {
                   </Typography>
 
                   <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={12}>
                       <Typography variant="body1">
                         <strong>Employment Status:</strong>{' '}
-                        {selectedAlumni?.employmentStatus}
+                        {selectedAlumni?.employmentStatus &&
+                          selectedAlumni.employmentStatus.join(', ')}
                       </Typography>
                     </Grid>
-                    <Grid item xs={12}>
-                      <Typography variant="body1">
-                        <strong>Current Work:</strong>{' '}
-                        {selectedAlumni?.currentWork}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Typography variant="body1">
-                        <strong>Company Address:</strong>{' '}
-                        {selectedAlumni?.companyAddress}
-                      </Typography>
-                    </Grid>
+
+                    {/* Show otherEmploymentStatus when employmentStatus is "Other" */}
+                    {selectedAlumni?.employmentStatus?.includes('Other') &&
+                      selectedAlumni?.otherEmploymentStatus && (
+                        <Grid item xs={12}>
+                          <Typography variant="body1">
+                            <strong>Currently:</strong>{' '}
+                            {selectedAlumni?.otherEmploymentStatus}
+                          </Typography>
+                        </Grid>
+                      )}
+
+                    {/* Show currentWork for non-"Other" employment statuses */}
+                    {!selectedAlumni?.employmentStatus?.includes('Other') &&
+                      selectedAlumni?.currentWork && (
+                        <Grid item xs={12}>
+                          <Typography variant="body1">
+                            <strong>Current Work:</strong>{' '}
+                            {selectedAlumni?.currentWork}
+                          </Typography>
+                        </Grid>
+                      )}
+
+                    {/* Hide Company Address if employmentStatus is "Other" */}
+                    {!selectedAlumni?.employmentStatus?.includes('Other') &&
+                      selectedAlumni?.companyAddress && (
+                        <Grid item xs={12}>
+                          <Typography variant="body1">
+                            <strong>Company Address:</strong>{' '}
+                            {selectedAlumni?.companyAddress}
+                          </Typography>
+                        </Grid>
+                      )}
+
                     <Grid item xs={12}>
                       <Typography variant="body1">
                         <strong>Home Address:</strong> {selectedAlumni?.address}
@@ -851,7 +876,7 @@ function AlumniInformation() {
                     fullWidth
                     margin="dense"
                     value={selectedAlumni?.password || ''}
-                    onChange={handleChange} 
+                    onChange={handleChange}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
@@ -872,7 +897,7 @@ function AlumniInformation() {
                     type={showConfirmPassword ? 'text' : 'password'}
                     fullWidth
                     margin="dense"
-                    value={selectedAlumni?.confirmPassword || ''} 
+                    value={selectedAlumni?.confirmPassword || ''}
                     onChange={handleChange}
                     InputProps={{
                       endAdornment: (
@@ -1232,6 +1257,18 @@ function AlumniInformation() {
                     <MenuItem value="N/A">N/A</MenuItem>
                     <MenuItem value="Other">Other</MenuItem>
                   </TextField>
+                </Grid>
+
+                {/* otherEmploymentStatus */}
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label="Currently"
+                    name="otherEmploymentStatus"
+                    fullWidth
+                    margin="dense"
+                    value={selectedAlumni?.otherEmploymentStatus || ''}
+                    onChange={handleEditChange}
+                  />
                 </Grid>
 
                 {/* Current Work */}
