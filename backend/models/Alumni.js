@@ -37,7 +37,7 @@ const AlumniSchema = new mongoose.Schema({
     strandInSMU: { type: String, default: "N/A" },
     tertiarySMU: { type: String, default: "N/A" },
     nonGraduateSMU: { type: String, default: "N/A" },
-    employmentStatus: { type: [String], default: [] },
+    employmentStatus: { type: String, default: "" },
     otherEmploymentStatus: { type: String, default: "" },
 
     currentWork: { type: String, default: "" },

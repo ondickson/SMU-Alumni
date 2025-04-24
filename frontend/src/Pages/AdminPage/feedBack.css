@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+.feedback-container {
+    display: flex;
+}
+
+.sidebar {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.feedback-main-content {
+    flex: 1;
+    padding: 20px;
+    margin-left: 250px;
+}
+
+/* App Bar */
+.appbar {
+    background-color: #272974;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* Search and Post Job Section */
+.feedback {
+    align-items: center;
+    margin-bottom: 20px;
+    padding-top: 15px;
+}
+
+.searchfield {
+    width: 300px;
+    padding-right: 10px; /* Add spacing to the right */
+}

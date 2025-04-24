@@ -19,6 +19,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   Alert,
   Grid,
@@ -39,7 +40,10 @@ import {
   Edit,
   Visibility,
   VisibilityOff,
+  PhotoCamera,
 } from '@mui/icons-material';
+import DescriptionIcon from '@mui/icons-material/Description';
+
 import SidebarMenu from '../Sidebar';
 import './AlumniInformation.css';
 
@@ -100,9 +104,12 @@ function AlumniInformation() {
 
     // Files and Photos
     photo: '',
+    photoPreview: null,
     curriculumVitae: null,
+    curriculumVitaePreview: null,
     alumniIdApplication: null,
     signature: null,
+    signaturePreview: null,
   });
 
   const [open, setOpen] = useState(false);
@@ -116,9 +123,17 @@ function AlumniInformation() {
     type: 'info',
   });
 
+  // Confirm delete user
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [selectedIdToDelete, setSelectedIdToDelete] = useState(null);
+
   // Toggle password hide/unhide
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Toggle Edit Alumni Preview
+  const [alumniPreviewOpen, setAlumniPreviewOpen] = useState(false);
+  const [alumniPreviewImage, setAlumniPreviewImage] = useState('');
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -195,6 +210,7 @@ function AlumniInformation() {
     setViewOpen(false);
   };
 
+  // Handle delete
   const handleDelete = (idNo) => {
     axios
       .delete(`http://localhost:5001/api/alumni/alumni/${idNo}`)
@@ -203,6 +219,24 @@ function AlumniInformation() {
         console.log('Alumni deleted successfully');
       })
       .catch((error) => console.error('Error deleting alumni:', error));
+  };
+
+  const handleDeleteClick = (idNo) => {
+    setSelectedIdToDelete(idNo);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedIdToDelete) {
+      handleDelete(selectedIdToDelete);
+    }
+    setOpenDeleteDialog(false);
+    setSelectedIdToDelete(null);
+  };
+
+  const handleCancelDelete = () => {
+    setOpenDeleteDialog(false);
+    setSelectedIdToDelete(null);
   };
 
   const handleEditChange = (e) => {
@@ -292,18 +326,43 @@ function AlumniInformation() {
     setImportFile(null);
   };
 
-  const handleFileChange = (e) => {
+  // const handleFileChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file && file.type !== 'text/csv') {
+  //     setImportStatus({
+  //       show: true,
+  //       message: 'Please upload a CSV file',
+  //       type: 'error',
+  //     });
+  //     return;
+  //   }
+  //   setImportFile(file);
+  //   setImportStatus({ show: false, message: '', type: 'info' });
+  // };
+  const handleFileChange = (e, type) => {
     const file = e.target.files[0];
-    if (file && file.type !== 'text/csv') {
-      setImportStatus({
-        show: true,
-        message: 'Please upload a CSV file',
-        type: 'error',
-      });
-      return;
-    }
-    setImportFile(file);
-    setImportStatus({ show: false, message: '', type: 'info' });
+    if (!file) return;
+
+    const previewUrl = URL.createObjectURL(file);
+
+    setSelectedAlumni((prev) => {
+      const updated = { ...prev };
+
+      if (type === 'photo') {
+        updated.photoFile = file;
+        updated.photoPreview = previewUrl;
+      } else if (type === 'curriculumVitae') {
+        updated.curriculumVitaeFile = file;
+        updated.curriculumVitaePreview = previewUrl;
+        updated.curriculumVitae = { fileName: file.name };
+      } else if (type === 'signature') {
+        updated.signatureFile = file;
+        updated.signaturePreview = previewUrl;
+        updated.signature = { fileName: file.name };
+      }
+
+      return updated;
+    });
   };
 
   const handleImportCSV = async () => {
@@ -523,7 +582,7 @@ function AlumniInformation() {
                       </Typography>
                     </TableCell>
                     <TableCell>{alumni.program}</TableCell>
-                    <TableCell>{alumni.nonGraduateSMU}</TableCell>
+                    <TableCell>{alumni.tertiarySMU}</TableCell>
                     {/* toggle active/inactive */}
                     <TableCell align="center">
                       <Switch
@@ -548,9 +607,35 @@ function AlumniInformation() {
                       <IconButton onClick={() => handleOpenDialog(alumni)}>
                         <Edit />
                       </IconButton>
-                      <IconButton onClick={() => handleDelete(alumni.idNo)}>
+                      <IconButton
+                        onClick={() => handleDeleteClick(alumni.idNo)}
+                      >
                         <Delete />
                       </IconButton>
+                      <Dialog
+                        open={openDeleteDialog}
+                        onClose={handleCancelDelete}
+                      >
+                        <DialogTitle>Confirm Deletion</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Are you sure you want to delete this alumni? This
+                            action cannot be undone.
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={handleCancelDelete} color="primary">
+                            No
+                          </Button>
+                          <Button
+                            onClick={handleConfirmDelete}
+                            color="error"
+                            autoFocus
+                          >
+                            Yes
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -590,7 +675,7 @@ function AlumniInformation() {
               >
                 {selectedAlumni?.photo ? (
                   <Avatar
-                    src={selectedAlumni.photo}
+                    src={`http://localhost:5001/${selectedAlumni.photo}`}
                     alt={selectedAlumni.name}
                     sx={{ width: 150, height: 150, mb: 2 }}
                   />
@@ -607,6 +692,8 @@ function AlumniInformation() {
                     {selectedAlumni?.name?.charAt(0)}
                   </Avatar>
                 )}
+
+                {/* User name, email, and contact number */}
                 <Typography
                   variant="h5"
                   style={{
@@ -778,8 +865,7 @@ function AlumniInformation() {
                     <Grid item xs={12} sm={12}>
                       <Typography variant="body1">
                         <strong>Employment Status:</strong>{' '}
-                        {selectedAlumni?.employmentStatus &&
-                          selectedAlumni.employmentStatus.join(', ')}
+                        {selectedAlumni?.employmentStatus}
                       </Typography>
                     </Grid>
 
@@ -837,7 +923,7 @@ function AlumniInformation() {
           </DialogActions>
         </Dialog>
 
-        {/* Modal for Edit Alumni Dialog */}
+        {/* Edit Alumni Dialog */}
         <Dialog open={open} onClose={handleCloseDialog} maxWidth="md" fullWidth>
           <DialogTitle style={{ backgroundColor: '#272974', color: '#fff' }}>
             Edit Alumni Details
@@ -992,11 +1078,12 @@ function AlumniInformation() {
                 <Grid item xs={12} sm={6}>
                   <TextField
                     label="ID Number"
-                    name="idNumber"
+                    name="idNo"
                     fullWidth
                     margin="dense"
                     value={selectedAlumni?.idNo || ''}
                     onChange={handleEditChange}
+                    disabled
                   />
                 </Grid>
 
@@ -1139,7 +1226,7 @@ function AlumniInformation() {
                 <Grid item xs={12} sm={6}>
                   <TextField
                     label="Course/Program"
-                    name="courseProgram"
+                    name="program"
                     fullWidth
                     margin="dense"
                     value={selectedAlumni?.program || ''}
@@ -1173,7 +1260,7 @@ function AlumniInformation() {
                 <Grid item xs={12} md={6}>
                   <TextField
                     label="Did you take your Grade School/Elementary in SMU? (If yes, year graduated or NO)"
-                    name="elementaryAtSMU"
+                    name="elementarySMU"
                     fullWidth
                     margin="dense"
                     value={selectedAlumni?.elementarySMU || ''}
@@ -1183,7 +1270,7 @@ function AlumniInformation() {
                 <Grid item xs={12} md={6}>
                   <TextField
                     label="Did you take your Junior High School in SMU? (If yes, year graduated or NO)"
-                    name="juniorHighAtSMU"
+                    name="juniorHighSMU"
                     fullWidth
                     margin="dense"
                     value={selectedAlumni?.juniorHighSMU || ''}
@@ -1193,7 +1280,7 @@ function AlumniInformation() {
                 <Grid item xs={12} md={4}>
                   <TextField
                     label="Did you take your Senior High School in SMU? (If yes, year graduated and STRAND or NO)"
-                    name="seniorHighAtSMU"
+                    name="seniorHighSMU"
                     fullWidth
                     margin="dense"
                     value={selectedAlumni?.seniorHighSMU || ''}
@@ -1213,7 +1300,7 @@ function AlumniInformation() {
                 <Grid item xs={12} md={6}>
                   <TextField
                     label="Did you take your tertiary education in SMU? (If yes, year graduated or NO)"
-                    name="tertiaryAtSMU"
+                    name="tertiarySMU"
                     fullWidth
                     margin="dense"
                     value={selectedAlumni?.tertiarySMU || ''}
@@ -1346,7 +1433,7 @@ function AlumniInformation() {
                     <TextField
                       key={index}
                       label={`Achievement ${index + 1}`}
-                      name={`topAchievements[${index}]`}
+                      name={`achievements[${index}]`}
                       fullWidth
                       margin="dense"
                       value={selectedAlumni?.achievements?.[index] || ''}
@@ -1357,7 +1444,7 @@ function AlumniInformation() {
                         newAchievements[index] = e.target.value;
                         handleEditChange({
                           target: {
-                            name: 'topAchievements',
+                            name: 'achievements',
                             value: newAchievements,
                           },
                         });
@@ -1366,58 +1453,234 @@ function AlumniInformation() {
                   ))}
                 </Grid>
 
-                {/* Upload Alumni ID Application */}
-                <Grid item xs={12} sm={4}>
-                  <TextField
-                    type="file"
-                    label="Upload Alumni ID Application"
-                    name="alumniIdApplication"
-                    fullWidth
-                    margin="dense"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    inputProps={{
-                      accept: 'image/*,application/pdf',
-                    }}
-                    onChange={handleEditChange}
+                {/* Update Photo, Curriculum Vitae, and Signature */}
+                <Dialog
+                  open={alumniPreviewOpen}
+                  onClose={() => setAlumniPreviewOpen(false)}
+                  maxWidth="md"
+                >
+                  <img
+                    src={alumniPreviewImage}
+                    alt="Preview"
+                    style={{ width: '100%', height: 'auto' }}
                   />
-                </Grid>
+                </Dialog>
 
-                {/* Upload Curriculum Vitae */}
-                <Grid item xs={12} sm={4}>
-                  <TextField
-                    type="file"
-                    label="Upload Curriculum Vitae"
-                    name="curriculumVitae"
-                    fullWidth
-                    margin="dense"
-                    InputLabelProps={{
-                      shrink: true,
+                <Grid
+                  container
+                  spacing={2}
+                  alignItems="flex-end"
+                  sx={{ mt: 4 }}
+                >
+                  {/* Upload Alumni Photo */}
+                  <Grid
+                    item
+                    xs={12}
+                    sm={4}
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
                     }}
-                    inputProps={{
-                      accept: 'application/pdf',
-                    }}
-                    onChange={handleEditChange}
-                  />
-                </Grid>
+                  >
+                    {selectedAlumni?.photo ? (
+                      <div
+                        onClick={() => {
+                          setAlumniPreviewImage(
+                            `http://localhost:5001/${selectedAlumni.photo}`,
+                          );
+                          setAlumniPreviewOpen(true);
+                        }}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <Avatar
+                          src={
+                            selectedAlumni.photoPreview ||
+                            `http://localhost:5001/${selectedAlumni.photo}`
+                          }
+                          alt={selectedAlumni.name}
+                          sx={{ width: 150, height: 150, mb: 2 }}
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => {
+                            const preview =
+                              selectedAlumni.photoPreview ||
+                              `http://localhost:5001/${selectedAlumni.photo}`;
+                            setAlumniPreviewImage(preview);
+                            setAlumniPreviewOpen(true);
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <Avatar
+                        sx={{
+                          width: 150,
+                          height: 150,
+                          mb: 2,
+                          fontSize: 60,
+                          bgcolor: '#272974',
+                        }}
+                      >
+                        {selectedAlumni?.name?.charAt(0)}
+                      </Avatar>
+                    )}
 
-                {/* Upload Signature */}
-                <Grid item xs={12} sm={4}>
-                  <TextField
-                    type="file"
-                    label="Upload Signature"
-                    name="signature"
-                    fullWidth
-                    margin="dense"
-                    InputLabelProps={{
-                      shrink: true,
+                    <Button
+                      variant="contained"
+                      component="label"
+                      // className="upload-button"
+                      startIcon={<PhotoCamera />}
+                    >
+                      Update Photo
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/*"
+                        onChange={(e) => handleFileChange(e, 'photo')}
+                      />
+                    </Button>
+                  </Grid>
+
+                  {/* Upload Curriculum Vitae */}
+                  <Grid
+                    item
+                    xs={12}
+                    sm={4}
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
                     }}
-                    inputProps={{
-                      accept: 'image/*',
+                  >
+                    {selectedAlumni.curriculumVitaePreview ? (
+                      <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                        <a
+                          href={selectedAlumni.curriculumVitaePreview}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          View CV:
+                          <br />
+                          <strong>
+                            {selectedAlumni.curriculumVitae?.fileName}
+                          </strong>
+                        </a>
+                      </div>
+                    ) : selectedAlumni.curriculumVitae?.filePath ? (
+                      <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                        <a
+                          href={`http://localhost:5001/uploads/${selectedAlumni.curriculumVitae.filePath}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          View CV:
+                          <br />
+                          <strong>
+                            {selectedAlumni.curriculumVitae.fileName}
+                          </strong>
+                        </a>
+                      </div>
+                    ) : (
+                      <p style={{ marginBottom: 16, textAlign: 'center' }}>
+                        No CV uploaded yet.
+                      </p>
+                    )}
+
+                    <Button
+                      variant="contained"
+                      component="label"
+                      startIcon={<DescriptionIcon />}
+                    >
+                      Update Curriculum Vitae
+                      <input
+                        type="file"
+                        hidden
+                        accept=".pdf,.doc,.docx,image/*"
+                        onChange={(e) => handleFileChange(e, 'curriculumVitae')}
+                      />
+                    </Button>
+                  </Grid>
+
+                  {/* Upload Signature */}
+                  <Grid
+                    item
+                    xs={12}
+                    sm={4}
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
                     }}
-                    onChange={handleEditChange}
-                  />
+                  >
+                    {selectedAlumni.signaturePreview ? (
+                      selectedAlumni.signaturePreview.endsWith('.pdf') ? (
+                        <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                          <a
+                            href={selectedAlumni.signaturePreview}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            📝 View Signature
+                          </a>
+                        </div>
+                      ) : (
+                        <img
+                          src={selectedAlumni.signaturePreview}
+                          alt="Signature Preview"
+                          style={{
+                            width: 200,
+                            height: 'auto',
+                            border: '1px solid #ccc',
+                            borderRadius: 8,
+                            marginBottom: 16,
+                          }}
+                        />
+                      )
+                    ) : selectedAlumni.signature?.filePath ? (
+                      selectedAlumni.signature.filePath.endsWith('.pdf') ? (
+                        <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                          <a
+                            href={`http://localhost:5001/${selectedAlumni.signature.filePath}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            📝 View Signature:
+                            <br />
+                            <strong>{selectedAlumni.signature.fileName}</strong>
+                          </a>
+                        </div>
+                      ) : (
+                        <img
+                          src={`http://localhost:5001/${selectedAlumni.signature.filePath}`}
+                          alt="Uploaded Signature"
+                          style={{
+                            width: 200,
+                            height: 'auto',
+                            border: '1px solid #ccc',
+                            borderRadius: 8,
+                            marginBottom: 16,
+                          }}
+                        />
+                      )
+                    ) : (
+                      <p style={{ marginBottom: 16, textAlign: 'center' }}>
+                        No signature uploaded yet.
+                      </p>
+                    )}
+
+                    <Button
+                      variant="contained"
+                      component="label"
+                      startIcon={<DescriptionIcon />}
+                    >
+                      Update Signature
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/*,.pdf"
+                        onChange={(e) => handleFileChange(e, 'signature')}
+                      />
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
             )}

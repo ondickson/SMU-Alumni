@@ -135,24 +135,24 @@
   
   /* Buttons */
   .upload-button {
-    background-color: #383736 !important;
+    background-color: #272974 !important;
     color: white !important;
     margin-top: 10px !important;
   }
   
   .upload-button:hover {
-    background-color: #3a3939 !important;
+    background-color: #1d1e51 !important;
   }
   
   .save-profile-button {
-    background-color: #4CAF50 !important;
+    background-color: #272974 !important;
     color: white !important;
     padding: 10px 30px !important;
     font-size: 16px !important;
   }
   
   .save-profile-button:hover {
-    background-color: #16bc1f !important;
+    background-color: #1d1e51 !important;
   }
   
   /* Dividers */

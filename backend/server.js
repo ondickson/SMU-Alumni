@@ -8,6 +8,10 @@ import adminRoutes from './routes/adminRoutes.js';
 import alumniRoutes from './routes/alumniRoutes.js';
 import eventRoutes from "./routes/eventRoutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
+import feedbackRoutes from './routes/feedbackRoutes.js';
+
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
@@ -34,6 +38,16 @@ app.use("/api/events", eventRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/admin", adminRoutes);
 app.use('/api', adminRoutes);
+app.use('/api/feedback', feedbackRoutes);
+
+
+// profile
+// For ES Modules (since you're using `import`)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve /uploads folder statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Start Server
 const PORT = process.env.PORT || 5001;

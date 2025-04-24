@@ -29,7 +29,6 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { AccountCircle, PhotoCamera } from '@mui/icons-material';
-// import { AccountCircle, Badge, PhotoCamera } from '@mui/icons-material';
 import SignatureCanvas from 'react-signature-canvas';
 import Sidebar from '../Sidebar';
 import './Profile.css';
@@ -105,7 +104,7 @@ function Profile() {
     achievements: ['', '', '', '', ''],
 
     // Files and Photos
-    photo: '',
+    photo: null,
     curriculumVitae: null,
     alumniIdApplication: null,
     signature: null,
@@ -120,47 +119,47 @@ function Profile() {
 
   const [open, setOpen] = useState(false);
 
+  // Fetch profile
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-  
+
         if (!token) {
           console.error('No token found. Please log in.');
           return;
         }
-  
+
         const response = await axios.get(
           'http://localhost:5001/api/alumni/profile',
           {
             headers: { Authorization: `Bearer ${token}` },
-          }
+          },
         );
-  
+
         // Set profile without including password fields
         const profileData = { ...response.data };
         delete profileData.password;
         delete profileData.confirmPassword;
-  
+
         setProfile((prevProfile) => ({
           ...prevProfile,
           ...profileData,
-          password: '',   
+          password: '',
           confirmPassword: '',
         }));
+        console.log(response.data);
       } catch (error) {
         console.error('Error fetching profile', error.response?.data || error);
       }
     };
-  
+
     fetchProfile();
   }, []);
-  
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -301,7 +300,10 @@ function Profile() {
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <IconButton onClick={handleToggleConfirmPassword} edge="end">
+                          <IconButton
+                            onClick={handleToggleConfirmPassword}
+                            edge="end"
+                          >
                             {showPassword ? <VisibilityOff /> : <Visibility />}
                           </IconButton>
                         </InputAdornment>
@@ -581,7 +583,7 @@ function Profile() {
                     label="Did you take your Senior High School in SMU?"
                     helperText="If yes, indicate grad year, otherwise write NO"
                     name="seniorHighSMU"
-                    value={profile.seniorHighSMU || ''} 
+                    value={profile.seniorHighSMU || ''}
                     onChange={handleChange}
                     variant="outlined"
                     className="form-field"
@@ -674,7 +676,7 @@ function Profile() {
                 <Grid item xs={12} md={4}>
                   <TextField
                     fullWidth
-                    label="Currently work"
+                    label="Current work/position"
                     name="currentlyWork"
                     value={profile.currentWork || 'N/A'}
                     onChange={handleChange}
@@ -764,6 +766,7 @@ function Profile() {
                     alignItems="center"
                     className="upload-section"
                   >
+                    {/* Photo */}
                     <Typography
                       variant="subtitle1"
                       className="sub-section-title"
@@ -772,7 +775,7 @@ function Profile() {
                     </Typography>
                     {profile.photo ? (
                       <Avatar
-                        src={profile.photo}
+                        src={`http://localhost:5001/${profile.photo}`}
                         className="profile-avatar"
                         sx={{ width: 150, height: 150 }}
                       />
@@ -784,6 +787,8 @@ function Profile() {
                         <PhotoCamera fontSize="large" />
                       </Avatar>
                     )}
+
+                    {/* Upload Button */}
                     <Button
                       variant="contained"
                       component="label"

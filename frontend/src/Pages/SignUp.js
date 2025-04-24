@@ -45,7 +45,7 @@ const SignUp = () => {
     strandInSMU: '',
     tertiarySMU: '',
     nonGraduateSMU: '',
-    topAchievements: ['', '', '', '', ''],
+    achievements: ['', '', '', '', ''],
 
     // step 4
     // Employment and Contact Information
@@ -71,44 +71,45 @@ const SignUp = () => {
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
+  
     if (type === 'file') {
       const file = files[0];
       setFormData({ ...formData, [name]: file });
-
+  
       // Create preview for photo
       if (file && name === 'photo') {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setPhotoPreview(reader.result);
+          setPhotoPreview(reader.result); // Set the preview for photo
         };
         reader.readAsDataURL(file);
       }
-
+  
       // Create preview for signature
       if (file && name === 'signature') {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setSignaturePreview(reader.result);
+          setSignaturePreview(reader.result); // Set the preview for signature
         };
         reader.readAsDataURL(file);
       }
-
-      // Store CV filename
+  
+      // Store CV filename for display
       if (file && name === 'curriculumVitae') {
-        setCvFileName(file.name);
+        setCvFileName(file.name); // Store CV filename
       }
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData({ ...formData, [name]: value }); // Handle regular input changes
     }
-
+  
     // Clear related errors when typing
     if (errors[name]) {
       setErrors({ ...errors, [name]: '' });
     }
   };
+  
 
-  // Handle checkbox changes for employment status
-const handleEmploymentStatusChange = (e) => {
+  const handleEmploymentStatusChange = (e) => {
   const { value, checked } = e.target;
 
   setFormData((prevData) => {
@@ -219,8 +220,8 @@ const handleEmploymentStatusChange = (e) => {
         'Please indicate if you studied at SMU but did not graduate.';
     }
 
-    if (formData.topAchievements.trim() && formData.topAchievements.split('\n').length < 5) {
-      errors.topAchievements = 'You can list up to 5 achievements, but fewer is allowed.';
+    if (formData.achievements.trim() && formData.achievements.split('\n').length < 5) {
+      errors.achievements = 'You can list up to 5 achievements, but fewer is allowed.';
     }
     
     return errors;
@@ -228,46 +229,43 @@ const handleEmploymentStatusChange = (e) => {
 
   const validateStep4 = (data) => {
     const errors = {};
-
+  
     if (data.employmentStatus.length === 0) {
       errors.employmentStatus = 'Please select at least one employment status';
     }
-
-    if (
-      data.employmentStatus.includes('Other') &&
-      !data.otherEmploymentStatus
-    ) {
+  
+    if (data.employmentStatus.includes('Other') && !data.otherEmploymentStatus) {
       errors.otherEmploymentStatus = 'Please specify your employment status';
     }
-
+  
     if (!data.currentWork) {
       errors.currentWork = 'Current work is required';
     }
-
+  
     if (!data.companyAddress) {
       errors.companyAddress = 'Company address is required';
     }
-
+  
     if (!data.address) {
       errors.address = 'Address is required';
     }
-
+  
     if (!data.facebookAccount) {
       errors.facebookAccount = 'Facebook account is required';
     }
-
+  
     if (!data.contactNumber || !/^\d{10}$/.test(data.contactNumber)) {
       errors.contactNumber = 'Enter a valid 10-digit contact number';
     }
-
+  
     if (!data.curriculumVitae) {
       errors.curriculumVitae = 'Curriculum Vitae is required';
     }
-
+  
     if (!data.photo) {
       errors.photo = 'Profile photo is required';
     }
-
+  
     return errors;
   };
 
@@ -302,55 +300,63 @@ const handleEmploymentStatusChange = (e) => {
   
     if (!validateStep1() || !validateStep3() || !validateStep4(formData)) return;
   
-    const formDataToSend = {
-      // Step 1: Account Information
-      email: formData.email,
-      password: formData.password,
-      confirmPassword: formData.confirmPassword,
-      
-      // Step 2: Personal Information
-      idNo: formData.idNo,
-      firstName: formData.firstName,
-      middleName: formData.middleName,
-      lastName: formData.lastName,
-      suffix: formData.suffix,
-      birthday: formData.birthday,
+    // Create a new FormData object to handle both text and files
+    const formDataToSend = new FormData();
   
-      // Father's Information
-      fatherFirstName: formData.fatherFirstName,
-      fatherMiddleName: formData.fatherMiddleName,
-      fatherLastName: formData.fatherLastName,
-      fatherSuffix: formData.fatherSuffix,
+    // Step 1: Account Information
+    formDataToSend.append('email', formData.email);
+    formDataToSend.append('password', formData.password);
+    formDataToSend.append('confirmPassword', formData.confirmPassword);
+    
+    // Step 2: Personal Information
+    formDataToSend.append('idNo', formData.idNo);
+    formDataToSend.append('firstName', formData.firstName);
+    formDataToSend.append('middleName', formData.middleName);
+    formDataToSend.append('lastName', formData.lastName);
+    formDataToSend.append('suffix', formData.suffix);
+    formDataToSend.append('birthday', formData.birthday);
   
-      // Mother's Information
-      motherFirstName: formData.motherFirstName,
-      motherMiddleName: formData.motherMiddleName,
-      motherLastName: formData.motherLastName,
-      motherSuffix: formData.motherSuffix,
+    // Father's Information
+    formDataToSend.append('fatherFirstName', formData.fatherFirstName);
+    formDataToSend.append('fatherMiddleName', formData.fatherMiddleName);
+    formDataToSend.append('fatherLastName', formData.fatherLastName);
+    formDataToSend.append('fatherSuffix', formData.fatherSuffix);
   
-      // Step 3: Educational Information
-      school: formData.school,
-      program: formData.program,
-      recentGraduate: formData.recentGraduate,
-      elementarySMU: formData.elementarySMU,
-      juniorHighSMU: formData.juniorHighSMU,
-      seniorHighSMU: formData.seniorHighSMU,
-      strandInSMU: formData.strandInSMU,
-      tertiarySMU: formData.tertiarySMU,
-      nonGraduateSMU: formData.nonGraduateSMU,
-      topAchievements: formData.topAchievements,
+    // Mother's Information
+    formDataToSend.append('motherFirstName', formData.motherFirstName);
+    formDataToSend.append('motherMiddleName', formData.motherMiddleName);
+    formDataToSend.append('motherLastName', formData.motherLastName);
+    formDataToSend.append('motherSuffix', formData.motherSuffix);
   
-      // Step 4: Employment and Contact Information
-      employmentStatus: formData.employmentStatus,
-      EmploymentStatus: formData.EmploymentStatus, // Note: This key is duplicated, check if it's intentional.
-      currentWork: formData.currentWork,
-      companyAddress: formData.companyAddress,
-      address: formData.address,
-      facebookAccount: formData.facebookAccount,
-      contactNumber: formData.contactNumber,
-      curriculumVitae: formData.curriculumVitae,
-      photo: formData.photo
-    };
+    // Step 3: Educational Information
+    formDataToSend.append('school', formData.school);
+    formDataToSend.append('program', formData.program);
+    formDataToSend.append('recentGraduate', formData.recentGraduate);
+    formDataToSend.append('elementarySMU', formData.elementarySMU);
+    formDataToSend.append('juniorHighSMU', formData.juniorHighSMU);
+    formDataToSend.append('seniorHighSMU', formData.seniorHighSMU);
+    formDataToSend.append('strandInSMU', formData.strandInSMU);
+    formDataToSend.append('tertiarySMU', formData.tertiarySMU);
+    formDataToSend.append('nonGraduateSMU', formData.nonGraduateSMU);
+    formDataToSend.append('achievements', JSON.stringify(formData.achievements));
+  
+    // Step 4: Employment and Contact Information
+    formDataToSend.append('employmentStatus', JSON.stringify(formData.employmentStatus));
+    formDataToSend.append('EmploymentStatus', formData.EmploymentStatus); // This seems like a duplicate
+    formDataToSend.append('currentWork', formData.currentWork);
+    formDataToSend.append('companyAddress', formData.companyAddress);
+    formDataToSend.append('address', formData.address);
+    formDataToSend.append('facebookAccount', formData.facebookAccount);
+    formDataToSend.append('contactNumber', formData.contactNumber);
+  
+    // Files
+    if (formData.curriculumVitae) {
+      formDataToSend.append('curriculumVitae', formData.curriculumVitae);
+    }
+  
+    if (formData.photo) {
+      formDataToSend.append('photo', formData.photo);
+    }
   
     // **Debugging Console Logs**
     console.log("Form Data before submission:", formData);
@@ -359,10 +365,7 @@ const handleEmploymentStatusChange = (e) => {
     try {
       const response = await fetch("http://localhost:5001/api/auth/signup", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formDataToSend),
+        body: formDataToSend, // Notice that we no longer need headers for JSON
       });
   
       const data = await response.json();
@@ -374,16 +377,14 @@ const handleEmploymentStatusChange = (e) => {
   
       console.log("Server Response:", data);
       alert("Registration successful. Awaiting admin approval.");
-      navigate("/login")
+      navigate("/login");
     } catch (error) {
       console.error("Error registering:", error);
       setErrors({ general: "Something went wrong. Please try again." });
     }
   };
-  
-  
 
-  // Render the first step with credentials
+  
   const renderStep1 = () => {
     return (
       <>
@@ -459,7 +460,7 @@ const handleEmploymentStatusChange = (e) => {
         <div className="form-grid">
           <div className="form-field">
             <label>
-              First Name <span className="required">*</span>
+              First Name 
             </label>
             <input
               type="text"
@@ -486,7 +487,7 @@ const handleEmploymentStatusChange = (e) => {
 
           <div className="form-field">
             <label>
-              Last Name <span className="required">*</span>
+              Last Name 
             </label>
             <input
               type="text"
@@ -495,7 +496,7 @@ const handleEmploymentStatusChange = (e) => {
               onChange={handleChange}
               className="input-field"
               placeholder="Enter Last name"
-              required
+              // required
             />
           </div>
 
@@ -513,7 +514,7 @@ const handleEmploymentStatusChange = (e) => {
 
           <div className="form-field">
             <label>
-              Birthday <span className="required">*</span>
+              Birthday 
             </label>
             <input
               type="date"
@@ -521,7 +522,7 @@ const handleEmploymentStatusChange = (e) => {
               value={formData.birthday}
               onChange={handleChange}
               className="input-field"
-              required
+              // required
             />
           </div>
 
@@ -547,7 +548,7 @@ const handleEmploymentStatusChange = (e) => {
         <div className="form-grid">
           <div className="form-field">
             <label>
-              First Name <span className="required">*</span>
+              First Name 
             </label>
             <input
               type="text"
@@ -556,7 +557,7 @@ const handleEmploymentStatusChange = (e) => {
               onChange={handleChange}
               className="input-field"
               placeholder="Enter father's first name"
-              required
+              // required
             />
           </div>
 
@@ -574,7 +575,7 @@ const handleEmploymentStatusChange = (e) => {
 
           <div className="form-field">
             <label>
-              Last Name <span className="required">*</span>
+              Last Name
             </label>
             <input
               type="text"
@@ -583,7 +584,7 @@ const handleEmploymentStatusChange = (e) => {
               onChange={handleChange}
               className="input-field"
               placeholder="Enter father's last name"
-              required
+              // required
             />
           </div>
 
@@ -606,7 +607,7 @@ const handleEmploymentStatusChange = (e) => {
         <div className="form-grid">
           <div className="form-field">
             <label>
-              First Name <span className="required">*</span>
+              First Name 
             </label>
             <input
               type="text"
@@ -615,7 +616,7 @@ const handleEmploymentStatusChange = (e) => {
               onChange={handleChange}
               className="input-field"
               placeholder="Enter mother's first name"
-              required
+              // required
             />
           </div>
 
@@ -633,7 +634,7 @@ const handleEmploymentStatusChange = (e) => {
 
           <div className="form-field">
             <label>
-              Last Name <span className="required">*</span>
+              Last Name 
             </label>
             <input
               type="text"
@@ -642,7 +643,7 @@ const handleEmploymentStatusChange = (e) => {
               onChange={handleChange}
               className="input-field"
               placeholder="Enter mother's last name"
-              required
+              // required
             />
           </div>
 
@@ -679,14 +680,14 @@ const handleEmploymentStatusChange = (e) => {
         <div className="form-grid">
           <div className="form-field">
             <label>
-              School/Level <span className="required">*</span>
+              School/Level 
             </label>
             <select
               name="school"
               value={formData.school}
               onChange={handleChange}
               className="input-field"
-              required
+              // required
             >
               <option value="" disabled>
                 Select school/level
@@ -715,7 +716,7 @@ const handleEmploymentStatusChange = (e) => {
 
           <div className="form-field">
             <label>
-              Course/Program <span className="required">*</span>
+              Course/Program 
             </label>
             <input
               type="text"
@@ -724,21 +725,21 @@ const handleEmploymentStatusChange = (e) => {
               onChange={handleChange}
               className="input-field"
               placeholder="Enter course/program"
-              required
+              // required
             />
           </div>
 
           <div className="form-field">
             <label>
               Are you a graduate for the past five years?{' '}
-              <span className="required">*</span>
+              
             </label>
             <select
               name="recentGraduate"
               value={formData.recentGraduate}
               onChange={handleChange}
               className="select-field"
-              required
+              // required
             >
               <option value="">Select an option</option>
               <option value="Yes">Yes</option>
@@ -749,7 +750,7 @@ const handleEmploymentStatusChange = (e) => {
           <div className="form-field full-width">
             <label>
               Did you take your Grade School/Elementary in SMU?{' '}
-              <span className="required">*</span>
+              {/* <span className="required">*</span> */}
             </label>
             <input
               type="text"
@@ -758,14 +759,14 @@ const handleEmploymentStatusChange = (e) => {
               onChange={handleChange}
               className="input-field"
               placeholder="If YES, indicate graduation year otherwise write NO"
-              required
+              // required
             />
           </div>
 
           <div className="form-field full-width">
             <label>
               Did you take your Junior High School in SMU?{' '}
-              <span className="required">*</span>
+              
             </label>
             <input
               type="text"
@@ -774,14 +775,14 @@ const handleEmploymentStatusChange = (e) => {
               onChange={handleChange}
               className="input-field"
               placeholder="If YES, indicate graduation year otherwise write NO"
-              required
+              // required
             />
           </div>
 
           <div className="form-field full-width">
             <label>
               Did you take your Senior High School in SMU?{' '}
-              <span className="required">*</span>
+              
             </label>
             <input
               type="text"
@@ -791,7 +792,7 @@ const handleEmploymentStatusChange = (e) => {
               className="input-field"
               //  placeholder="If YES, indicate graduation year and STRAND otherwise write NO"
               placeholder="If YES, indicate graduation year otherwise write NO"
-              required
+              // required
             />
             <input
               type="text"
@@ -800,14 +801,14 @@ const handleEmploymentStatusChange = (e) => {
               onChange={handleChange}
               className="input-field"
               placeholder="If YES, indicate graduation STRAND otherwise write N/A"
-              required
+              // required
             />
           </div>
 
           <div className="form-field full-width">
             <label>
               Did you take your tertiary education in SMU?{' '}
-              <span className="required">*</span>
+              
             </label>
             <input
               type="text"
@@ -816,14 +817,14 @@ const handleEmploymentStatusChange = (e) => {
               onChange={handleChange}
               className="input-field"
               placeholder="If YES, indicate graduation year otherwise write NO"
-              required
+              // required
             />
           </div>
 
           <div className="form-field full-width">
             <label>
               Did you study at SMU at any level but did not graduate/have a
-              graduation ceremony? <span className="required">*</span>
+              graduation ceremony? 
             </label>
             <input
               type="text"
@@ -832,22 +833,22 @@ const handleEmploymentStatusChange = (e) => {
               onChange={handleChange}
               className="input-field"
               placeholder="If YES, indicate year and educational level otherwise write N/A"
-              required
+              // required
             />
           </div>
 
           <div className="form-field full-width">
             <label>
-              Top 5 Achievements <span className="required">*</span>
+              Top 5 Achievements 
             </label>
             <textarea
-              name="topAchievements"
-              value={formData.topAchievements}
+              name="achievements"
+              value={formData.achievements}
               onChange={handleChange}
               className="input-field textarea"
               placeholder="List your top 5 achievements (one per line)"
               rows="5"
-              required
+              // required
             />
           </div>
         </div>
@@ -864,78 +865,31 @@ const handleEmploymentStatusChange = (e) => {
     );
   };
 
-  // Render the fourth step with employment and contact information
   const renderStep4 = () => {
     return (
       <>
         <h2 className="step-title">Step 4: Employment & Contact Information</h2>
         <div className="form-grid">
+          {/* Employment Status Section */}
           <div className="form-field full-width">
             <label>
-              Employment status <span className="required">*</span> (Select all
-              that apply)
+              Employment status (Select all that apply)
             </label>
             <div className="checkbox-group">
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="government"
-                  value="Government Employee"
-                  checked={formData.employmentStatus.includes(
-                    'Government Employee',
-                  )}
-                  onChange={handleEmploymentStatusChange}
-                />
-                <label htmlFor="government">Government Employee</label>
-              </div>
-
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="private"
-                  value="Private Employee"
-                  checked={formData.employmentStatus.includes(
-                    'Private Employee',
-                  )}
-                  onChange={handleEmploymentStatusChange}
-                />
-                <label htmlFor="private">Private Employee</label>
-              </div>
-
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="self-employed"
-                  value="Self-Employed"
-                  checked={formData.employmentStatus.includes('Self-Employed')}
-                  onChange={handleEmploymentStatusChange}
-                />
-                <label htmlFor="self-employed">Self-Employed</label>
-              </div>
-
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="na"
-                  value="N/A"
-                  checked={formData.employmentStatus.includes('N/A')}
-                  onChange={handleEmploymentStatusChange}
-                />
-                <label htmlFor="na">N/A</label>
-              </div>
-
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="other"
-                  value="Other"
-                  checked={formData.employmentStatus.includes('Other')}
-                  onChange={handleEmploymentStatusChange}
-                />
-                <label htmlFor="other">Other</label>
-              </div>
+              {['Government Employee', 'Private Employee', 'Self-Employed', 'N/A', 'Other'].map((status) => (
+                <div key={status} className="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id={status}
+                    value={status}
+                    checked={formData.employmentStatus.includes(status)}
+                    onChange={handleEmploymentStatusChange}
+                  />
+                  <label htmlFor={status}>{status}</label>
+                </div>
+              ))}
             </div>
-
+  
             {formData.employmentStatus.includes('Other') && (
               <div className="form-field">
                 <input
@@ -950,7 +904,8 @@ const handleEmploymentStatusChange = (e) => {
               </div>
             )}
           </div>
-
+  
+          {/* Current Work */}
           <div className="form-field">
             <label>
               Currently work <span className="required">*</span>
@@ -962,10 +917,11 @@ const handleEmploymentStatusChange = (e) => {
               onChange={handleChange}
               className="input-field"
               placeholder="Enter current work"
-              required
+              // required
             />
           </div>
-
+  
+          {/* Company Address */}
           <div className="form-field">
             <label>
               Company address <span className="required">*</span>
@@ -977,13 +933,14 @@ const handleEmploymentStatusChange = (e) => {
               onChange={handleChange}
               className="input-field"
               placeholder="Enter company address"
-              required
+              // required
             />
           </div>
-
+  
+          {/* Address */}
           <div className="form-field">
             <label>
-              Address <span className="required">*</span>
+              Address 
             </label>
             <input
               type="text"
@@ -992,13 +949,14 @@ const handleEmploymentStatusChange = (e) => {
               onChange={handleChange}
               className="input-field"
               placeholder="Enter address"
-              required
+              // required
             />
           </div>
-
+  
+          {/* Facebook Account */}
           <div className="form-field">
             <label>
-              Facebook account <span className="required">*</span>
+              Facebook account 
             </label>
             <input
               type="text"
@@ -1010,10 +968,11 @@ const handleEmploymentStatusChange = (e) => {
               required
             />
           </div>
-
+  
+          {/* Contact Number */}
           <div className="form-field">
             <label>
-              Contact number <span className="required">*</span>
+              Contact number 
             </label>
             <input
               type="text"
@@ -1022,15 +981,14 @@ const handleEmploymentStatusChange = (e) => {
               onChange={handleChange}
               className="input-field"
               placeholder="Enter contact number"
-              required
+              // required
             />
           </div>
-
-          <div className="form-field"></div>
-
+  
+          {/* File Upload for Curriculum Vitae */}
           <div className="form-field">
             <label>
-              Curriculum Vitae <span className="required">*</span>
+              Curriculum Vitae 
             </label>
             <div className="file-upload">
               <p>Drop your CV file here to upload</p>
@@ -1039,7 +997,7 @@ const handleEmploymentStatusChange = (e) => {
                 name="curriculumVitae"
                 accept=".pdf,.doc,.docx"
                 onChange={handleChange}
-                required
+                // required
               />
               {cvFileName && (
                 <div className="file-name">
@@ -1047,17 +1005,21 @@ const handleEmploymentStatusChange = (e) => {
                 </div>
               )}
             </div>
+          </div>
+  
+          {/* File Upload for Photo */}
+          <div className="form-field">
             <label>
-              Photo <span className="required">*</span>
+              Photo 
             </label>
             <div className="file-upload">
-              <p>Drop your files here to upload</p>
+              <p>Drop your photo here to upload</p>
               <input
                 type="file"
                 name="photo"
                 accept="image/*"
                 onChange={handleChange}
-                required
+                // required
               />
               {photoPreview && (
                 <div className="photo-preview">
@@ -1066,8 +1028,9 @@ const handleEmploymentStatusChange = (e) => {
               )}
             </div>
           </div>
+  
         </div>
-
+  
         <div className="buttons-container">
           <button type="button" className="prev-button" onClick={prevStep}>
             Previous
@@ -1080,6 +1043,7 @@ const handleEmploymentStatusChange = (e) => {
     );
   };
 
+  
   // Render steps indicator
   const renderStepIndicator = () => {
     return (

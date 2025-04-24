@@ -40,7 +40,7 @@ const SidebarMenu = () => {
               <MenuItem icon={<Event />} component={<Link to="/EventPage" />}>Events</MenuItem>
               <MenuItem icon={<Security />} component={<Link to="/JobPost" />}>JobPost</MenuItem>
               <MenuItem icon={<Settings />} component={<Link to="/AccountSetting" />}>Account Settings</MenuItem>
-              <MenuItem icon={<Feedback />} component={<Link to="/Feedback" />}>Feedback</MenuItem>
+              <MenuItem icon={<Feedback />} component={<Link to="/feedBack" />}>Feedback</MenuItem>
             </>
           ) : (
             <>
@@ -48,7 +48,7 @@ const SidebarMenu = () => {
               <MenuItem icon={<Settings />} component={<Link to="/Profile" />}>Profile</MenuItem>
               <MenuItem icon={<Event />} component={<Link to="/Events" />}>Events</MenuItem>
               <MenuItem icon={<WorkOutline />} component={<Link to="/Jobs" />}>Jobs</MenuItem>
-              <MenuItem icon={<Feedback />} component={<Link to="/Feedback" />}>Feedback</MenuItem>
+              <MenuItem icon={<Feedback />} component={<Link to="/AlumniFeedback" />}>Feedback</MenuItem>
             </>
           )}
         </Menu>

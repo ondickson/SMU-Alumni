@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import Login from './Pages/login';
 import SignUp from './Pages/SignUp';
-import Feedback from './Pages/AlumniPage/Feedback';
+import AlumniFeedback from './Pages/AlumniPage/AlumniFeedback';
+import FeedbackResponse from './Pages/AdminPage/feedBack';
 
 import AdminDashboard from './Pages/AdminPage/AdminDashboard';
 import AlumniInformation from './Pages/AdminPage/AlumniInformation';
@@ -30,11 +31,12 @@ function App() {
         <Route path="/EventPage" element={<EventPage />} />
         <Route path="/JobPost" element={<JobPost />} />
         <Route path="/AccountSetting" element={<AccountSetting />} />
+        <Route path="/feedBack" element={<FeedbackResponse />} />
 
         {/* ALUMNI  */}
         <Route path="/AlumniDashboard" element={<AlumniDashboard />} />
         <Route path="/Profile" element={<Profile />} />
-        <Route path="/Feedback" element={<Feedback />} />
+        <Route path="/AlumniFeedback" element={<AlumniFeedback />} />
         <Route path="/Jobs" element={<Jobs />} />
         <Route path="/Events" element={<Events />} />
       </Routes>

@@ -150,11 +150,11 @@ export const registerAlumni = async (req, res) => {
       strandInSMU,
       tertiarySMU,
       nonGraduateSMU,
-      topAchievements,
+      achievements,
 
       // Step 4: Employment and Contact Information
       employmentStatus,
-      EmploymentStatus,
+      otherEmploymentStatus,
       currentWork,
       companyAddress,
       address,
@@ -162,10 +162,15 @@ export const registerAlumni = async (req, res) => {
       contactNumber,
     } = req.body;
 
+    const finalOtherEmploymentStatus =
+    employmentStatus === 'Other' ? otherEmploymentStatus : '';
+
     // Extract file paths from uploaded files
-    const photo = req.files?.photo ? req.files.photo[0].path : null;
+    const photo = req.files?.photo
+      ? req.files.photo[0].path.replace(/\\/g, '/')
+      : null;
     const curriculumVitae = req.files?.curriculumVitae
-      ? req.files.curriculumVitae[0].path
+      ? req.files.curriculumVitae[0].path.replace(/\\/g, '/')
       : null;
 
     // Check if ID number is already registered
@@ -219,11 +224,11 @@ export const registerAlumni = async (req, res) => {
       strandInSMU,
       tertiarySMU,
       nonGraduateSMU,
-      topAchievements,
+      achievements,
 
       // Step 4: Employment and Contact Information
       employmentStatus,
-      EmploymentStatus,
+      otherEmploymentStatus: finalOtherEmploymentStatus,
       currentWork,
       companyAddress,
       address,
@@ -234,6 +239,7 @@ export const registerAlumni = async (req, res) => {
       photo,
       curriculumVitae,
     });
+
 
     // Save to database
     await newAlumni.save();
