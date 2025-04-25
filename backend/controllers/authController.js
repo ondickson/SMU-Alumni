@@ -34,7 +34,26 @@ export const login = async (req, res) => {
     const token = jwt.sign({ idNo: user.idNo, role: user.role }, JWT_SECRET, {
       expiresIn: '1h',
     });
-    res.json({ token, role: user.role });
+    // res.json({ token, role: user.role });
+    let userData = {};
+    if (user.role === 'alumni') {
+      userData = {
+        idNo: user.idNo,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        // Add other necessary details here
+      };
+    } else if (user.role === 'admin') {
+      userData = {
+        idNo: user.idNo,
+        name: user.name,
+        email: user.email,
+        // Add other necessary details for admin
+      };
+    }
+
+    res.json({ token, role: user.role, user: userData });
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
   }
@@ -163,7 +182,7 @@ export const registerAlumni = async (req, res) => {
     } = req.body;
 
     const finalOtherEmploymentStatus =
-    employmentStatus === 'Other' ? otherEmploymentStatus : '';
+      employmentStatus === 'Other' ? otherEmploymentStatus : '';
 
     // Extract file paths from uploaded files
     const photo = req.files?.photo
@@ -239,7 +258,6 @@ export const registerAlumni = async (req, res) => {
       photo,
       curriculumVitae,
     });
-
 
     // Save to database
     await newAlumni.save();
