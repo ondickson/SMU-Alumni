@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './AlumniFeedback.css';
 import Sidebar from '../Sidebar';
 
 const AlumniFeedback = () => {
   const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    alumniId: '',
+
     // Academic involvement
     academic: [],
     otherAcademic: '',
@@ -25,6 +30,15 @@ const AlumniFeedback = () => {
 
   const [statusMessage, setStatusMessage] = useState('');
   const [statusType, setStatusType] = useState(''); // 'success' | 'error'
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = localStorage.getItem('alumni');
+    if (!user) {
+      navigate('/login');
+    } 
+  }, [navigate]);
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,53 +57,67 @@ const AlumniFeedback = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    const userData = localStorage.getItem('alumni');
+    if (!userData) {
+      setStatusMessage('User not found. Please log in again.');
+      setStatusType('error');
+      return;
+    }
+  
+    const user = JSON.parse(userData);
+    const fullName = `${user.firstName} ${user.lastName}`;
+  
+    const dataToSend = {
+      ...formData,
+      name: fullName,
+      email: user.email,           // ✅ Include email
+      alumniId: user.idNo || '',   // Optional: Include alumni ID
+    };
+  
+    console.log('Submitting feedback:', dataToSend);
+  
     try {
-      const response = await fetch(
-        'http://localhost:5001/api/feedback/submit',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
-        },
-      );
-
+      const response = await fetch('http://localhost:5001/api/feedback/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataToSend),
+      });
+  
       const result = await response.json();
-
+  
       if (response.ok) {
         setStatusMessage(result.message || 'Feedback submitted successfully!');
         setStatusType('success');
-
-        // ✅ Reset form fields
-      setFormData({
-        academic: [],
-        otherAcademic: '',
-        administrative: [],
-        otherAdministrative: '',
-        finance: [],
-        otherFinance: '',
-        importantThings: '',
-        suggestions: '',
-        alumniList: '',
-      });
+  
+        // Reset form
+        setFormData({
+          academic: [],
+          otherAcademic: '',
+          administrative: [],
+          otherAdministrative: '',
+          finance: [],
+          otherFinance: '',
+          importantThings: '',
+          suggestions: '',
+          alumniList: '',
+        });
       } else {
-        setStatusMessage(
-          result.message || 'Submission failed. Please try again.',
-        );
+        setStatusMessage(result.message || 'Submission failed. Please try again.');
         setStatusType('error');
       }
     } catch (error) {
+      console.error(error);
       setStatusMessage('An error occurred. Please try again.');
       setStatusType('error');
     }
-
-    // Auto-clear message after 5 seconds
+  
     setTimeout(() => {
       setStatusMessage('');
       setStatusType('');
     }, 5000);
   };
-
+  
   return (
     <div className="feedbck">
       <Sidebar />
@@ -324,7 +352,6 @@ const AlumniFeedback = () => {
                 Submit Feedback
               </button>
             </div>
-            
 
             <p className="form-footer">
               Return to dashboard?{' '}
