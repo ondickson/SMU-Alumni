@@ -16,7 +16,6 @@
 .feedback-main-content {
     flex: 1;
     padding: 20px;
-    margin-left: 250px;
 }
 
 /* App Bar */
@@ -39,4 +38,25 @@
 .searchfield {
     width: 300px;
     padding-right: 10px; /* Add spacing to the right */
+}
+
+.feedback-actions .MuiIconButton-root {
+    color: #555;
+    transition: color 0.2s ease;
+  }
+  
+  .feedback-actions .MuiIconButton-root:hover {
+    color: #1976d2;
+  }
+  
+
+  .response-dashboard {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    margin-left: 250px;
+    padding-top: 16rem;
+    background-color: #fafafa;
+    overflow-y: auto;
+    min-height: 100vh;
 }
