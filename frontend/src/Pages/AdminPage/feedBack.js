@@ -6,14 +6,20 @@ import {
   TextField,
   InputAdornment,
   DialogTitle,
-  Button,
   List,
   ListItem,
   ListItemText,
   Box,
   Paper,
   Modal,
+  Checkbox,
+  IconButton,
 } from '@mui/material';
+import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
+import DraftsIcon from '@mui/icons-material/Drafts';
+import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
+
 import SearchIcon from '@mui/icons-material/Search';
 import SidebarMenu from '../Sidebar';
 import './feedBack.css';
@@ -43,6 +49,7 @@ function Feedback() {
   const [searchTerm, setSearchTerm] = useState('');
   const [feedbacks, setFeedbacks] = useState([]);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
+  const [selectedFeedbackIds, setSelectedFeedbackIds] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
@@ -90,6 +97,39 @@ function Feedback() {
     setSelectedFeedback(null);
   };
 
+  const handleSelectFeedback = (feedbackId) => {
+    setSelectedFeedbackIds((prev) =>
+      prev.includes(feedbackId)
+        ? prev.filter((id) => id !== feedbackId)
+        : [...prev, feedbackId],
+    );
+  };
+
+  const handleMarkAsRead = () => {
+    console.log('Marking as read:', selectedFeedbackIds);
+  };
+
+  const handleMarkAsUnread = () => {
+    console.log('Marking as unread:', selectedFeedbackIds);
+  };
+
+  const handleMarkAsDeleted = () => {
+    console.log('Marking as deleted:', selectedFeedbackIds);
+  };
+
+  const handleSelectAll = () => {
+    if (selectedFeedbackIds.length === filteredFeedbacks.length) {
+      setSelectedFeedbackIds([]);
+    } else {
+      setSelectedFeedbackIds(filteredFeedbacks.map((fb) => fb._id));
+    }
+  };
+
+  const handleRefresh = () => {
+    console.log('Refreshing feedback list');
+    window.location.reload();
+  };
+
   return (
     <div className="feedback-container">
       <SidebarMenu className="sidebar" />
@@ -122,6 +162,43 @@ function Feedback() {
               ),
             }}
           />
+
+          <div className="action-buttons" style={{ marginBottom: '10px' }}>
+            <Checkbox
+              checked={selectedFeedbackIds.length === filteredFeedbacks.length}
+              onChange={handleSelectAll}
+            />
+            <IconButton
+              onClick={handleMarkAsRead}
+              disabled={selectedFeedbackIds.length === 0}
+              color="primary"
+            >
+              <DraftsIcon />
+            </IconButton>
+            <IconButton
+              onClick={handleMarkAsUnread}
+              disabled={selectedFeedbackIds.length === 0}
+              color="primary"
+              style={{ marginLeft: '10px' }}
+            >
+              <MarkEmailUnreadIcon />
+            </IconButton>
+            <IconButton
+              onClick={handleMarkAsDeleted}
+              disabled={selectedFeedbackIds.length === 0}
+              color="secondary"
+              style={{ marginLeft: '10px' }}
+            >
+              <DeleteIcon />
+            </IconButton>
+            <IconButton
+              onClick={handleRefresh}
+              color="default"
+              style={{ marginLeft: '10px' }}
+            >
+              <RefreshIcon />
+            </IconButton>
+          </div>
         </div>
 
         {filteredFeedbacks.length > 0 ? (
@@ -143,10 +220,17 @@ function Feedback() {
                     onClick={() => handleRowClick(fb)}
                     style={{ cursor: 'pointer' }}
                   >
+                    <td>
+                      <Checkbox
+                        checked={selectedFeedbackIds.includes(fb._id)}
+                        onChange={() => handleSelectFeedback(fb._id)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </td>
                     <td className="column name">{fb.name}</td>
-                    <td className="column email">{fb.email}</td>
+
                     <td className="column preview">
-                      {fb.importantThings?.split(' ').slice(0, 10).join(' ')}...
+                      {fb.importantThings?.split(' ').slice(0, 15).join(' ')}...
                     </td>
                     <td className="column time">
                       {formatTimeAgo(fb.createdAt)}
@@ -165,7 +249,7 @@ function Feedback() {
 
       {/* Individual Feedback Form Details Modal */}
       <Modal
-        open={openDialog} // <-- this makes it work!
+        open={openDialog}
         onClose={handleCloseDialog}
         aria-labelledby="feedback-form-details-modal-title"
       >
