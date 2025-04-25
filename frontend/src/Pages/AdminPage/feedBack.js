@@ -5,14 +5,19 @@ import {
   Typography,
   TextField,
   InputAdornment,
-  // Card,
-  // CardContent,
+  DialogTitle,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  Box,
+  Paper,
+  Modal,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import SidebarMenu from '../Sidebar';
 import './feedBack.css';
 
-// Utility to format date like Gmail
 const formatTimeAgo = (dateString) => {
   const date = new Date(dateString);
   const now = new Date();
@@ -20,7 +25,6 @@ const formatTimeAgo = (dateString) => {
   const diffMin = Math.floor(diffMs / 60000);
   const diffHr = Math.floor(diffMin / 60);
   const diffDays = Math.floor(diffHr / 24);
-  // const diffWeeks = Math.floor(diffDays / 7);
   const diffYears = now.getFullYear() - date.getFullYear();
 
   if (diffMin < 1) return 'Just now';
@@ -38,6 +42,8 @@ const formatTimeAgo = (dateString) => {
 function Feedback() {
   const [searchTerm, setSearchTerm] = useState('');
   const [feedbacks, setFeedbacks] = useState([]);
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     const fetchFeedbacks = async () => {
@@ -59,12 +65,35 @@ function Feedback() {
       fb.email.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
+  const handleRowClick = (feedback) => {
+    setSelectedFeedback(feedback);
+    setOpenDialog(true);
+  };
+
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '80%',
+    maxWidth: 600,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    borderRadius: 2,
+    p: 4,
+    maxHeight: '90vh',
+    overflow: 'auto',
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedFeedback(null);
+  };
+
   return (
     <div className="feedback-container">
-      {/* Sidebar */}
       <SidebarMenu className="sidebar" />
 
-      {/* Main Content */}
       <div className="feedback-main-content">
         <AppBar position="static" className="appbar">
           <Toolbar>
@@ -78,7 +107,6 @@ function Feedback() {
           className="feedback"
           style={{ display: 'flex', gap: '10px', margin: '16px 0' }}
         >
-          {/* Search Field */}
           <TextField
             className="searchfield"
             label="Search Feedback"
@@ -96,21 +124,25 @@ function Feedback() {
           />
         </div>
 
-        {/* Card */}
         {filteredFeedbacks.length > 0 ? (
-          <div className="feedback-table">
-            <table>
-              {/* <thead>
-                <tr>
-                  <th className="column name">Name</th>
-                  <th className="column email">Email</th>
-                  <th className="column preview">Important Things</th>
-                  <th className="column time">Date/Time</th>
-                </tr>
-              </thead> */}
+          <div
+            className="feedback-table"
+            style={{
+              maxHeight: '70vh',
+              overflowY: 'auto',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+            }}
+          >
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <tbody>
                 {filteredFeedbacks.map((fb) => (
-                  <tr key={fb._id} className="feedback-row">
+                  <tr
+                    key={fb._id}
+                    className="feedback-row"
+                    onClick={() => handleRowClick(fb)}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <td className="column name">{fb.name}</td>
                     <td className="column email">{fb.email}</td>
                     <td className="column preview">
@@ -130,6 +162,140 @@ function Feedback() {
           </Typography>
         )}
       </div>
+
+      {/* Individual Feedback Form Details Modal */}
+      <Modal
+        open={openDialog} // <-- this makes it work!
+        onClose={handleCloseDialog}
+        aria-labelledby="feedback-form-details-modal-title"
+      >
+        <Box sx={modalStyle}>
+          {selectedFeedback && (
+            <>
+              <DialogTitle
+                style={{
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  background: '#272974',
+                  color: 'white',
+                }}
+              >
+                Feedback Submission Details
+              </DialogTitle>
+
+              <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
+                <Typography variant="h6" gutterBottom>
+                  {selectedFeedback.name}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  Submitted on: {formatTimeAgo(selectedFeedback.createdAt)}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  Email: {selectedFeedback.email || 'N/A'}
+                </Typography>
+              </Paper>
+
+              <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
+                <Typography variant="h6" gutterBottom>
+                  Areas of Involvement
+                </Typography>
+
+                {selectedFeedback.academic?.length > 0 && (
+                  <Box sx={{ mb: 2 }}>
+                    <Typography
+                      variant="subtitle1"
+                      gutterBottom
+                      sx={{ fontWeight: 'bold' }}
+                    >
+                      Academic:
+                    </Typography>
+                    <List dense>
+                      {selectedFeedback.academic.map((item, index) => (
+                        <ListItem key={index}>
+                          <ListItemText primary={`• ${item}`} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                )}
+
+                {selectedFeedback.administrative?.length > 0 && (
+                  <Box sx={{ mb: 2 }}>
+                    <Typography
+                      variant="subtitle1"
+                      gutterBottom
+                      sx={{ fontWeight: 'bold' }}
+                    >
+                      Administrative:
+                    </Typography>
+                    <List dense>
+                      {selectedFeedback.administrative.map((item, index) => (
+                        <ListItem key={index}>
+                          <ListItemText primary={`• ${item}`} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                )}
+
+                {selectedFeedback.finance?.length > 0 && (
+                  <Box sx={{ mb: 2 }}>
+                    <Typography
+                      variant="subtitle1"
+                      gutterBottom
+                      sx={{ fontWeight: 'bold' }}
+                    >
+                      Finance/Development:
+                    </Typography>
+                    <List dense>
+                      {selectedFeedback.finance.map((item, index) => (
+                        <ListItem key={index}>
+                          <ListItemText primary={`• ${item}`} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                )}
+              </Paper>
+
+              <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
+                <Typography
+                  variant="subtitle1"
+                  gutterBottom
+                  sx={{ fontWeight: 'bold' }}
+                >
+                  Important Things Learned at SMU:
+                </Typography>
+                <Typography variant="body2" paragraph>
+                  {selectedFeedback.importantThings || 'N/A'}
+                </Typography>
+
+                <Typography
+                  variant="subtitle1"
+                  gutterBottom
+                  sx={{ fontWeight: 'bold' }}
+                >
+                  Suggestions for Improvement:
+                </Typography>
+                <Typography variant="body2" paragraph>
+                  {selectedFeedback.suggestions || 'N/A'}
+                </Typography>
+
+                <Typography
+                  variant="subtitle1"
+                  gutterBottom
+                  sx={{ fontWeight: 'bold' }}
+                >
+                  Alumni Contacts:
+                </Typography>
+                <Typography variant="body2">
+                  {selectedFeedback.alumniList || 'N/A'}
+                </Typography>
+              </Paper>
+            </>
+          )}
+        </Box>
+      </Modal>
     </div>
   );
 }
