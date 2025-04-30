@@ -10,7 +10,7 @@ import AdminDashboard from './Pages/AdminPage/AdminDashboard';
 import AlumniInformation from './Pages/AdminPage/AlumniInformation';
 import EventPage from './Pages/AdminPage/EventPage';
 import JobPost from './Pages/AdminPage/JobPost';
-import AccountSetting from './Pages/AdminPage/AccounSetting';
+import AccountSetting from './Pages/AdminPage/AccountSetting';
 
 import AlumniDashboard from './Pages/AlumniPage/AlumniDashboard';
 import Profile from './Pages/AlumniPage/Profile';

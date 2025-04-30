@@ -59,7 +59,7 @@ function AccountSetting() {
 
   const fetchAdmins = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/api/admins');
+      const response = await axios.get('http://localhost:5001/api/admin/admins');
       setAdmins(response.data);
       setFilteredAdmins(response.data);
     } catch (error) {

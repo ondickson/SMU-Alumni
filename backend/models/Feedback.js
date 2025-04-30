@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 
 const feedbackSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  email: { type: String },          
-  alumniId: { type: String },   
+  email: { type: String },
+  alumniId: { type: String },
   academic: [String],
   otherAcademic: String,
   administrative: [String],
@@ -13,7 +13,16 @@ const feedbackSchema = new mongoose.Schema({
   importantThings: { type: String, required: true },
   suggestions: { type: String, required: true },
   alumniList: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now }
+  status: {
+    type: String,
+    enum: ['read', 'unread', 'deleted'],
+    default: 'unread',
+  },
+  deletedAt: {
+    type: Date,
+    default: null,
+  },
+  createdAt: { type: Date, default: Date.now },
 });
 
 const Feedback = mongoose.model('Feedback', feedbackSchema);

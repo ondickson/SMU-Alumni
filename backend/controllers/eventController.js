@@ -22,3 +22,24 @@ export const addEvent = async (req, res) => {
     res.status(500).json({ message: "Error adding event", error });
   }
 };
+
+// Update event
+export const updateEvent = async (req, res) => {
+  try {
+    const updatedEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.status(200).json(updatedEvent);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating event", error });
+  }
+};
+
+// Delete event
+export const deleteEvent = async (req, res) => {
+  try {
+    await Event.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Event deleted" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting event", error });
+  }
+};
+

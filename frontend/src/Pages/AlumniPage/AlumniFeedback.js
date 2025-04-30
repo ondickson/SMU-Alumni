@@ -36,9 +36,8 @@ const AlumniFeedback = () => {
     const user = localStorage.getItem('alumni');
     if (!user) {
       navigate('/login');
-    } 
+    }
   }, [navigate]);
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -57,39 +56,44 @@ const AlumniFeedback = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const userData = localStorage.getItem('alumni');
     if (!userData) {
       setStatusMessage('User not found. Please log in again.');
       setStatusType('error');
       return;
     }
-  
+
     const user = JSON.parse(userData);
     const fullName = `${user.firstName} ${user.lastName}`;
-  
+
     const dataToSend = {
       ...formData,
       name: fullName,
-      email: user.email,           // ✅ Include email
-      alumniId: user.idNo || '',   // Optional: Include alumni ID
+      email: user.email,
+      alumniId: user.idNo || '',
+      status: 'unread', 
+      deletedAt: null, 
     };
-  
+
     console.log('Submitting feedback:', dataToSend);
-  
+
     try {
-      const response = await fetch('http://localhost:5001/api/feedback/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dataToSend),
-      });
-  
+      const response = await fetch(
+        'http://localhost:5001/api/feedback/submit',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dataToSend),
+        },
+      );
+
       const result = await response.json();
-  
+
       if (response.ok) {
         setStatusMessage(result.message || 'Feedback submitted successfully!');
         setStatusType('success');
-  
+
         // Reset form
         setFormData({
           academic: [],
@@ -103,7 +107,9 @@ const AlumniFeedback = () => {
           alumniList: '',
         });
       } else {
-        setStatusMessage(result.message || 'Submission failed. Please try again.');
+        setStatusMessage(
+          result.message || 'Submission failed. Please try again.',
+        );
         setStatusType('error');
       }
     } catch (error) {
@@ -111,13 +117,13 @@ const AlumniFeedback = () => {
       setStatusMessage('An error occurred. Please try again.');
       setStatusType('error');
     }
-  
+
     setTimeout(() => {
       setStatusMessage('');
       setStatusType('');
     }, 5000);
   };
-  
+
   return (
     <div className="feedbck">
       <Sidebar />
@@ -355,7 +361,7 @@ const AlumniFeedback = () => {
 
             <p className="form-footer">
               Return to dashboard?{' '}
-              <Link to="/dashboard" className="link">
+              <Link to="/AlumniDashboard" className="link">
                 Dashboard
               </Link>
             </p>

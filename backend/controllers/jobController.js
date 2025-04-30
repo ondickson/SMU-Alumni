@@ -35,3 +35,27 @@ export const addJob = async (req, res) => {
         res.status(500).json({ message: "Error adding job", error });
     }
 };
+
+export const updateJob = async (req, res) => {
+    try {
+      const { jobId } = req.params;
+      const { title, description, link } = req.body;
+      const image = req.file ? req.file.buffer.toString("base64") : ""; // Convert image to base64
+  
+      const updatedJob = await JobPost.findByIdAndUpdate(jobId, { title, description, link, image }, { new: true });
+  
+      res.status(200).json(updatedJob);
+    } catch (error) {
+      res.status(500).json({ message: "Error updating job", error });
+    }
+  };
+  
+  export const deleteJob = async (req, res) => {
+    try {
+      const { jobId } = req.params;
+      await JobPost.findByIdAndDelete(jobId);
+      res.status(200).json({ message: "Job deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Error deleting job", error });
+    }
+  };

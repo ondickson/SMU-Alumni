@@ -17,11 +17,16 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material';
+import { Edit, Delete } from '@mui/icons-material';
 
 function EventPage() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const [events, setEvents] = useState([]); // Store fetched events
+  const [events, setEvents] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [selectedEventId, setSelectedEventId] = useState(null);
+  const [eventIdToDelete, setEventIdToDelete] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [eventData, setEventData] = useState({
     title: '',
     date: '',
@@ -37,7 +42,10 @@ function EventPage() {
   const fetchEvents = async () => {
     try {
       const response = await axios.get('http://localhost:5001/api/events');
-      setEvents(response.data);
+      const sortedEvents = response.data.sort(
+        (a, b) => new Date(b.date) - new Date(a.date),
+      );
+      setEvents(sortedEvents);
     } catch (error) {
       console.error('Error fetching events:', error);
     }
@@ -58,19 +66,52 @@ function EventPage() {
     }
   };
 
-  const handleAddEvent = async () => {
+  const handleEditClick = (event) => {
+    // setEventData(event);
+    setEventData({
+      ...event,
+      date: event.date ? new Date(event.date).toISOString().split('T')[0] : '', // format to "YYYY-MM-DD"
+    });
+    setSelectedEventId(event._id);
+    setEditMode(true);
+    setOpen(true);
+  };
+
+  const handleDelete = async () => {
     try {
-      await axios.post('http://localhost:5001/api/events', eventData);
-      setOpen(false);
+      await axios.delete(`http://localhost:5001/api/events/${eventIdToDelete}`);
+      setDeleteDialogOpen(false);
+      setEventIdToDelete(null);
       fetchEvents();
     } catch (error) {
-      console.error(
-        'Error adding event:',
-        error.response ? error.response.data : error.message
-      );
+      console.error('Error deleting event:', error);
     }
   };
-  
+
+  const handleSaveEvent = async () => {
+    try {
+      if (editMode) {
+        await axios.put(
+          `http://localhost:5001/api/events/${selectedEventId}`,
+          eventData,
+        );
+      } else {
+        await axios.post('http://localhost:5001/api/events', eventData);
+      }
+      setOpen(false);
+      setEditMode(false);
+      setEventData({
+        title: '',
+        date: '',
+        location: '',
+        description: '',
+        image: '',
+      });
+      fetchEvents();
+    } catch (error) {
+      console.error('Error saving event:', error);
+    }
+  };
 
   return (
     <div className="container">
@@ -97,7 +138,18 @@ function EventPage() {
             variant="outlined"
             color="primary"
             className="add-event-button"
-            onClick={() => setOpen(true)}
+            onClick={() => {
+              setEventData({
+                title: '',
+                date: '',
+                location: '',
+                description: '',
+                image: '',
+              });
+              setEditMode(false);
+              setSelectedEventId(null);
+              setOpen(true);
+            }}
           >
             Add Event
           </Button>
@@ -138,12 +190,49 @@ function EventPage() {
                   <Typography variant="body2" className="event-description">
                     {event.description}
                   </Typography>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      marginTop: '0.5rem',
+                    }}
+                  >
+                    <Edit
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => handleEditClick(event)}
+                      color="primary"
+                    />
+                    <Delete
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        setEventIdToDelete(event._id);
+                        setDeleteDialogOpen(true);
+                      }}
+                      color="error"
+                    />
+                  </div>
                 </CardContent>
               </Card>
             </Grid>
           ))}
         </Grid>
       </div>
+
+      {/* Confirm Delete Job Dialog Box */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+      >
+        <DialogTitle className="dialog-title">Delete Event</DialogTitle>
+        <DialogContent className="dialog-content">
+          Are you sure you want to delete this event?
+        </DialogContent>
+        <DialogActions className="dialog-actions">
+          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleDelete}>Delete</Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Dialog for adding a new event */}
       <Dialog open={open} onClose={() => setOpen(false)}>
@@ -154,8 +243,10 @@ function EventPage() {
             fullWidth
             margin="dense"
             label="Event Title"
+            value={eventData.title}
             onChange={handleChange}
           />
+
           <TextField
             name="date"
             fullWidth
@@ -163,15 +254,19 @@ function EventPage() {
             label="Date"
             type="date"
             InputLabelProps={{ shrink: true }}
+            value={eventData.date}
             onChange={handleChange}
           />
+
           <TextField
             name="location"
             fullWidth
             margin="dense"
             label="Location"
+            value={eventData.location}
             onChange={handleChange}
           />
+
           <TextField
             name="description"
             fullWidth
@@ -179,19 +274,33 @@ function EventPage() {
             label="Description"
             multiline
             rows={3}
+            value={eventData.description}
             onChange={handleChange}
           />
+
           <input
             type="file"
             className="file-input"
             accept="image/*"
             onChange={handleImageUpload}
           />
+          {eventData.image && (
+            <img
+              src={eventData.image}
+              alt="Event Preview"
+              style={{
+                width: '200px',
+                height: '200px',
+                objectFit: 'contain',
+                marginBottom: '10px',
+              }}
+            />
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button variant="contained" color="primary" onClick={handleAddEvent}>
-            Add Event
+          <Button variant="contained" color="primary" onClick={handleSaveEvent}>
+            {editMode ? 'Update Event' : 'Add Event'}
           </Button>
         </DialogActions>
       </Dialog>

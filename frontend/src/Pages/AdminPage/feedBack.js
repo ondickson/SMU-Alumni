@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
-  AppBar,
-  Toolbar,
   Typography,
   TextField,
+  Button,
   InputAdornment,
   DialogTitle,
   List,
@@ -14,8 +13,12 @@ import {
   Modal,
   Checkbox,
   IconButton,
+  Tabs,
+  Tab,
+  Tooltip,
 } from '@mui/material';
 import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
+import DownloadIcon from '@mui/icons-material/Download';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import DeleteIcon from '@mui/icons-material/Delete';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -51,6 +54,7 @@ function Feedback() {
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [selectedFeedbackIds, setSelectedFeedbackIds] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [activeTab, setActiveTab] = useState('all');
 
   useEffect(() => {
     const fetchFeedbacks = async () => {
@@ -66,11 +70,17 @@ function Feedback() {
     fetchFeedbacks();
   }, []);
 
-  const filteredFeedbacks = feedbacks.filter(
-    (fb) =>
+  const visibleFeedbacks = feedbacks.filter((fb) => {
+    const matchesSearch =
       fb.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      fb.email.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+      fb.email.toLowerCase().includes(searchTerm.toLowerCase());
+
+    if (!matchesSearch) return false;
+
+    if (activeTab === 'all') return fb.status !== 'deleted';
+    if (activeTab === 'deleted') return fb.status === 'deleted';
+    return fb.status === activeTab;
+  });
 
   const handleRowClick = (feedback) => {
     setSelectedFeedback(feedback);
@@ -92,7 +102,25 @@ function Feedback() {
     overflow: 'auto',
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseDialog = async () => {
+    if (selectedFeedback?.status === 'unread') {
+      try {
+        const res = await fetch(
+          `http://localhost:5001/api/feedback/${selectedFeedback._id}`,
+          {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'read' }),
+          },
+        );
+        const updated = await res.json();
+        setFeedbacks((prev) =>
+          prev.map((fb) => (fb._id === updated._id ? updated : fb)),
+        );
+      } catch (err) {
+        console.error('Failed to update feedback status to read:', err);
+      }
+    }
     setOpenDialog(false);
     setSelectedFeedback(null);
   };
@@ -106,22 +134,22 @@ function Feedback() {
   };
 
   const handleMarkAsRead = () => {
-    console.log('Marking as read:', selectedFeedbackIds);
+    updateFeedbackStatus('read');
   };
 
   const handleMarkAsUnread = () => {
-    console.log('Marking as unread:', selectedFeedbackIds);
+    updateFeedbackStatus('unread');
   };
 
   const handleMarkAsDeleted = () => {
-    console.log('Marking as deleted:', selectedFeedbackIds);
+    updateFeedbackStatus('deleted');
   };
 
   const handleSelectAll = () => {
-    if (selectedFeedbackIds.length === filteredFeedbacks.length) {
+    if (selectedFeedbackIds.length === visibleFeedbacks.length) {
       setSelectedFeedbackIds([]);
     } else {
-      setSelectedFeedbackIds(filteredFeedbacks.map((fb) => fb._id));
+      setSelectedFeedbackIds(visibleFeedbacks.map((fb) => fb._id));
     }
   };
 
@@ -130,82 +158,208 @@ function Feedback() {
     window.location.reload();
   };
 
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
+
+  const updateFeedbackStatus = async (status) => {
+    try {
+      const updates = await Promise.all(
+        selectedFeedbackIds.map(async (id) => {
+          const res = await fetch(`http://localhost:5001/api/feedback/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              status,
+              deletedAt: status === 'deleted' ? new Date().toISOString() : null,
+            }),
+          });
+          return res.json();
+        }),
+      );
+
+      // Merge updated feedbacks into state
+      setFeedbacks((prev) =>
+        prev.map((fb) => {
+          const updated = updates.find((u) => u._id === fb._id);
+          return updated ? updated : fb;
+        }),
+      );
+
+      setSelectedFeedbackIds([]); // Clear selection
+    } catch (err) {
+      console.error('Error updating feedback status:', err);
+    }
+  };
+
+  // Download Table to CSV
+  const downloadCSV = () => {
+    const headers = [
+      'Name',
+      'Email',
+      'Alumni ID',
+      'Academic',
+      'Administrative',
+      'Finance',
+      'Important Things',
+      'Suggestions',
+      'Alumni List',
+      'Status',
+      'Created At',
+      'Deleted At',
+    ];
+
+    const rows = feedbacks.map((fb) => [
+      fb.name || '',
+      fb.email || '',
+      fb.alumniId || '',
+      (fb.academic || []).join('; '),
+      (fb.administrative || []).join('; '),
+      (fb.finance || []).join('; '),
+      fb.importantThings || '',
+      fb.suggestions || '',
+      fb.alumniList || '',
+      fb.status || '',
+      new Date(fb.createdAt).toLocaleString(),
+      fb.deletedAt ? new Date(fb.deletedAt).toLocaleString() : '',
+    ]);
+
+    const csvContent = [headers, ...rows]
+      .map((row) =>
+        row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','),
+      )
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', `feedback_export_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="feedback-container">
       <SidebarMenu className="sidebar" />
 
       <div className="feedback-main-content">
-        <AppBar position="static" className="appbar">
-          <Toolbar>
-            <Typography variant="h6" className="title">
-              Feedback
-            </Typography>
-          </Toolbar>
-        </AppBar>
-
         <div
           className="feedback"
-          style={{ display: 'flex', gap: '10px', margin: '16px 0' }}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            margin: '16px 0',
+          }}
         >
-          <TextField
-            className="searchfield"
-            label="Search Feedback"
-            variant="outlined"
-            size="small"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-
-          <div className="action-buttons" style={{ marginBottom: '10px' }}>
-            <Checkbox
-              checked={selectedFeedbackIds.length === filteredFeedbacks.length}
-              onChange={handleSelectAll}
+          {/* Left: Search + Tabs */}
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <TextField
+              className="searchfield"
+              label="Search Feedback"
+              variant="outlined"
+              size="small"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
             />
-            <IconButton
-              onClick={handleMarkAsRead}
-              disabled={selectedFeedbackIds.length === 0}
-              color="primary"
-            >
-              <DraftsIcon />
-            </IconButton>
-            <IconButton
-              onClick={handleMarkAsUnread}
-              disabled={selectedFeedbackIds.length === 0}
-              color="primary"
-              style={{ marginLeft: '10px' }}
-            >
-              <MarkEmailUnreadIcon />
-            </IconButton>
-            <IconButton
-              onClick={handleMarkAsDeleted}
-              disabled={selectedFeedbackIds.length === 0}
-              color="secondary"
-              style={{ marginLeft: '10px' }}
-            >
-              <DeleteIcon />
-            </IconButton>
-            <IconButton
-              onClick={handleRefresh}
-              color="default"
-              style={{ marginLeft: '10px' }}
-            >
-              <RefreshIcon />
-            </IconButton>
+            <Tabs value={activeTab} onChange={handleTabChange}>
+              <Tab label="All" value="all" />
+              <Tab label="Unread" value="unread" />
+              <Tab label="Read" value="read" />
+              <Tab label="Deleted" value="deleted" />
+            </Tabs>
+          </div>
+
+          {/* Right: Download CSV Button */}
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<DownloadIcon />}
+            onClick={downloadCSV}
+          >
+            Download CSV
+          </Button>
+        </div>
+
+        <div className="icons-action-buttons">
+          <div
+            className="action-buttons"
+            style={{ marginBottom: '10px', fontSize: 'small' }}
+          >
+            {/* Select All Checkbox */}
+            <Tooltip title="Select all feedback" arrow>
+              <IconButton>
+                <Checkbox
+                  checked={
+                    selectedFeedbackIds.length === visibleFeedbacks.length
+                  }
+                  onChange={handleSelectAll}
+                  size="small"
+                />
+              </IconButton>
+            </Tooltip>
+
+            {/* Mark as Read Button */}
+            <Tooltip title="Mark as read" arrow>
+              <IconButton
+                onClick={handleMarkAsRead}
+                disabled={selectedFeedbackIds.length === 0}
+                color="primary"
+              >
+                <DraftsIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+
+            {/* Mark as Unread Button */}
+            <Tooltip title="Mark as unread" arrow>
+              <IconButton
+                onClick={handleMarkAsUnread}
+                disabled={selectedFeedbackIds.length === 0}
+                color="primary"
+                style={{ marginLeft: '10px' }}
+              >
+                <MarkEmailUnreadIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+
+            {/* Mark as Deleted Button */}
+            <Tooltip title="Mark as deleted" arrow>
+              <IconButton
+                onClick={handleMarkAsDeleted}
+                disabled={selectedFeedbackIds.length === 0}
+                color="secondary"
+                style={{ marginLeft: '10px' }}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+
+            {/* Refresh Button */}
+            <Tooltip title="Refresh feedback list" arrow>
+              <IconButton
+                onClick={handleRefresh}
+                color="default"
+                style={{ marginLeft: '10px' }}
+              >
+                <RefreshIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
           </div>
         </div>
 
-        {filteredFeedbacks.length > 0 ? (
+        {visibleFeedbacks.length > 0 ? (
           <div
             className="feedback-table"
             style={{
-              maxHeight: '70vh',
+              maxHeight: '75vh',
               overflowY: 'auto',
               border: '1px solid #ccc',
               borderRadius: '4px',
@@ -213,18 +367,22 @@ function Feedback() {
           >
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <tbody>
-                {filteredFeedbacks.map((fb) => (
+                {visibleFeedbacks.map((fb) => (
                   <tr
                     key={fb._id}
                     className="feedback-row"
                     onClick={() => handleRowClick(fb)}
-                    style={{ cursor: 'pointer' }}
+                    style={{
+                      cursor: 'pointer',
+                      fontWeight: fb.status === 'unread' ? 'bold' : 'normal',
+                    }}
                   >
                     <td>
                       <Checkbox
                         checked={selectedFeedbackIds.includes(fb._id)}
                         onChange={() => handleSelectFeedback(fb._id)}
                         onClick={(e) => e.stopPropagation()}
+                        size="small"
                       />
                     </td>
                     <td className="column name">{fb.name}</td>
@@ -241,9 +399,11 @@ function Feedback() {
             </table>
           </div>
         ) : (
-          <Typography variant="body1" style={{ marginTop: '20px' }}>
-            No feedback found.
-          </Typography>
+          <Box textAlign="center" mt={4}>
+            <Typography variant="h6" color="textSecondary">
+              No feedback available
+            </Typography>
+          </Box>
         )}
       </div>
 
